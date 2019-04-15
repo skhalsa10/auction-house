@@ -19,12 +19,17 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class AuctionHouse  extends Thread{
 
+    //three items for sale
     private Item item1;
     private Item item2;
     private Item item3;
+    //Item generator
     private ItemGenerator itemGenerator;
+    //Auction House server socket
     private ServerSocket serverSocket;
+    //client socket of the bank
     private Socket clientSocket;
+    // queue for messages to process
     private LinkedBlockingQueue<Message> messageQueue;
     private AuctionHouseListener socketListener;
 
@@ -54,7 +59,7 @@ public class AuctionHouse  extends Thread{
     }
 
     /**
-     * this thread will just
+     * this thread will just process messages and stuff
      */
     @Override
     public void run() {
@@ -69,7 +74,6 @@ public class AuctionHouse  extends Thread{
     }
 
     public static void main(String args[]) throws IOException {
-
     }
 
 }
