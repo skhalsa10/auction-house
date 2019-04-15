@@ -23,12 +23,14 @@ public class AuctionHouse  extends Thread{
      * this constructor instantiates a new AuctionHouse that connects to the bank host and bank port.
      *
      * the third argumat is the port that this Auction House will start its server socket on
-     * @param //bankHost
-     * @param //bankPort
+     * @param bankHost hostname of the bank server that we will connect to
+     * @param bankPort port of the bank server we will connect to
+     * @param housePort this is the port that the Auction house server will be listening on
      */
-    public AuctionHouse(){
+    public AuctionHouse(String bankHost, int bankPort, int housePort){
         try {
-            serverSocket = new ServerSocket(7777);
+            //this will set up the server
+            serverSocket = new ServerSocket(housePort);
         } catch (IOException e) {
             e.printStackTrace();
         }
