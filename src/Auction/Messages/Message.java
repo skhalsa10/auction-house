@@ -1,4 +1,4 @@
 package Auction.Messages;
 
-public class Message {
+public abstract class Message {
 }
