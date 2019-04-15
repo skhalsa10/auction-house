@@ -50,10 +50,4 @@ public class ItemGenerator {
         return (new Item(adjective + " " + noun));
     }
 
-    public static void main(String args[]){
-        ItemGenerator test = new ItemGenerator();
-        System.out.println(test.getItem());
-    }
-
-
 }
