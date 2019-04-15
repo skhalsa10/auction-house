@@ -1,6 +1,7 @@
 package Auction.AuctionHouse;
 
 import Auction.Messages.Message;
+import Auction.Messages.MessageClose;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -22,20 +23,23 @@ public class AuctionHouseThread extends Thread {
         this.messageQueue = messageQueue;
     }
 
-
-
     @Override
     public void run() {
+
         try {
             ObjectInputStream objectIn = new ObjectInputStream(socket.getInputStream());
+            System.out.println("hio");
             while(true){
+                System.out.println("blocking?");
                 Object o = objectIn.readObject();
                 if(!(o instanceof Message)){
                     System.out.println("not of type message");
                     throw new IOException();
                 }
                 Message m = (Message) o;
-                if(m instanceof )
+                if(m instanceof MessageClose){
+                    break;
+                }
                 messageQueue.put(m);
             }
             objectIn.close();

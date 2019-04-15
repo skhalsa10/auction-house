@@ -26,7 +26,7 @@ public class AuctionHouseListener extends Thread {
         while(listening){
             try {
 
-                serverSocket.accept();
+                new AuctionHouseThread(serverSocket.accept(),messageQueue).start();
 
             } catch (IOException e) {
                 e.printStackTrace();
