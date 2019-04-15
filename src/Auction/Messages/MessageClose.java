@@ -1,4 +1,4 @@
 package Auction.Messages;
 
-public class MessageClose extends Message {
+public class MessageClose extends Message{
 }
