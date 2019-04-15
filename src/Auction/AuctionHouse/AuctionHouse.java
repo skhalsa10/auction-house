@@ -4,16 +4,21 @@ import Auction.Messages.Message;
 import Auction.Messages.MessageClose;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * this class defines an auction house. the action house will act as a server for agents.
- * and it will be a client of the bank. It will listen
+ * and it will be a client of the bank. when this class gets initiated it starts a server socket.
+ * It spawns a new thread where the whole goal is to listen and accept connections. this happens on a spperate thread.
+ * This listener will broker socket connections and in turn start a new thread that works on this socket and reads in Message Objects
+ * it then stores the messages in the auction houses messageQueue.
+ *
+ * The action House's main thread will just keep processing messages  accordingly until it gets a MessageClose in this case it will shut down the house.
+ *
  */
 public class AuctionHouse  extends Thread{
+
     private Item item1;
     private Item item2;
     private Item item3;
@@ -25,14 +30,12 @@ public class AuctionHouse  extends Thread{
 
     /**
      * this constructor instantiates a new AuctionHouse that connects to the bank host and bank port.
-     *
      * the third argumat is the port that this Auction House will start its server socket on
-     * @param //bankHost hostname of the bank server that we will connect to
-     * @param //bankPort port of the bank server we will connect to
-     *                 //String bankHost, int bankPort,
+     * @param bankHost hostname of the bank server that we will connect to
+     * @param bankPort port of the bank server we will connect to
      * @param housePort this is the port that the Auction house server will be listening on
      */
-    public AuctionHouse( int housePort){
+    public AuctionHouse(String bankHost, int bankPort, int housePort){
         try {
             //this will set up the server
             serverSocket = new ServerSocket(housePort);
@@ -50,6 +53,9 @@ public class AuctionHouse  extends Thread{
 
     }
 
+    /**
+     * this thread will just
+     */
     @Override
     public void run() {
         Message m = null;
@@ -63,16 +69,7 @@ public class AuctionHouse  extends Thread{
     }
 
     public static void main(String args[]) throws IOException {
-        AuctionHouse ah = new AuctionHouse(7777);
-        ah.start();
-        System.out.println(InetAddress.getLocalHost());
-        Socket test = new Socket(InetAddress.getLocalHost().getHostAddress(), 7777);
-        System.out.println(test.isConnected());
-        Socket test2 = new Socket(InetAddress.getLocalHost().getHostAddress(), 7777);
-        System.out.println(test2.isConnected());
-        ObjectOutputStream out = new ObjectOutputStream(test.getOutputStream());
-        Message m = new MessageClose();
-        out.writeObject(m);
+
     }
 
 }

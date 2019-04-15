@@ -30,7 +30,7 @@ public class AuctionHouseThread extends Thread {
             ObjectInputStream objectIn = new ObjectInputStream(socket.getInputStream());
             System.out.println("hio");
             while(true){
-                System.out.println("blocking?");
+                System.out.println("blocking? " + this);
                 Object o = objectIn.readObject();
                 if(!(o instanceof Message)){
                     System.out.println("not of type message");
