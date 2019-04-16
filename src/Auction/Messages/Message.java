@@ -3,12 +3,14 @@ package Auction.Messages;
 import Auction.Account;
 import Auction.AuctionHouse;
 
-public class Message {
+import java.io.Serializable;
+
+public class Message implements Serializable {
     private RequestType requestType;
     private Account account;
     private AuctionHouse auctionHouse;
 
-    public enum RequestType {
+    public enum RequestType implements Serializable{
         CREATE_ACCOUNT, CHECK_BALANCE, TRANSFER_FUNDS;
     }
 
