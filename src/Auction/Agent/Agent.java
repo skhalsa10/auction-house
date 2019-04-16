@@ -1,6 +1,7 @@
 package Auction.Agent;
 
 import Auction.Item;
+import Auction.Messages.Message;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -15,14 +16,17 @@ public class Agent {
         this.balance = initialBalance;
     }
     private void openBankAccount(){
-        // create message with name and initial balance
+        Message m = new Message(Message.RequestType.CREATE_AGENT_ACCOUNT);
+        m.setAgentName(name);
+        m.setAgentBalance(balance);
     }
 
     private void chooseAuctionHouse() {
-        // create message with host and port info
+        //
     }
 
     private void connectToAuctionHouse(String auctionHost, int auctionPort){
+        AuctionHouseConnection c = new AuctionHouseConnection(auctionHost,auctionPort);
 
     }
 

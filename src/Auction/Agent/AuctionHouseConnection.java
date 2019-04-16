@@ -11,6 +11,17 @@ public class AuctionHouseConnection implements Runnable {
     public AuctionHouseConnection(String hostName, int portNumber){
         this.hostName = hostName;
         this.portNumber = portNumber;
+        start();
     }
-    public void run(){}
+
+    public void start() {
+        try {
+            this.socket = new Socket(hostName, portNumber);
+        }
+        catch(Exception e) {
+            System.err.println(e);
+        }
+    }
+    public void run () {}
+
 }
