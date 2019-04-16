@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Bank implements Runnable {
+    public static int accountCounter = 0;
+
     private List<Account> clientAccounts;
     private LinkedBlockingQueue<Message> blockQ;
 
@@ -45,5 +47,13 @@ public class Bank implements Runnable {
         catch (InterruptedException e){
             e.printStackTrace();
         }
+    }
+
+    public static int getAccountCounter() {
+        return accountCounter;
+    }
+
+    public static void incrememntAccountCounter() {
+        accountCounter++;
     }
 }
