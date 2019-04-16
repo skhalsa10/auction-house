@@ -7,6 +7,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * this class is a server socket listener for the Action House.
  * I made this because I want the action House to use its main thread to process messages for bidding
+ * this class literally only listens on the server socket and accepts connections and passes it to an auctionHouseThread
+ *
  *
  */
 public class AuctionHouseListener extends Thread {

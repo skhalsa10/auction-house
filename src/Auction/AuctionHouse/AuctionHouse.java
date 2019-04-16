@@ -28,7 +28,7 @@ public class AuctionHouse  extends Thread{
     //Auction House server socket
     private ServerSocket serverSocket;
     //client socket of the bank
-    private Socket clientSocket;
+    private Socket bankSocket;
     // queue for messages to process
     private LinkedBlockingQueue<Message> messageQueue;
     private AuctionHouseListener socketListener;
@@ -48,6 +48,8 @@ public class AuctionHouse  extends Thread{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //register with bank
+        registerWithBank(bankHost,bankPort);
         itemGenerator = new ItemGenerator();
         item1 = itemGenerator.getItem();
         item2 = itemGenerator.getItem();
@@ -56,6 +58,10 @@ public class AuctionHouse  extends Thread{
         socketListener = new AuctionHouseListener(serverSocket,messageQueue);
         socketListener.start();
 
+    }
+
+    private void registerWithBank(String bankHost, int bankPort) {
+        bankSocket()
     }
 
     /**
@@ -74,6 +80,13 @@ public class AuctionHouse  extends Thread{
     }
 
     public static void main(String args[]) throws IOException {
+        ServerSocket serv = new ServerSocket(7778);
+        ServerSocket serv2 = new ServerSocket(7779);
+        AuctionHouse ah = new AuctionHouse(InetAddress.getLocalHost().getHostName(),7778,7777);
+        Socket s1 = new Socket(InetAddress.getLocalHost().getHostName(),7777);
+        Socket s2 = new Socket(InetAddress.getLocalHost().getHostName(),7777);
+        System.out.println(s1);
+        System.out.println(s2.equals(s1));
     }
 
 }
