@@ -22,11 +22,28 @@ public class Bank implements Runnable {
 
                 if(msg.getRequestType() == Message.RequestType.CREATE_ACCOUNT) {
                     //Create an account!
+                    Account newAccount = new Account();
+                    clientAccounts.add(newAccount);
+                }
+                else if(msg.getRequestType() == Message.RequestType.CHECK_BALANCE) {
+                    //Check da balance!
+                }
+                else if(msg.getRequestType() == Message.RequestType.TRANSFER_FUNDS) {
+                    //Transfer them funds!
                 }
             }
             catch(InterruptedException e){
                 e.printStackTrace();
             }
+        }
+    }
+
+    public synchronized void receiveMessage(Message msg) {
+        try {
+            blockQ.put(msg);
+        }
+        catch (InterruptedException e){
+            e.printStackTrace();
         }
     }
 }
