@@ -1,4 +1,4 @@
-package Auction;
+package Auction.AuctionHouse;
 
 public class AuctionHouse {
 }
