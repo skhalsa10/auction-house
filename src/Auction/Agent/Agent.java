@@ -1,6 +1,6 @@
 package Auction.Agent;
 
-import Auction.Item;
+import Auction.AuctionHouse.Item;
 import Auction.Messages.Message;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -11,12 +11,13 @@ public class Agent {
     private int balance;
     private ConcurrentLinkedQueue messages;
 
+
     public Agent(String name, int initialBalance) {
         this.name = name;
         this.balance = initialBalance;
     }
     private void openBankAccount(){
-        Message m = new Message(Message.RequestType.CREATE_AGENT_ACCOUNT);
+        Message m = new Message(Message.RequestType.CREATE_ACCOUNT);
         m.setAgentName(name);
         m.setAgentBalance(balance);
     }
@@ -27,10 +28,11 @@ public class Agent {
 
     private void connectToAuctionHouse(String auctionHost, int auctionPort){
         AuctionHouseConnection c = new AuctionHouseConnection(auctionHost,auctionPort);
-
+        Thread a1 = new Thread(c);
+        a1.start();
     }
 
-    private void refreshBalance() {
+    private void updateBalance() {
         // create message to get balance from bank
     }
 
@@ -38,7 +40,12 @@ public class Agent {
 
     }
 
-    private void transferFunds(int amount, int houseAccountNum){}
+    private void transferFunds(int amount, int houseAccountNum){
 
-    public static void main() {}
+    }
+
+    public static void main() {
+        Agent a = new Agent("007", 1000);
+        a.connectToAuctionHouse();
+    }
 }
