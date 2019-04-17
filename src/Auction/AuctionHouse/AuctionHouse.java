@@ -1,9 +1,10 @@
 package Auction.AuctionHouse;
 
 import Auction.Messages.Message;
-import Auction.Messages.MessageClose;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -61,7 +62,13 @@ public class AuctionHouse  extends Thread{
     }
 
     private void registerWithBank(String bankHost, int bankPort) {
-        bankSocket()
+
+        try {
+            bankSocket= new Socket(bankHost, bankPort);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -70,23 +77,24 @@ public class AuctionHouse  extends Thread{
     @Override
     public void run() {
         Message m = null;
-        while(!(m instanceof MessageClose)){
+        do{
             try {
                 m = messageQueue.take();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        }while(m.getRequestType() != Message.RequestType.SHUT_DOWN);
     }
 
-    public static void main(String args[]) throws IOException {
-        ServerSocket serv = new ServerSocket(7778);
-        ServerSocket serv2 = new ServerSocket(7779);
-        AuctionHouse ah = new AuctionHouse(InetAddress.getLocalHost().getHostName(),7778,7777);
-        Socket s1 = new Socket(InetAddress.getLocalHost().getHostName(),7777);
-        Socket s2 = new Socket(InetAddress.getLocalHost().getHostName(),7777);
-        System.out.println(s1);
-        System.out.println(s2.equals(s1));
+    public static void main(String args[]) throws IOException, ClassNotFoundException {
+        ServerSocket serve1 = new ServerSocket(7788);
+        Socket s2 = new Socket(InetAddress.getLocalHost().getHostName(), 7788);
+        Socket s1 = serve1.accept();
+        ObjectInputStream s1in = new ObjectInputStream(s1.getInputStream());
+        ObjectOutputStream s2out = new ObjectOutputStream(s2.getOutputStream());
+        s2out.writeObject("HI");
+        System.out.println(s1in.readObject());
+
     }
 
 }

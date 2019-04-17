@@ -1,11 +1,9 @@
 package Auction.AuctionHouse;
 
 import Auction.Messages.Message;
-import Auction.Messages.MessageClose;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
 import java.net.Socket;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -21,8 +19,12 @@ public class AuctionHouseThread extends Thread {
         super("AuctionHouseThread");
         this.socket = socket;
         this.messageQueue = messageQueue;
+        //TODO should I make it so this thread should only continue if it receives a registration message?
     }
 
+    /**
+     * this thread will listen for data on the socket it will read in a message object and store it in the auction house queue
+     */
     @Override
     public void run() {
 
@@ -37,7 +39,8 @@ public class AuctionHouseThread extends Thread {
                     throw new IOException();
                 }
                 Message m = (Message) o;
-                if(m instanceof MessageClose){
+                if(m.getRequestType() == Message.RequestType.SHUT_DOWN){
+                    //TODO should I be placing this message also in the queue for the house to delete?
                     break;
                 }
                 messageQueue.put(m);
