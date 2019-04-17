@@ -33,6 +33,8 @@ public class AuctionHouse  extends Thread{
     // queue for messages to process
     private LinkedBlockingQueue<Message> messageQueue;
     private AuctionHouseListener socketListener;
+    private AuctionToBankConnection bankConnection;
+    private int bankID;
 
     /**
      * this constructor instantiates a new AuctionHouse that connects to the bank host and bank port.
@@ -42,6 +44,17 @@ public class AuctionHouse  extends Thread{
      * @param housePort this is the port that the Auction house server will be listening on
      */
     public AuctionHouse(String bankHost, int bankPort, int housePort){
+        //initialize some data
+        itemGenerator = new ItemGenerator();
+        item1 = itemGenerator.getItem();
+        item2 = itemGenerator.getItem();
+        item3 = itemGenerator.getItem();
+        messageQueue = new LinkedBlockingQueue<>();
+
+        //register with bank first before anything!
+        registerWithBank(bankHost,bankPort);
+        System.out.println(bankID);
+        bankConnection.sendMessage(new Message(Message.RequestType.ACCEPT_BID));
         try {
             //this will set up the server
             serverSocket = new ServerSocket(housePort);
@@ -49,22 +62,24 @@ public class AuctionHouse  extends Thread{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //register with bank
-        registerWithBank(bankHost,bankPort);
-        itemGenerator = new ItemGenerator();
-        item1 = itemGenerator.getItem();
-        item2 = itemGenerator.getItem();
-        item3 = itemGenerator.getItem();
-        messageQueue = new LinkedBlockingQueue<>();
+
         socketListener = new AuctionHouseListener(serverSocket,messageQueue);
         socketListener.start();
 
     }
 
+    /**
+     * this registers a connection to the bank server
+     * @param bankHost
+     * @param bankPort
+     */
     private void registerWithBank(String bankHost, int bankPort) {
 
         try {
             bankSocket= new Socket(bankHost, bankPort);
+            bankConnection = new AuctionToBankConnection(bankSocket, messageQueue);
+            bankID = bankConnection.register();
+            bankConnection.start();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -87,13 +102,11 @@ public class AuctionHouse  extends Thread{
     }
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
-        ServerSocket serve1 = new ServerSocket(7788);
-        Socket s2 = new Socket(InetAddress.getLocalHost().getHostName(), 7788);
-        Socket s1 = serve1.accept();
-        ObjectInputStream s1in = new ObjectInputStream(s1.getInputStream());
-        ObjectOutputStream s2out = new ObjectOutputStream(s2.getOutputStream());
-        s2out.writeObject("HI");
-        System.out.println(s1in.readObject());
+        FakeBank bank = new FakeBank();
+        bank.start();
+        AuctionHouse auctionHouse = new AuctionHouse(InetAddress.getLocalHost().getHostName(),7788,7777);
+        //Socket s1 = serve1.accept();
+        //System.out.println("hi");
 
     }
 

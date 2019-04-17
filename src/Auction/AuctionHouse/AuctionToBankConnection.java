@@ -19,8 +19,10 @@ public class AuctionToBankConnection extends Thread{
     private LinkedBlockingQueue<Message> houseMessageQueue;
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    private boolean isRegistered;
 
     public AuctionToBankConnection(Socket bankSocket, LinkedBlockingQueue<Message> houseMessageQueue){
+        isRegistered = false;
         this.bankSocket = bankSocket;
         this.houseMessageQueue = houseMessageQueue;
         try {
@@ -38,24 +40,30 @@ public class AuctionToBankConnection extends Thread{
      */
     public void sendMessage(Message m){
         //will just print for now but this should be
-        //try {
-        //    out.writeObject(m);
-        //} catch (IOException e) {
-        //    e.printStackTrace();
-        //}
+        try {
+            out.writeObject(m);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         System.out.println(m);
+
     }
+
 
     /**
      * this will just read objects  from the input stream and put them in the house's message queue
      */
     @Override
     public void run() {
+        if(!isRegistered){
+            System.out.println("the auction house has not been registered yet. Please start this thread AFTER you register with the back by using the .register() method");
+            return;
+        }
         Object o = null;
         //does a null get set when the socket or stream is broken on the other side?
         while(true){
             try {
-                
+
                 o = in.readObject();
                 if (o == null) {
                     break;
@@ -65,6 +73,7 @@ public class AuctionToBankConnection extends Thread{
                     throw new IOException();
                 }
                 houseMessageQueue.put((Message) o);
+                System.out.println(((Message) o).getRequestType());
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -75,5 +84,23 @@ public class AuctionToBankConnection extends Thread{
             }
 
         }
+    }
+
+    public int register() {
+        Message m = new Message(Message.RequestType.CREATE_ACCOUNT);
+        sendMessage(m);
+        try {
+            Object o =  in.readObject();
+            if(!(o instanceof Message)){
+                System.out.println("Object is not of type Message throwing Exception");
+                throw new IOException();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        isRegistered = true;
+        return 2;
     }
 }
