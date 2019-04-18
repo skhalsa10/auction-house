@@ -39,4 +39,9 @@ public class Message implements Serializable {
     public void setAgentBalance(int agentBalance) {
         this.agentBalance = agentBalance;
     }
+
+
+    public void printMessage() {
+        System.out.println("Message Type " + this.requestType);
+    }
 }

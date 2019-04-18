@@ -10,6 +10,7 @@ public class Agent {
     private String name;
     private int balance;
     private ConcurrentLinkedQueue messages;
+    private BankConnection bankConnection;
 
 
     public Agent(String name, int initialBalance) {
@@ -20,7 +21,7 @@ public class Agent {
         Message m = new Message(Message.RequestType.CREATE_ACCOUNT);
         m.setAgentName(name);
         m.setAgentBalance(balance);
-
+        bankConnection.sendMessage(m);
     }
 
     private void chooseAuctionHouse() {
@@ -31,6 +32,13 @@ public class Agent {
         AuctionHouseConnection c = new AuctionHouseConnection(auctionHost,auctionPort);
         Thread a1 = new Thread(c);
         a1.start();
+    }
+
+    private void connectToBank(String bankHost, int bankPort) {
+        bankConnection = new BankConnection(bankHost, bankPort);
+        openBankAccount();
+        //Thread bank = new Thread(bankConnection);
+        //bank.start();
     }
 
     private void updateBalance() {
@@ -46,7 +54,19 @@ public class Agent {
     }
 
     public static void main(String[] args) {
-        Agent a = new Agent("007", 1000);
-        a.connectToAuctionHouse("localhost",4444);
+        if(args.length == 4) {
+            String bankHost = args[0];
+            int bankPortNum = Integer.parseInt(args[1]);
+            String name = args[2];
+            //TODO check that balance is not negative
+            int initialBalance = Integer.parseInt(args[3]);
+            Agent a = new Agent(name, initialBalance);
+            a.connectToBank(bankHost, bankPortNum);
+            //a.openBankAccount();
+
+            //a.connectToAuctionHouse("localhost",4444);
+
+        }
+
     }
 }
