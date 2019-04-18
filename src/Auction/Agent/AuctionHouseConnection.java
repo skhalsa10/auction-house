@@ -10,7 +10,7 @@ public class AuctionHouseConnection implements Runnable {
     private int portNumber;
     private Socket socket;
     private boolean connected = false;
-    private LinkedBlockingQueue<Messages> messages = new LinkedBlockingQueue<>();
+    //private LinkedBlockingQueue<Messages> messages = new LinkedBlockingQueue<>();
 
     public AuctionHouseConnection(String hostName, int portNumber){
         this.hostName = hostName;

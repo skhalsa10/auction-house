@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import Auction.Account;
 import Auction.AuctionHouse.AuctionHouse;
+import Auction.AuctionHouse.Item;
 
 public class Message implements Serializable {
     private RequestType requestType;

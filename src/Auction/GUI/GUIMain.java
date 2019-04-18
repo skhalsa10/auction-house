@@ -9,6 +9,7 @@ public class GUIMain extends Application {
     @Override
     public void start(Stage primaryStage) {
         gui = new GUI(primaryStage);
+        gui.start();
 
     }
 

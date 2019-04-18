@@ -1,0 +1,73 @@
+.root{
+    -fx-background-color: black;
+    -fx-border-color: orange;
+    -fx-border-width: 2px;
+}
+
+.vbox{
+    -fx-background-color: black;
+    -fx-border-color: orange;
+    -fx-border-width: 2px;
+}
+
+
+#load-text{
+    -fx-fill: white;
+    -fx-font-size: 20;
+    -fx-font-family:   "cursive";
+}
+
+
+.play-button{
+    -fx-text-fill: lime;
+    -fx-font-size: 25px;
+    -fx-border-color: lime;
+    -fx-border-radius: 20;
+    -fx-background-color: black;
+
+}
+
+.play-button:pressed{
+    -fx-text-fill: black;
+    -fx-font-size: 25px;
+    -fx-border-color: black;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-background-color: lime;
+}
+
+.zoom-button{
+    -fx-text-fill: lime;
+    -fx-font-size: 25px;
+    -fx-border-color: lime;
+    -fx-border-radius: 20;
+    -fx-background-color: black;
+
+}
+
+.zoom-button:pressed{
+    -fx-text-fill: black;
+    -fx-font-size: 25px;
+    -fx-border-color: black;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-background-color: lime;
+}
+
+.speed-button{
+    -fx-text-fill: lime;
+    -fx-font-size: 25px;
+    -fx-border-color: lime;
+    -fx-border-radius: 20;
+    -fx-background-color: black;
+
+}
+
+.speed-button:pressed{
+    -fx-text-fill: black;
+    -fx-font-size: 25px;
+    -fx-border-color: black;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-background-color: lime;
+}

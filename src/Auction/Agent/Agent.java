@@ -46,6 +46,6 @@ public class Agent {
 
     public static void main() {
         Agent a = new Agent("007", 1000);
-        a.connectToAuctionHouse();
+        //a.connectToAuctionHouse();
     }
 }
