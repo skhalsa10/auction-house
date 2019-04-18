@@ -12,7 +12,7 @@ public class Message implements Serializable {
 
     private String agentName;
     private int agentBalance;
-    private Item item;
+    //private Item item;
     private int bidAmount;
 
     public enum RequestType implements Serializable{

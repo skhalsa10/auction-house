@@ -20,6 +20,7 @@ public class Agent {
         Message m = new Message(Message.RequestType.CREATE_ACCOUNT);
         m.setAgentName(name);
         m.setAgentBalance(balance);
+
     }
 
     private void chooseAuctionHouse() {
@@ -44,8 +45,8 @@ public class Agent {
 
     }
 
-    public static void main() {
+    public static void main(String[] args) {
         Agent a = new Agent("007", 1000);
-        a.connectToAuctionHouse();
+        a.connectToAuctionHouse("localhost",4444);
     }
 }
