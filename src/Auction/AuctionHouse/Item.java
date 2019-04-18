@@ -5,14 +5,36 @@ package Auction.AuctionHouse;
  * in this class.
  */
 public class Item {
-    private String description;
+    private final String description;
+    private final long ID;
 
-    public Item(String description){
+    public Item(String description, long ID){
+        this.ID = ID;
         this.description = description;
     }
 
+    /**
+     *
+     * @return the ID Number of this item
+     */
+    public long getID() {
+        return ID;
+    }
+
+    /**
+     *
+     * @return returns the string representation of this item
+     */
+    public String getDescription(){
+        return description;
+    }
+
+    /**
+     *
+     * @return the string representation of the ITEM very useful
+     */
     @Override
     public String toString() {
-        return description;
+        return ""+ID+": " +description;
     }
 }
