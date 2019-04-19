@@ -1,10 +1,12 @@
 package Auction.AuctionHouse;
 
+import java.io.Serializable;
+
 /**
  * this class is very simple it encapulates a string as an Item and if we need to add a price to it later we can add
  * in this class.
  */
-public class Item {
+public class Item implements Serializable {
     private final String description;
     private final long ID;
 
