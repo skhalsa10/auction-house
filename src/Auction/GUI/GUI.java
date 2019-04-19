@@ -3,6 +3,8 @@ package Auction.GUI;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -18,6 +20,8 @@ public class GUI extends AnimationTimer {
     private StackPane listPane;
     private StackPane controlPane;
     private StackPane infoPane;
+    private HBox infoBox;
+    private List<>;
 
 
     //OTHER Stuff
@@ -34,7 +38,7 @@ public class GUI extends AnimationTimer {
     private int loadSlow = 0;
 
     //Information stuff
-    private Text accountNum;
+    private final Text accountNum;
     private Text balance;
     private Text statusMessage;
 
@@ -42,6 +46,7 @@ public class GUI extends AnimationTimer {
     //HOUSEPAGE stuff
     private Text housePageTitle;
     private VBox houseList;
+
 
 
 
@@ -65,9 +70,23 @@ public class GUI extends AnimationTimer {
 
         //add the skeleton panes to the root pane
         root.getChildren().addAll(titlePane,listPane,controlPane,infoPane);
+        root.setVgrow(listPane,Priority.ALWAYS);
 
         //change properties of root pane
         root.setAlignment(Pos.CENTER);
+
+        //init info data
+        accountNum = new Text("Account: 02");
+        balance = new Text("Balance: $670,000");
+        statusMessage = new Text("this is where a status will go");
+        infoBox = new HBox();
+        infoPane.getChildren().add(infoBox);
+        infoBox.getChildren().addAll(accountNum,balance,statusMessage);
+        infoBox.setHgrow(statusMessage, Priority.ALWAYS);
+
+        //Auction House stuff
+        housePageTitle = new Text("Available Auction Houses");
+        houseList = new VBox();
 
         //root.minWidthProperty().bind(stage.widthProperty());
 
