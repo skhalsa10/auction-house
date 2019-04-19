@@ -8,23 +8,29 @@ import java.net.Socket;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class BankConnection implements Runnable {
-    private String hostName;
-    private int portNumber;
     private Socket socket;
-    private boolean connected = true;
+    private boolean connected = false;
     private LinkedBlockingQueue<Message> messages = new LinkedBlockingQueue<>();
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
-    public BankConnection(String hostName, int portNumber){
-        this.hostName = hostName;
-        this.portNumber = portNumber;
-        connect();
+    public BankConnection(String hostName, int portNumber, LinkedBlockingQueue messages){
+        this.messages = messages;
+
+        try {
+            this.socket = new Socket(hostName, portNumber);
+            connected = true;
+            out = new ObjectOutputStream(socket.getOutputStream());
+            in = new ObjectInputStream(socket.getInputStream());
+
+        }
+        catch (Exception e) {
+            System.err.println(e);
+        }
     }
 
     public void sendMessage(Message m) {
         try {
-            //messages.put(m);
             out.writeObject(m);
         }
         catch(Exception e) {
@@ -33,30 +39,17 @@ public class BankConnection implements Runnable {
 
     }
 
-    public void connect() {
-        try {
 
-            this.socket = new Socket(hostName, portNumber);
-            in = new ObjectInputStream(this.socket.getInputStream());
-            out = new ObjectOutputStream(this.socket.getOutputStream());
-        }
-        catch(Exception e) {
-            System.err.println(e);
-        }
-        connected = true;
-        new Thread(this).start();
-
-    }
     @Override
     public void run () {
-        //connect();
-
+        Message receivedMessage;
         while(connected) {
-            //System.out.println("in run bank ");
             try {
-                in.readObject();
-
-
+                receivedMessage = (Message) in.readObject();
+                if(receivedMessage != null) {
+                    messages.put(receivedMessage);
+                    receivedMessage.printMessage();
+                }
             }
             catch (Exception e) {
                 System.err.println(e);

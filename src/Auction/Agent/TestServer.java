@@ -17,14 +17,20 @@ public class TestServer {
         while(true) {
             Socket clientSocket = serverSocket.accept();
             System.out.println("client accepted");
-            in = new ObjectInputStream(clientSocket.getInputStream());
             out = new ObjectOutputStream(clientSocket.getOutputStream());
+            in = new ObjectInputStream(clientSocket.getInputStream());
 
             try {
-                String test = "Message sent from server";
-                out.writeObject(test);
                 m = (Message)in.readObject();
-                System.out.println("Message Received");
+                if(m == null) {
+                    System.out.println("no message");
+                }
+                else {
+                    System.out.println(m.getRequestType());
+                    System.out.println("Message Received");
+                    out.writeObject(m);
+                }
+
 
             }
             catch (Exception e) {
