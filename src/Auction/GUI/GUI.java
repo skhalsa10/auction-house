@@ -1,14 +1,21 @@
 package Auction.GUI;
 
+import Auction.AuctionHouse.Item;
 import javafx.animation.AnimationTimer;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GUI extends AnimationTimer {
     private final int LOADCAP = 5;
@@ -21,7 +28,7 @@ public class GUI extends AnimationTimer {
     private StackPane controlPane;
     private StackPane infoPane;
     private HBox infoBox;
-    private List<>;
+
 
 
     //OTHER Stuff
@@ -46,8 +53,20 @@ public class GUI extends AnimationTimer {
     //HOUSEPAGE stuff
     private Text housePageTitle;
     private VBox houseList;
+    private List<Integer> houseIDs;
 
-
+    //control stuff
+    private HBox controlBox;
+    private Text itemPageTitle;
+    private int selectedHouseID;
+    private Pane space1;
+    private Pane space2;
+    private Button backBtn;
+    private Button placeBidBtn;
+    private TextField bidAmount;
+    private Text selectedItem;
+    private List<Item> items;
+    private VBox itemList;
 
 
     
@@ -55,7 +74,7 @@ public class GUI extends AnimationTimer {
     public GUI(Stage primaryStage) {
         this.stage = primaryStage;
         stage.setTitle("Auction");
-        page = pageType.LOADING_PAGE;
+        page = pageType.HOUSE_PAGE;
         refreshNeeded = true;
 
         //initialize all skeleton panes
@@ -70,6 +89,7 @@ public class GUI extends AnimationTimer {
 
         //add the skeleton panes to the root pane
         root.getChildren().addAll(titlePane,listPane,controlPane,infoPane);
+        root.setSpacing(10);
         root.setVgrow(listPane,Priority.ALWAYS);
 
         //change properties of root pane
@@ -78,17 +98,40 @@ public class GUI extends AnimationTimer {
         //init info data
         accountNum = new Text("Account: 02");
         balance = new Text("Balance: $670,000");
-        statusMessage = new Text("this is where a status will go");
+        statusMessage = new Text("this is where a status will go---Siri theory");
         infoBox = new HBox();
+        infoBox.setId("info-box");
         infoPane.getChildren().add(infoBox);
         infoBox.getChildren().addAll(accountNum,balance,statusMessage);
         infoBox.setHgrow(statusMessage, Priority.ALWAYS);
 
         //Auction House stuff
         housePageTitle = new Text("Available Auction Houses");
+        housePageTitle.setId("house-title");
         houseList = new VBox();
+        houseIDs = new ArrayList<>();
 
-        //root.minWidthProperty().bind(stage.widthProperty());
+        //Control box stuff
+        controlBox = new HBox();
+        itemList = new VBox();
+        space1 = new Pane();
+        space2 = new Pane();
+        backBtn = new Button("<-");
+        backBtn.getStyleClass().add("control-button");
+        placeBidBtn = new Button("Place Bid");
+        placeBidBtn.getStyleClass().add("control-button");
+        bidAmount =  new TextField();
+        selectedItem = new Text();
+        selectedItem.setId("selected-id-text");
+        controlBox.getChildren().addAll(backBtn,space1,selectedItem,bidAmount,space2,placeBidBtn);
+        controlBox.setAlignment(Pos.CENTER);
+        controlBox.setSpacing(5);
+        controlBox.setHgrow(space1,Priority.ALWAYS);
+        controlBox.setHgrow(space2,Priority.ALWAYS);
+        //this needs to update dynamicall but putting -7 for testing
+        selectedHouseID = -7;
+
+
 
 
         scene = new Scene(root,500,500);
@@ -128,10 +171,102 @@ public class GUI extends AnimationTimer {
     }
 
     private void rendorHousePage() {
+        titlePane.getChildren().clear();
+        listPane.getChildren().clear();
+        controlPane.getChildren().clear();
+        infoPane.getChildren().clear();
+
+        //TODO get list of houses here the following are dummy ones
+        houseIDs.add(1);
+        houseIDs.add(2);
+        houseIDs.add(3);
+
+        titlePane.getChildren().add(housePageTitle);
+        titlePane.setId("house-title-pane");
+        listPane.getChildren().add(houseList);
+        infoPane.getChildren().add(infoBox);
+
+        //generate a list of houses and add them to the list for display
+        houseList.getChildren().clear();
+        houseList.setAlignment(Pos.CENTER);
+        houseList.setSpacing(25);
+        //houseList.setPadding(new Insets(50,10,50,0));
+        for (Integer houseID:houseIDs) {
+            HBox h = new HBox();
+            Pane spacer1 = new Pane();
+            Pane spacer2 = new Pane();
+            Text description = new Text("Auction House Number | ");
+            description.setId("house-list");
+            Text id = new Text(houseID.toString());
+            id.setId("house-list");
+            h.getChildren().addAll(spacer1, description,id, spacer2);
+            h.setHgrow(spacer1,Priority.ALWAYS);
+            h.setHgrow(spacer2,Priority.ALWAYS);
+            houseList.getChildren().add(h);
+            h.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    HBox temp = (HBox) event.getSource();
+                    //System.out.println(temp.getChildren().size());
+                    Text t = (Text) temp.getChildren().get(2);
+                    System.out.println("ID is " + t.getText());
+                }
+            });
+        }
+
+        setSize();
 
     }
 
+    private void setSize() {
+
+        System.out.println(root.getWidth());
+        stage.setWidth(getMaxWidth());
+        stage.setHeight(root.getHeight());
+    }
+
+    private double getMaxWidth() {
+        System.out.println(titlePane.getChildren().get(0));
+        double max = titlePane.getWidth();
+        if(listPane.getWidth()>max){
+            max = listPane.getWidth();
+        }
+        if(controlPane.getWidth()>max){
+            max = controlPane.getWidth();
+        }
+        if(infoPane.getWidth()>max){
+            max = infoPane.getWidth();
+        }
+        return max;
+    }
+
     private void rendorItemPage() {
+        titlePane.getChildren().clear();
+        itemPageTitle = new Text("Auction House #" + selectedHouseID + " available items:");
+        itemPageTitle.setId(("item-title"));
+        titlePane.setId("house-title-pane");
+        titlePane.getChildren().add(itemPageTitle);
+        listPane.getChildren().clear();
+        listPane.getChildren().add(itemList);
+
+        //here I get the list of items but I am making a dummy one for now
+        items = new ArrayList<>();
+        items.add(new Item("test1"));
+        items.add(new Item("test2"));
+        items.add(new Item("test3"));
+
+        itemList.setAlignment(Pos.CENTER);
+        itemList.setSpacing(25);
+        for (Item item:items) {
+            Text t = new Text(item.toString());
+            t.setId("item-list");
+            itemList.getChildren().add(t);
+        }
+
+        controlPane.getChildren().clear();
+        controlPane.getChildren().add(controlBox);
+
+        setSize();
 
     }
 
@@ -176,6 +311,8 @@ public class GUI extends AnimationTimer {
         listPane.getChildren().add(loadText);
         controlPane.getChildren().clear();
         infoPane.getChildren().clear();
+        stage.setWidth(500);
+        stage.setHeight(500);
     }
 
     private enum pageType {

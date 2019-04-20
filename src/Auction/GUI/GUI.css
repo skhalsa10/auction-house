@@ -10,30 +10,73 @@
     -fx-border-width: 2px;
 }
 
+#root-vbox {
+    -fx-background-color: black;
+    -fx-border-color: orange;
+    -fx-border-width: 2px;
+}
+
 
 #load-text{
     -fx-fill: white;
     -fx-font-size: 20;
     -fx-font-family:   "cursive";
 }
+#house-list{
+    -fx-fill: white;
+    -fx-font-size: 20;
+    -fx-font-family:   "cursive";
+}
+#house-title{
+    -fx-fill: red;
+    -fx-font-size: 30;
+    -fx-font-family:   "cursive";
+}
+#item-title{
+    -fx-fill: red;
+    -fx-font-size: 30;
+    -fx-font-family:   "cursive";
+}
+#item-list{
+    -fx-fill: white;
+    -fx-font-size: 20;
+    -fx-font-family:   "cursive";
+}
+#selected-id-text{
+    -fx-fill: purple;
+    -fx-font-size: 30;
+    -fx-font-family:   "cursive";
+}
+
+#house-title-pane{
+    -fx-border-style: none none solid none;
+    -fx-border-insets: 5 5 5 5;
+    -fx-border-width: 0 0 2 0;
+    -fx-border-color: red;
+}
+#info-box{
+    -fx-background-color: lightgrey;
+    -fx-spacing: 10;
+}
 
 
-.play-button{
-    -fx-text-fill: lime;
+
+.control-button{
+    -fx-text-fill: purple;
     -fx-font-size: 25px;
-    -fx-border-color: lime;
+    -fx-border-color: purple;
     -fx-border-radius: 20;
     -fx-background-color: black;
 
 }
 
-.play-button:pressed{
+.control-button:pressed{
     -fx-text-fill: black;
     -fx-font-size: 25px;
     -fx-border-color: black;
     -fx-border-radius: 20;
     -fx-background-radius: 20;
-    -fx-background-color: lime;
+    -fx-background-color: purple;
 }
 
 .zoom-button{
