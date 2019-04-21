@@ -1,6 +1,7 @@
 package Auction.Messages;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import Auction.Account;
 import Auction.AuctionHouse.AuctionHouse;
@@ -12,12 +13,12 @@ public class Message implements Serializable {
 
     private String agentName;
     private int agentBalance;
-    private Item item;
+    //private Item item;
     private int bidAmount;
 
     public enum RequestType implements Serializable{
         CREATE_ACCOUNT, CHECK_BALANCE, TRANSFER_FUNDS, ACCEPT_BID, REJECT_BID,
-        SHUT_DOWN, FUNDS_AVAIL, FUNDS_NOT_AVAIL, FUNDS_TRANSFERRED, ITEM_WON, BID_ITEM;
+        SHUT_DOWN, FUNDS_AVAIL, FUNDS_NOT_AVAIL, FUNDS_TRANSFERRED, ITEM_WON, BID_ITEM, REQUEST_ITEMS;
     }
 
     public Message() {
@@ -47,5 +48,11 @@ public class Message implements Serializable {
 
     public void setAgentBalance(int agentBalance) {
         this.agentBalance = agentBalance;
+    }
+
+
+
+    public void printMessage() {
+        System.out.println("Message Type " + this.requestType);
     }
 }
