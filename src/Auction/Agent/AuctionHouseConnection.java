@@ -14,11 +14,11 @@ public class AuctionHouseConnection implements Runnable {
     private LinkedBlockingQueue<Message> messages = new LinkedBlockingQueue<>();
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    public AuctionHouseConnection(String hostName, int portNumber, LinkedBlockingQueue messages){
+    public AuctionHouseConnection(Socket socket, LinkedBlockingQueue messages){
         this.messages = messages;
 
         try {
-            this.socket = new Socket(hostName, portNumber);
+            this.socket = socket;
             connected = true;
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
