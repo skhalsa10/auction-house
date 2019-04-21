@@ -3,26 +3,44 @@ package Auction.Agent;
 import Auction.AuctionHouse.Item;
 import Auction.Messages.Message;
 
+import java.net.Socket;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class Agent {
+public class Agent implements Runnable {
     private String name;
     private int balance;
+    private int bankAccount;
     private LinkedBlockingQueue<Message> messages = new LinkedBlockingQueue<>();
+    private String bankHost;
+    private int bankPortNum;
     private BankConnection bankConnection;
+    private HashMap<Integer, Socket> auctionHouses = new HashMap<>();
 
 
-    public Agent(String name, int initialBalance) {
+
+    public Agent(String bankHost, int bankPortNum, String name, int initialBalance) {
+        this.bankHost = bankHost;
+        this.bankPortNum = bankPortNum;
         this.name = name;
         this.balance = initialBalance;
+        new Thread(this).start();
     }
     private void openBankAccount(){
         Message m = new Message(Message.RequestType.CREATE_ACCOUNT);
         m.setAgentName(name);
         m.setAgentBalance(balance);
         bankConnection.sendMessage(m);
+    }
+
+    private void setAuctionHouses() {
+
+    }
+
+    private void setBankAccount() {
+
     }
 
     private void chooseAuctionHouse() {
@@ -66,6 +84,16 @@ public class Agent {
 
     }
 
+    @Override
+    public void run() {
+        connectToBank(bankHost, bankPortNum);
+        openBankAccount();
+        while(true) {
+            processMessage();
+        }
+
+    }
+
     public static void main(String[] args) {
         String bankHost;
         int bankPortNum;
@@ -76,15 +104,8 @@ public class Agent {
             bankHost = args[0];
             bankPortNum = Integer.parseInt(args[1]);
             name = args[2];
-            //TODO check that balance is not negative
             initialBalance = Integer.parseInt(args[3]);
-            Agent a = new Agent(name, initialBalance);
-            a.connectToBank(bankHost, bankPortNum);
-            a.openBankAccount();
-            while(true) {
-                a.processMessage();
-            }
-            //a.connectToAuctionHouse("localhost",4444);
+            Agent a = new Agent(bankHost, bankPortNum,name, initialBalance);
 
         }
 
