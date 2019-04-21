@@ -5,8 +5,6 @@ import Auction.Messages.Message;
 
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Agent implements Runnable {
@@ -17,6 +15,7 @@ public class Agent implements Runnable {
     private String bankHost;
     private int bankPortNum;
     private BankConnection bankConnection;
+    private HashMap<Integer, Boolean> connectedHouses = new HashMap<>();
     private HashMap<Integer, Socket> auctionHouses = new HashMap<>();
 
 
@@ -35,27 +34,30 @@ public class Agent implements Runnable {
         bankConnection.sendMessage(m);
     }
 
-    private void setAuctionHouses() {
-
+    private void setAuctionHouses(Message m) {
+        //send auction house id's to gui
     }
 
-    private void setBankAccount() {
-
+    private void setBankAccount(Message m) {
+        //send bank account # to gui
     }
 
-    private void chooseAuctionHouse() {
-        //
+    private void chooseAuctionHouse(int houseID) {
+        boolean alreadyConnected = connectedHouses.get(houseID);
+        Socket socket;
+        if(!alreadyConnected) {
+            socket = auctionHouses.get(houseID);
+            connectToAuctionHouse(socket);
+        }
     }
 
-    private void connectToAuctionHouse(String auctionHost, int auctionPort){
-        AuctionHouseConnection c = new AuctionHouseConnection(auctionHost,auctionPort,messages);
-        Thread a1 = new Thread(c);
-        a1.start();
+    private void connectToAuctionHouse(Socket socket){
+        AuctionHouseConnection c = new AuctionHouseConnection(socket,messages);
+        new Thread(c).start();
     }
 
     private void connectToBank(String bankHost, int bankPort) {
         bankConnection = new BankConnection(bankHost, bankPort, messages);
-        //openBankAccount();
         new Thread(bankConnection).start();
 
     }
@@ -84,6 +86,11 @@ public class Agent implements Runnable {
 
     }
 
+    private void processStatusMessages() {
+
+    }
+
+
     @Override
     public void run() {
         connectToBank(bankHost, bankPortNum);
@@ -105,7 +112,7 @@ public class Agent implements Runnable {
             bankPortNum = Integer.parseInt(args[1]);
             name = args[2];
             initialBalance = Integer.parseInt(args[3]);
-            Agent a = new Agent(bankHost, bankPortNum,name, initialBalance);
+            Agent a = new Agent(bankHost, bankPortNum, name, initialBalance);
 
         }
 
