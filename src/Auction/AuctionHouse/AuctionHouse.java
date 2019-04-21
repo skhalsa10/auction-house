@@ -105,6 +105,7 @@ public class AuctionHouse  extends Thread{
         FakeBank bank = new FakeBank();
         bank.start();
         AuctionHouse auctionHouse = new AuctionHouse(InetAddress.getLocalHost().getHostName(),7788,7777);
+        auctionHouse.start();
         //Socket s1 = serve1.accept();
         //System.out.println("hi");
 
