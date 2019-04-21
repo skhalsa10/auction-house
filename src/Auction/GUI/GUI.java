@@ -1,6 +1,8 @@
 package Auction.GUI;
 
 import Auction.AuctionHouse.Item;
+import Auction.GUI.GUIMessages.GUIMessage;
+import Auction.GUI.GUIMessages.GUIMessageLoaded;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -16,6 +18,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class GUI extends AnimationTimer {
     private final int LOADCAP = 5;
@@ -34,7 +37,10 @@ public class GUI extends AnimationTimer {
     //OTHER Stuff
     private long lastUpdate = 0;
     private Boolean refreshNeeded;
+    private Boolean isLoading;
     private pageType page;
+    private LinkedBlockingQueue<GUIMessage> messages;
+
     //loading stuff
     private final String load1 = "LOADING";
     private final String load2 = "LOADING  .";
@@ -75,7 +81,9 @@ public class GUI extends AnimationTimer {
         this.stage = primaryStage;
         stage.setTitle("Auction");
         page = pageType.HOUSE_PAGE;
-        refreshNeeded = true;
+        refreshNeeded = false;
+        isLoading = true;
+        messages = new LinkedBlockingQueue<>();
 
         //initialize all skeleton panes
         root = new VBox();
@@ -131,9 +139,6 @@ public class GUI extends AnimationTimer {
         //this needs to update dynamicall but putting -7 for testing
         selectedHouseID = -7;
 
-
-
-
         scene = new Scene(root,500,500);
         stage.setMinWidth(500);
         stage.setMinHeight(500);
@@ -142,10 +147,21 @@ public class GUI extends AnimationTimer {
         stage.show();
     }
 
+    public void sendMessage(GUIMessage m){
+        try {
+            messages.put(m);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void handle(long now) {
         if (now - lastUpdate >= 33_334_000) {
-            if (refreshNeeded) {
+
+            processMessage();
+
+            if (isLoading || refreshNeeded) {
                 switch (page) {
                     case LOADING_PAGE: {
                         //System.out.println("hi");
@@ -167,6 +183,17 @@ public class GUI extends AnimationTimer {
             }
             // helped to stabalize the rendor time
             lastUpdate = now;
+        }
+    }
+
+    private void processMessage() {
+        GUIMessage m = messages.poll();
+        if(m == null) {return;}
+        if(m instanceof GUIMessageLoaded){
+            isLoading = false;
+            page = pageType.HOUSE_PAGE;
+            houseIDs = ((GUIMessageLoaded) m).getHouseIDs();
+            refreshNeeded = true;
         }
     }
 
