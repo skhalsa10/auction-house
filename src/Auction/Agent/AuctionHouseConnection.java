@@ -11,6 +11,7 @@ public class AuctionHouseConnection implements Runnable {
 
     private Socket socket;
     private boolean connected = false;
+
     private LinkedBlockingQueue<Message> messages = new LinkedBlockingQueue<>();
     private ObjectInputStream in;
     private ObjectOutputStream out;
