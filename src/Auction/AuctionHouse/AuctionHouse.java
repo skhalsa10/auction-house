@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
+import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -21,9 +22,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class AuctionHouse  extends Thread{
 
     //three items for sale
-    private Item item1;
-    private Item item2;
-    private Item item3;
+    private BidTracker tracker1;
+    private BidTracker tracker2;
+    private BidTracker tracker3;
     //Item generator
     private ItemGenerator itemGenerator;
     //Auction House server socket
@@ -35,6 +36,7 @@ public class AuctionHouse  extends Thread{
     private AuctionHouseListener socketListener;
     private AuctionToBankConnection bankConnection;
     private int bankID;
+    private HashMap<Integer, ObjectOutputStream> clientOuts;
 
     /**
      * this constructor instantiates a new AuctionHouse that connects to the bank host and bank port.
@@ -45,25 +47,26 @@ public class AuctionHouse  extends Thread{
      */
     public AuctionHouse(String bankHost, int bankPort, int housePort){
         //initialize some data
-        itemGenerator = new ItemGenerator();
-        item1 = itemGenerator.getItem();
-        item2 = itemGenerator.getItem();
-        item3 = itemGenerator.getItem();
         messageQueue = new LinkedBlockingQueue<>();
+        clientOuts = new HashMap<>();
 
         //register with bank first before anything!
         registerWithBank(bankHost,bankPort);
-        System.out.println(bankID);
-        bankConnection.sendMessage(new Message(Message.RequestType.ACCEPT_BID));
+
+        itemGenerator = new ItemGenerator();
+        tracker1 = new BidTracker(itemGenerator.getItem(),bankID,2);
+        tracker2 = new BidTracker(itemGenerator.getItem(),bankID,2);
+        tracker3 =new BidTracker(itemGenerator.getItem(),bankID,2);
+
         try {
             //this will set up the server
             serverSocket = new ServerSocket(housePort);
-            //TODO build the client socket here
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        socketListener = new AuctionHouseListener(serverSocket,messageQueue);
+        //this literally just listens on the house socket and brokers new connections
+        socketListener = new AuctionHouseListener(serverSocket,messageQueue, clientOuts);
         socketListener.start();
 
     }
@@ -76,7 +79,9 @@ public class AuctionHouse  extends Thread{
     private void registerWithBank(String bankHost, int bankPort) {
 
         try {
+            //first lets connect a socket to the bank
             bankSocket= new Socket(bankHost, bankPort);
+            //we will now beild the bank connection which handles all the communication outbound to the bank
             bankConnection = new AuctionToBankConnection(bankSocket, messageQueue);
             bankID = bankConnection.register();
             bankConnection.start();
@@ -92,13 +97,22 @@ public class AuctionHouse  extends Thread{
     @Override
     public void run() {
         Message m = null;
-        do{
+        while(true){
             try {
+
                 m = messageQueue.take();
+                if (m.getRequestType() == Message.RequestType.SHUT_DOWN) {
+                    break;
+                }
+                processMessage(m);
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }while(m.getRequestType() != Message.RequestType.SHUT_DOWN);
+        }
+    }
+
+    private void processMessage(Message m) {
     }
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {

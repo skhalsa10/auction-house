@@ -1,15 +1,21 @@
 package Auction.AuctionHouse;
 
+import java.io.Serializable;
+
 /**
  * The goal of this class is to keep track of an item  and its bidding status
  */
-public class BidTracker {
+public class BidTracker implements Serializable {
     private final Item item;
     private int  currentBid;
     private int bidOwnerID;
+    private int houseID;
+    private int minimumBid;
 
-    public BidTracker(Item item){
+    public BidTracker(Item item, int houseID, int minimumBid){
         this.item = item;
+        this.houseID = houseID;
+        this.minimumBid = minimumBid;
         currentBid = 0;
         bidOwnerID = -1;
     }
@@ -40,6 +46,22 @@ public class BidTracker {
     }
 
     /**
+     *
+     * @return the houseId that currently owns this Item
+     */
+    public int getHouseID() {
+        return houseID;
+    }
+
+    /**
+     *
+     * @return the minimum bid
+     */
+    public int getMinimumBid() {
+        return minimumBid;
+    }
+
+    /**
      * this will update the bid and the owner of the bid. it has to be done togethor
      * @param bidAmount bid amount that will now be the current bid
      * @param agentID Agent ID/Account # that placed the bid.
@@ -47,7 +69,7 @@ public class BidTracker {
      * if there was a minimum bid it would have to be greater by this number.
      */
     public synchronized Boolean setBid(int bidAmount, int agentID){
-        if(bidAmount < currentBid) {return false;}
+        if(bidAmount < currentBid+minimumBid) {return false;}
         currentBid = bidAmount;
         bidOwnerID = agentID;
         return true;

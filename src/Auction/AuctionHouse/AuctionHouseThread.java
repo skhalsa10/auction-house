@@ -4,7 +4,9 @@ import Auction.Messages.Message;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -14,12 +16,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class AuctionHouseThread extends Thread {
     private Socket socket;
     private LinkedBlockingQueue<Message> messageQueue;
+    private HashMap<Integer, ObjectOutputStream> clientOuts;
+    private Boolean isRegistered;
+    private int agentID;
 
-    public AuctionHouseThread(Socket socket, LinkedBlockingQueue<Message> messageQueue){
+    public AuctionHouseThread(Socket socket, LinkedBlockingQueue<Message> messageQueue,HashMap<Integer, ObjectOutputStream> clientOuts){
         super("AuctionHouseThread");
         this.socket = socket;
         this.messageQueue = messageQueue;
-        //TODO should I make it so this thread should only continue if it receives a registration message?
+        this.clientOuts = clientOuts;
+        isRegistered = false;
     }
 
     /**
@@ -30,9 +36,7 @@ public class AuctionHouseThread extends Thread {
 
         try {
             ObjectInputStream objectIn = new ObjectInputStream(socket.getInputStream());
-            System.out.println("hio");
             while(true){
-                System.out.println("blocking? " + this);
                 Object o = objectIn.readObject();
                 if(!(o instanceof Message)){
                     System.out.println("not of type message");
@@ -42,6 +46,13 @@ public class AuctionHouseThread extends Thread {
                 if(m.getRequestType() == Message.RequestType.SHUT_DOWN){
                     //TODO should I be placing this message also in the queue for the house to delete?
                     break;
+                }
+                if(!isRegistered){
+                    this.agentID = m.getAgentID();
+                    if(agentID < 0 ){
+                        System.out.println("if there is no agent ID that this message didnt come from an agent. ERROR");
+                        throw new IOException();
+                    }
                 }
                 messageQueue.put(m);
             }

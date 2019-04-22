@@ -95,6 +95,9 @@ public class AuctionToBankConnection extends Thread{
                 System.out.println("Object is not of type Message throwing Exception");
                 throw new IOException();
             }
+            else{
+                //todo STILL NEED TO HANDLE PROCESSING THE RETURN REGISTER MESSAGE
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
