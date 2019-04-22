@@ -54,6 +54,8 @@ public class Agent implements Runnable {
     private void connectToAuctionHouse(Socket socket){
         AuctionHouseConnection c = new AuctionHouseConnection(socket,messages);
         new Thread(c).start();
+        Message m = new Message(Message.RequestType.REGISTER);
+        m.setAgentID(bankAccount);
     }
 
     private void connectToBank(String bankHost, int bankPort) {
