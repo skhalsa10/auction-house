@@ -2,6 +2,7 @@ package Auction.GUI;
 
 import Auction.AuctionHouse.Item;
 import Auction.GUI.GUIMessages.GUIMessage;
+import Auction.GUI.GUIMessages.GUIMessageAccount;
 import Auction.GUI.GUIMessages.GUIMessageLoaded;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
@@ -51,7 +52,8 @@ public class GUI extends AnimationTimer {
     private int loadSlow = 0;
 
     //Information stuff
-    private final Text accountNum;
+    //private final Text accountNum;
+    private Text accountNum;
     private Text balance;
     private Text statusMessage;
 
@@ -104,7 +106,7 @@ public class GUI extends AnimationTimer {
         root.setAlignment(Pos.CENTER);
 
         //init info data
-        accountNum = new Text("Account: 02");
+        accountNum = new Text("Account: --");
         balance = new Text("Balance: $670,000");
         statusMessage = new Text("this is where a status will go---Siri theory");
         infoBox = new HBox();
@@ -194,6 +196,11 @@ public class GUI extends AnimationTimer {
             page = pageType.HOUSE_PAGE;
             houseIDs = ((GUIMessageLoaded) m).getHouseIDs();
             refreshNeeded = true;
+        }
+        if(m instanceof GUIMessageAccount) {
+            System.out.println("gui message account");
+            String num = Integer.toString(((GUIMessageAccount) m).getAccountID());
+            accountNum = new Text("Account: " + num);
         }
     }
 
