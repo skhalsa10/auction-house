@@ -9,6 +9,15 @@ public class Message implements Serializable {
     private RequestType requestType;
     private Account account;
     private AuctionHouse auctionHouse;
+    private int agentID;
+
+    public int getAgentID() {
+        return agentID;
+    }
+
+    public void setAgentID(int agentID) {
+        this.agentID = agentID;
+    }
 
     public enum RequestType implements Serializable{
         CREATE_ACCOUNT, CHECK_BALANCE, TRANSFER_FUNDS, ACCEPT_BID, REJECT_BID, SHUT_DOWN, FUNDS_AVAIL, FUNDS_NOT_AVAIL, FUNDS_TRANSFERRED, ITEM_WON;

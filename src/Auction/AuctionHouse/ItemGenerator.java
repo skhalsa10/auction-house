@@ -19,7 +19,7 @@ public class ItemGenerator {
     private int aCount;
     private int nCount;
     private Random random;
-    private long counterID;
+    private int counterID;
 
     public ItemGenerator() {
         aCount = 0;

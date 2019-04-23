@@ -61,6 +61,7 @@ public class AuctionHouse  extends Thread{
         try {
             //this will set up the server
             serverSocket = new ServerSocket(housePort);
+            System.out.println(serverSocket.getLocalSocketAddress());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -116,9 +117,8 @@ public class AuctionHouse  extends Thread{
     }
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
-        FakeBank bank = new FakeBank();
-        bank.start();
-        AuctionHouse auctionHouse = new AuctionHouse(InetAddress.getLocalHost().getHostName(),7788,7777);
+
+        AuctionHouse auctionHouse = new AuctionHouse("0.0.0.0",7778,7777);
         auctionHouse.start();
         //Socket s1 = serve1.accept();
         //System.out.println("hi");
