@@ -2,7 +2,6 @@ package Auction.Agent;
 
 import Auction.AuctionHouse.Item;
 import Auction.GUI.GUI;
-import Auction.GUI.GUIMessages.GUIMessageAccount;
 import Auction.GUI.GUIMessages.GUIMessageLoaded;
 import Auction.Messages.Message;
 
@@ -40,7 +39,6 @@ public class Agent implements Runnable {
         m.setAgentName(name);
         m.setAgentBalance(balance);
         bankConnection.sendMessage(m);
-        setBankAccount(5);
     }
 
     public void setAuctionHouses() {
@@ -57,10 +55,8 @@ public class Agent implements Runnable {
         return messages;
     }
 
-    public void setBankAccount(int accountNum) {
+    public void setBankAccount() {
         //send bank account # to gui
-        GUIMessageAccount accountM = new GUIMessageAccount(accountNum);
-        gui.sendMessage(accountM);
 
     }
 
