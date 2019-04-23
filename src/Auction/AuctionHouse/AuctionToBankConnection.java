@@ -87,7 +87,9 @@ public class AuctionToBankConnection extends Thread{
     }
 
     public int register() {
+        int id = -1;
         Message m = new Message(Message.RequestType.CREATE_ACCOUNT);
+        m.setOpenBalance(0);
         sendMessage(m);
         try {
             Object o =  in.readObject();
@@ -96,7 +98,8 @@ public class AuctionToBankConnection extends Thread{
                 throw new IOException();
             }
             else{
-                //todo STILL NEED TO HANDLE PROCESSING THE RETURN REGISTER MESSAGE
+                Message message = (Message) o;
+                id = message.getID();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -104,6 +107,7 @@ public class AuctionToBankConnection extends Thread{
             e.printStackTrace();
         }
         isRegistered = true;
-        return 2;
+        System.out.println("ID returned is: " + id);
+        return id;
     }
 }

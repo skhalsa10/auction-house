@@ -61,7 +61,11 @@ public class AuctionHouse  extends Thread{
         try {
             //this will set up the server
             serverSocket = new ServerSocket(housePort);
-            System.out.println(serverSocket.getLocalSocketAddress());
+            // send server info to the bank
+            Message m = new Message(Message.RequestType.HOUSE_SERVER_INFO);
+            m.setHouseHost(serverSocket.getInetAddress().getHostName());
+            m.setHousePort(housePort);
+            bankConnection.sendMessage(m);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,6 +90,7 @@ public class AuctionHouse  extends Thread{
             bankConnection = new AuctionToBankConnection(bankSocket, messageQueue);
             bankID = bankConnection.register();
             bankConnection.start();
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -114,11 +119,12 @@ public class AuctionHouse  extends Thread{
     }
 
     private void processMessage(Message m) {
+        System.out.println("processing message from main House thread. M request type is: " + m.getRequestType());
     }
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
 
-        AuctionHouse auctionHouse = new AuctionHouse("0.0.0.0",7778,7777);
+        AuctionHouse auctionHouse = new AuctionHouse("0.0.0.0",7788,7777);
         auctionHouse.start();
         //Socket s1 = serve1.accept();
         //System.out.println("hi");

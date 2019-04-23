@@ -25,7 +25,10 @@ import java.net.UnknownHostException;
  */
 public class FakeClient {
 
+
     public static void main(String args[]) {
+
+        int fakeID = 80;
 
         if (args.length != 2) {
             System.out.println("please enter a serverhostname and serverport");

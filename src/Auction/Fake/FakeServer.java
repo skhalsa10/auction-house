@@ -55,6 +55,12 @@ public class FakeServer {
                         out.writeObject(new Message(Message.RequestType.CREATE_ACCOUNT));
                         break;
                     }
+                    case "ACCOUNT_CREATED":{
+                        Message message = new Message(Message.RequestType.ACCOUNT_CREATED);
+                        m.setID(7);
+                        out.writeObject(message);
+                        break;
+                    }
                     case "CHECK_BALANCE": {
                         out.writeObject(new Message(Message.RequestType.CHECK_BALANCE));
                         break;

@@ -48,7 +48,7 @@ public class AuctionHouseThread extends Thread {
                     break;
                 }
                 if(!isRegistered){
-                    this.agentID = m.getAgentID();
+                    this.agentID = m.getID();
                     if(agentID < 0 ){
                         System.out.println("if there is no agent ID that this message didnt come from an agent. ERROR");
                         throw new IOException();
