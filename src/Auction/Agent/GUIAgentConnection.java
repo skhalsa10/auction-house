@@ -1,4 +1,7 @@
 package Auction.Agent;
 
-public class GUIAgentConnection {
+public class GUIAgentConnection implements Runnable{
+
+    @Override
+    public void run() {}
 }
