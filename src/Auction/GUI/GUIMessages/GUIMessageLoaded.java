@@ -8,9 +8,9 @@ public class GUIMessageLoaded extends GUIMessage{
 
     public GUIMessageLoaded(List<Integer> houseIDs){
         //make a copy of the input
-        houseIDs = new ArrayList<>();
+        this.houseIDs = new ArrayList<>();
         for(Integer id:houseIDs){
-            houseIDs.add(id);
+            this.houseIDs.add(id);
         }
     }
 

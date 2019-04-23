@@ -80,7 +80,7 @@ public class GUI extends AnimationTimer {
     public GUI(Stage primaryStage) {
         this.stage = primaryStage;
         stage.setTitle("Auction");
-        page = pageType.HOUSE_PAGE;
+        page = pageType.LOADING_PAGE;
         refreshNeeded = false;
         isLoading = true;
         messages = new LinkedBlockingQueue<>();
@@ -204,9 +204,9 @@ public class GUI extends AnimationTimer {
         infoPane.getChildren().clear();
 
         //TODO get list of houses here the following are dummy ones
-        houseIDs.add(1);
+        /*houseIDs.add(1);
         houseIDs.add(2);
-        houseIDs.add(3);
+        houseIDs.add(3);*/
 
         titlePane.getChildren().add(housePageTitle);
         titlePane.setId("house-title-pane");

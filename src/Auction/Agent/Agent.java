@@ -1,10 +1,14 @@
 package Auction.Agent;
 
 import Auction.AuctionHouse.Item;
+import Auction.GUI.GUI;
+import Auction.GUI.GUIMessages.GUIMessageLoaded;
 import Auction.Messages.Message;
 
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Agent implements Runnable {
@@ -17,14 +21,16 @@ public class Agent implements Runnable {
     private BankConnection bankConnection;
     private HashMap<Integer, Boolean> connectedHouses = new HashMap<>();
     private HashMap<Integer, Socket> auctionHouses = new HashMap<>();
+    private GUI gui;
 
 
 
-    public Agent(String bankHost, int bankPortNum, String name, int initialBalance) {
+    public Agent(String bankHost, int bankPortNum, String name, int initialBalance, GUI gui) {
         this.bankHost = bankHost;
         this.bankPortNum = bankPortNum;
         this.name = name;
         this.balance = initialBalance;
+        this.gui = gui;
         new Thread(this).start();
     }
     private void openBankAccount(){
@@ -34,13 +40,26 @@ public class Agent implements Runnable {
         bankConnection.sendMessage(m);
     }
 
-    private void setAuctionHouses(Message m) {
+    public void setAuctionHouses() {
         //send auction house id's to gui
+        List<Integer> houseIDs = new ArrayList<>();
+        houseIDs.add(1);
+        houseIDs.add(2);
+        houseIDs.add(3);
+        GUIMessageLoaded loadedM = new GUIMessageLoaded(houseIDs);
+        gui.sendMessage(loadedM);
     }
 
-    private void setBankAccount(Message m) {
+    public void setBankAccount() {
         //send bank account # to gui
+
     }
+
+    private void setBalance() {
+
+    }
+
+    private void setAvailableFunds() {}
 
     private void chooseAuctionHouse(int houseID) {
         boolean alreadyConnected = connectedHouses.get(houseID);
@@ -113,7 +132,8 @@ public class Agent implements Runnable {
             bankPortNum = Integer.parseInt(args[1]);
             name = args[2];
             initialBalance = Integer.parseInt(args[3]);
-            Agent a = new Agent(bankHost, bankPortNum, name, initialBalance);
+
+            //Agent a = new Agent(bankHost, bankPortNum, name, initialBalance);
 
         }
 
