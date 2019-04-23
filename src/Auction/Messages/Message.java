@@ -13,12 +13,14 @@ public class Message implements Serializable {
 
     private String agentName;
     private int agentBalance;
+    private int agentID;
     //private Item item;
     private int bidAmount;
 
     public enum RequestType implements Serializable{
         CREATE_ACCOUNT, CHECK_BALANCE, TRANSFER_FUNDS, ACCEPT_BID, REJECT_BID,
-        SHUT_DOWN, FUNDS_AVAIL, FUNDS_NOT_AVAIL, FUNDS_TRANSFERRED, ITEM_WON, BID_ITEM, REQUEST_ITEMS;
+        SHUT_DOWN, FUNDS_AVAIL, FUNDS_NOT_AVAIL, FUNDS_TRANSFERRED, ITEM_WON, BID_ITEM,
+        REQUEST_ITEMS, REGISTER;
     }
 
     public Message() {
@@ -50,7 +52,9 @@ public class Message implements Serializable {
         this.agentBalance = agentBalance;
     }
 
-
+    public void setAgentID(int agentBankAccountNum) {
+        this.agentID = agentBankAccountNum;
+    }
 
     public void printMessage() {
         System.out.println("Message Type " + this.requestType);
