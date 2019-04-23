@@ -21,7 +21,7 @@ public class Message implements Serializable {
     public enum RequestType implements Serializable{
         CREATE_ACCOUNT, CHECK_BALANCE, TRANSFER_FUNDS, ACCEPT_BID, REJECT_BID,
         SHUT_DOWN, FUNDS_AVAIL, FUNDS_NOT_AVAIL, FUNDS_TRANSFERRED, ITEM_WON, BID_ITEM,
-        REQUEST_ITEMS, REGISTER, SELECT_HOUSE;
+        REQUEST_ITEMS, REGISTER
     }
 
     public Message() {
@@ -59,10 +59,6 @@ public class Message implements Serializable {
 
     public void printMessage() {
         System.out.println("Message Type " + this.requestType);
-    }
-
-    private void setHouseID(int houseID) {
-        this.houseID = houseID;
     }
 
 }
