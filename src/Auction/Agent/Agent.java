@@ -15,6 +15,7 @@ public class Agent implements Runnable {
     private String name;
     private int balance;
     private int bankAccount;
+    private int availFunds;
     private LinkedBlockingQueue<Message> messages = new LinkedBlockingQueue<>();
     private String bankHost;
     private int bankPortNum;
