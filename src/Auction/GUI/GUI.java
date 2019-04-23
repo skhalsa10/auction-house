@@ -6,6 +6,7 @@ import Auction.GUI.GUIMessages.GUIMessage;
 import Auction.GUI.GUIMessages.GUIMessageAccount;
 import Auction.GUI.GUIMessages.GUIMessageLoaded;
 import Auction.Messages.Message;
+import Auction.Messages.MessageToAgent;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -250,8 +251,9 @@ public class GUI extends AnimationTimer {
                     //System.out.println(temp.getChildren().size());
                     Text t = (Text) temp.getChildren().get(2);
                     System.out.println("ID is " + t.getText());
-                    Message m = new Message(Message.RequestType.SELECT_HOUSE);
-                    //connection.sendMessage(new Message());
+                    int selectHouseId = Integer.parseInt(t.getText());
+                    MessageToAgent m = new MessageToAgent(MessageToAgent.RequestType.SELECT_HOUSE, selectHouseId);
+                    connection.sendMessage(m);
                 }
             });
         }
