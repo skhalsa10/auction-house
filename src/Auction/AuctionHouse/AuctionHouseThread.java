@@ -36,6 +36,7 @@ public class AuctionHouseThread extends Thread {
 
         try {
             ObjectInputStream objectIn = new ObjectInputStream(socket.getInputStream());
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             while(true){
                 Object o = objectIn.readObject();
                 if(!(o instanceof Message)){
@@ -44,6 +45,7 @@ public class AuctionHouseThread extends Thread {
                 }
                 Message m = (Message) o;
                 if(m.getRequestType() == Message.RequestType.SHUT_DOWN){
+                    socket.close();
                     //TODO should I be placing this message also in the queue for the house to delete?
                     break;
                 }
@@ -53,10 +55,15 @@ public class AuctionHouseThread extends Thread {
                         System.out.println("if there is no agent ID that this message didnt come from an agent. ERROR");
                         throw new IOException();
                     }
+                    isRegistered = true;
+                    clientOuts.put(this.agentID, out);
                 }
+                System.out.println("Agent ID " + this.agentID + " sent message of type: " + m.getRequestType());
                 messageQueue.put(m);
             }
             objectIn.close();
+            out.close();
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -64,5 +71,6 @@ public class AuctionHouseThread extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 }

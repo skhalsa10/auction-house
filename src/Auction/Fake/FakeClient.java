@@ -53,7 +53,9 @@ public class FakeClient {
                 String userLine = stdIn.readLine();
                 switch(userLine){
                     case "CREATE_ACCOUNT":{
-                        out.writeObject(new Message(Message.RequestType.CREATE_ACCOUNT));
+                        Message message = new Message(Message.RequestType.CREATE_ACCOUNT);
+                        message.setID(fakeID);
+                        out.writeObject(message);
                         break;
                     }
                     case "CHECK_BALANCE": {
@@ -90,6 +92,15 @@ public class FakeClient {
                     }
                     case "ITEM_WON":{
                         out.writeObject(new Message(Message.RequestType.ITEM_WON));
+                        break;
+                    }
+                    case "BID_ITEM":{
+                        break;
+                    }
+                    case "REQUEST_ITEMS":{
+                        Message message = new Message(Message.RequestType.REQUEST_ITEMS);
+                        message.setID(fakeID);
+                        out.writeObject(message);
                         break;
                     }
                     default:{

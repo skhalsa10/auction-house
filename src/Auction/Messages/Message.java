@@ -20,6 +20,11 @@ public class Message implements Serializable {
         this.requestType = type;
     }
 
+    public Message(RequestType type, double startingBalance) {
+        this.requestType = type;
+        this.startingBalance = startingBalance;
+    }
+
     public void setOpenBalance(int openBalance) {
         this.openBalance = openBalance;
     }
@@ -38,7 +43,8 @@ public class Message implements Serializable {
 
     public enum RequestType implements Serializable{
         CREATE_ACCOUNT, ACCOUNT_CREATED, CHECK_BALANCE, TRANSFER_FUNDS, ACCEPT_BID, REJECT_BID, SHUT_DOWN,
-        FUNDS_AVAIL, FUNDS_NOT_AVAIL, FUNDS_TRANSFERRED, ITEM_WON, HOUSE_SERVER_INFO;
+        FUNDS_AVAIL, FUNDS_NOT_AVAIL, FUNDS_TRANSFERRED, ITEM_WON, HOUSE_SERVER_INFO, BID_ITEM,
+        REQUEST_ITEMS, REGISTER;
     }
 
     public int getID() {

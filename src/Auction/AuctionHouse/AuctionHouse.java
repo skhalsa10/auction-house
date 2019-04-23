@@ -61,6 +61,7 @@ public class AuctionHouse  extends Thread{
         try {
             //this will set up the server
             serverSocket = new ServerSocket(housePort);
+            System.out.println(serverSocket.getInetAddress().getHostName());
             // send server info to the bank
             Message m = new Message(Message.RequestType.HOUSE_SERVER_INFO);
             m.setHouseHost(serverSocket.getInetAddress().getHostName());

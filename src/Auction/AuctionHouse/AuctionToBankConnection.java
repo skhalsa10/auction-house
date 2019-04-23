@@ -100,14 +100,16 @@ public class AuctionToBankConnection extends Thread{
             else{
                 Message message = (Message) o;
                 id = message.getID();
+                System.out.println("ID returned is: " + id);
+                isRegistered = true;
+                return id;
             }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        isRegistered = true;
-        System.out.println("ID returned is: " + id);
-        return id;
+        return -1;
     }
+
 }
