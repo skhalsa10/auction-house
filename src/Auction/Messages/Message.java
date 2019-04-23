@@ -2,9 +2,6 @@ package Auction.Messages;
 
 import java.io.Serializable;
 
-import Auction.Account;
-import Auction.AuctionHouse.AuctionHouse;
-
 public class Message implements Serializable {
     private RequestType requestType;
     private double startingBalance;
