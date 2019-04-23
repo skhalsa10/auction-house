@@ -17,6 +17,8 @@ public class GUIMain extends Application {
         String name = getParameters().getUnnamed().get(2);
         int initialBalance = Integer.parseInt(getParameters().getUnnamed().get(3));
         Agent a = new Agent(bankHost, bankPortNum, name, initialBalance, gui);
+        gui.setGUIAgentConnection(a.getMessages());
+
         a.setAuctionHouses();
 
     }

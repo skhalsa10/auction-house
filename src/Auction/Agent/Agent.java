@@ -53,6 +53,10 @@ public class Agent implements Runnable {
         gui.sendMessage(loadedM);
     }
 
+    public LinkedBlockingQueue<Message> getMessages(){
+        return messages;
+    }
+
     public void setBankAccount(int accountNum) {
         //send bank account # to gui
         GUIMessageAccount accountM = new GUIMessageAccount(accountNum);

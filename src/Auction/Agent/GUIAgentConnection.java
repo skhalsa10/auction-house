@@ -3,5 +3,9 @@ package Auction.Agent;
 public class GUIAgentConnection implements Runnable{
 
     @Override
-    public void run() {}
+    public void run() {
+        while(running) {
+
+        }
+    }
 }

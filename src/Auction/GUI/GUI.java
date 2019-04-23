@@ -1,9 +1,11 @@
 package Auction.GUI;
 
+import Auction.Agent.GUIAgentConnection;
 import Auction.AuctionHouse.Item;
 import Auction.GUI.GUIMessages.GUIMessage;
 import Auction.GUI.GUIMessages.GUIMessageAccount;
 import Auction.GUI.GUIMessages.GUIMessageLoaded;
+import Auction.Messages.Message;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -76,7 +78,7 @@ public class GUI extends AnimationTimer {
     private List<Item> items;
     private VBox itemList;
 
-
+    private GUIAgentConnection connection;
     
 
     public GUI(Stage primaryStage) {
@@ -155,6 +157,10 @@ public class GUI extends AnimationTimer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setGUIAgentConnection(LinkedBlockingQueue<Message> toAgentMessages) {
+        this.connection = new GUIAgentConnection(toAgentMessages);
     }
 
     @Override
@@ -244,6 +250,8 @@ public class GUI extends AnimationTimer {
                     //System.out.println(temp.getChildren().size());
                     Text t = (Text) temp.getChildren().get(2);
                     System.out.println("ID is " + t.getText());
+                    Message m = new Message(Message.RequestType.SELECT_HOUSE);
+                    //connection.sendMessage(new Message());
                 }
             });
         }
