@@ -11,7 +11,17 @@ import java.net.UnknownHostException;
 /**
  * this fake server builds a  server socket and accepts 1 connection ONLY.
  *
+ * It will print its host name when it starts to use when connecting to it.
  *
+ * after it conencts to a 1 client only it will loop while the socket exists
+ * and print out the Message.RequestType
+ *
+ * it will then wait for input. it accepts an input of one fo the following request types:
+ *
+ *         CREATE_ACCOUNT, CHECK_BALANCE, TRANSFER_FUNDS, ACCEPT_BID, REJECT_BID,
+ *         SHUT_DOWN, FUNDS_AVAIL, FUNDS_NOT_AVAIL, FUNDS_TRANSFERRED, ITEM_WON;
+ *
+ * It will then convert this to a message and send it out to the connected client.
  */
 public class FakeServer {
 
@@ -25,7 +35,7 @@ public class FakeServer {
 
         try {
             ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
-            System.out.println(serverSocket.getInetAddress().getHostName());
+            System.out.println("host name of server: " + serverSocket.getInetAddress().getHostName());
             Socket socket = serverSocket.accept();
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
@@ -50,35 +60,36 @@ public class FakeServer {
                         break;
                     }
                     case "TRANSFER_FUNDS":{
-                        out.writeObject(Message.RequestType.TRANSFER_FUNDS);
+
+                        out.writeObject(new Message(Message.RequestType.TRANSFER_FUNDS));
                         break;
                     }
                     case "ACCEPT_BID":{
-                        out.writeObject(Message.RequestType.ACCEPT_BID);
+                        out.writeObject(new Message(Message.RequestType.ACCEPT_BID));
                         break;
                     }
                     case "REJECT_BID":{
-                        out.writeObject(Message.RequestType.REJECT_BID);
+                        out.writeObject(new Message(Message.RequestType.REJECT_BID));
                         break;
                     }
                     case "SHUT_DOWN":{
-                        out.writeObject(Message.RequestType.SHUT_DOWN);
+                        out.writeObject(new Message(Message.RequestType.SHUT_DOWN));
                         break;
                     }
                     case "FUNDS_AVAIL":{
-                        out.writeObject(Message.RequestType.FUNDS_AVAIL);
+                        out.writeObject(new Message(Message.RequestType.FUNDS_AVAIL));
                         break;
                     }
                     case "FUNDS_NOT_AVAIL":{
-                        out.writeObject(Message.RequestType.FUNDS_NOT_AVAIL);
+                        out.writeObject(new Message(Message.RequestType.FUNDS_NOT_AVAIL));
                         break;
                     }
                     case "FUNDS_TRANSFERRED":{
-                        out.writeObject(Message.RequestType.FUNDS_TRANSFERRED);
+                        out.writeObject(new Message(Message.RequestType.FUNDS_TRANSFERRED));
                         break;
                     }
                     case "ITEM_WON":{
-                        out.writeObject(Message.RequestType.ITEM_WON);
+                        out.writeObject(new Message(Message.RequestType.ITEM_WON));
                         break;
                     }
                     default:{

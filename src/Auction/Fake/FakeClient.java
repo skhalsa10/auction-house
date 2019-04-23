@@ -6,12 +6,29 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+/**
+ * the fake client works pretty much exactly the same as  the server.
+ *
+ * it takes two parameters though. the server host name first and the server port second
+ *
+ * It will print connected after it is connected so you know it is working.
+ *
+ * It automatically sends out a CREATE_ACCOUNT message to start.
+ * It will then wait for an object to come in the stream print out the request type and read a line that accepts
+ * the following.
+ *
+ *         CREATE_ACCOUNT, CHECK_BALANCE, TRANSFER_FUNDS, ACCEPT_BID, REJECT_BID,
+ *         SHUT_DOWN, FUNDS_AVAIL, FUNDS_NOT_AVAIL, FUNDS_TRANSFERRED, ITEM_WON;
+ *
+ * It will convert the string into a message and send it out it will just loop and do this
+ *
+ */
 public class FakeClient {
 
     public static void main(String args[]) {
 
         if (args.length != 2) {
-            System.out.println("please enter a househost and hoseport");
+            System.out.println("please enter a serverhostname and serverport");
             return;
         }
 
@@ -20,7 +37,8 @@ public class FakeClient {
                 ObjectOutputStream out = new ObjectOutputStream(houseSocket.getOutputStream());
                 ObjectInputStream in = new ObjectInputStream(houseSocket.getInputStream());
                 BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));) {
-
+            System.out.println("connected!!");
+            out.writeObject(new Message(Message.RequestType.CREATE_ACCOUNT));
             Object o = in.readObject();
             while(o != null){
                 if(!(o instanceof Message)){
@@ -40,35 +58,35 @@ public class FakeClient {
                         break;
                     }
                     case "TRANSFER_FUNDS":{
-                        out.writeObject(Message.RequestType.TRANSFER_FUNDS);
+                        out.writeObject(new Message(Message.RequestType.TRANSFER_FUNDS));
                         break;
                     }
                     case "ACCEPT_BID":{
-                        out.writeObject(Message.RequestType.ACCEPT_BID);
+                        out.writeObject(new Message(Message.RequestType.ACCEPT_BID));
                         break;
                     }
                     case "REJECT_BID":{
-                        out.writeObject(Message.RequestType.REJECT_BID);
+                        out.writeObject(new Message(Message.RequestType.REJECT_BID));
                         break;
                     }
                     case "SHUT_DOWN":{
-                        out.writeObject(Message.RequestType.SHUT_DOWN);
+                        out.writeObject(new Message(Message.RequestType.SHUT_DOWN));
                         break;
                     }
                     case "FUNDS_AVAIL":{
-                        out.writeObject(Message.RequestType.FUNDS_AVAIL);
+                        out.writeObject(new Message(Message.RequestType.FUNDS_AVAIL));
                         break;
                     }
                     case "FUNDS_NOT_AVAIL":{
-                        out.writeObject(Message.RequestType.FUNDS_NOT_AVAIL);
+                        out.writeObject(new Message(Message.RequestType.FUNDS_NOT_AVAIL));
                         break;
                     }
                     case "FUNDS_TRANSFERRED":{
-                        out.writeObject(Message.RequestType.FUNDS_TRANSFERRED);
+                        out.writeObject(new Message(Message.RequestType.FUNDS_TRANSFERRED));
                         break;
                     }
                     case "ITEM_WON":{
-                        out.writeObject(Message.RequestType.ITEM_WON);
+                        out.writeObject(new Message(Message.RequestType.ITEM_WON));
                         break;
                     }
                     default:{
