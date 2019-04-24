@@ -3,7 +3,7 @@
  * CS 351-002
  * April 15, 2019
  ***********************************/
-package Auction;
+package Auction.Bank;
 
 import Auction.Messages.Message;
 

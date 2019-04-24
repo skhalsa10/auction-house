@@ -1,4 +1,4 @@
-package Auction;
+package Auction.Bank;
 
 import java.text.DecimalFormat;
 
