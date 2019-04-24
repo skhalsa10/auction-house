@@ -1,6 +1,6 @@
 package Auction.Messages;
 
-public class MAvailableFunds implements Message {
+public class MAvailableFunds extends Message {
 
     private final int availableFunds;
 

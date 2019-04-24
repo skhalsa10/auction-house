@@ -3,6 +3,6 @@ package Auction.Messages;
 
 import java.io.Serializable;
 
-public interface Message extends Serializable {
+public abstract class Message implements Serializable {
 
 }

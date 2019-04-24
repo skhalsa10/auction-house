@@ -1,6 +1,6 @@
 package Auction.Messages;
 
-public class MAccountCreated implements Message {
+public class MAccountCreated extends Message {
 
 
     private final int accountID;
