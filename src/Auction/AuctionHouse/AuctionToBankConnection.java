@@ -1,5 +1,7 @@
 package Auction.AuctionHouse;
 
+import Auction.Messages.MAccountCreated;
+import Auction.Messages.MCreateAccount;
 import Auction.Messages.Message;
 
 import java.io.IOException;
@@ -35,7 +37,7 @@ public class AuctionToBankConnection extends Thread{
 
     /**
      * this will send a message to the bank...*** can this be called on a thread even though it is already
-     * running processing incoming messages? ***
+     * running processing incoming messages?  should a make differe***
      * @param m message to send
      */
     public void sendMessage(Message m){
@@ -73,7 +75,7 @@ public class AuctionToBankConnection extends Thread{
                     throw new IOException();
                 }
                 houseMessageQueue.put((Message) o);
-                System.out.println(((Message) o).getRequestType());
+                System.out.println(((Message) o));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -84,25 +86,30 @@ public class AuctionToBankConnection extends Thread{
             }
 
         }
+        //TODO close everything here
     }
 
     public int register() {
-        int id = -1;
-        Message m = new Message(Message.RequestType.CREATE_ACCOUNT);
-        m.setOpenBalance(0);
-        sendMessage(m);
+
         try {
+            int id = -1;
+            Message m = new MCreateAccount(null,0);
+            sendMessage(m);
             Object o =  in.readObject();
             if(!(o instanceof Message)){
                 System.out.println("Object is not of type Message throwing Exception");
                 throw new IOException();
             }
-            else{
-                Message message = (Message) o;
-                id = message.getID();
+            else if(o instanceof MAccountCreated){
+
+                MAccountCreated message = (MAccountCreated) o;
+                id = message.getAccountID();
                 System.out.println("ID returned is: " + id);
                 isRegistered = true;
                 return id;
+            }
+            else{
+                return -1;
             }
         } catch (IOException e) {
             e.printStackTrace();

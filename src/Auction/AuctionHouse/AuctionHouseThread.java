@@ -1,7 +1,9 @@
 package Auction.AuctionHouse;
 
+import Auction.Messages.MShutDown;
 import Auction.Messages.Message;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -45,26 +47,21 @@ public class AuctionHouseThread extends Thread {
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             while(true){
                 Object o = objectIn.readObject();
+                if(o == null){
+                    System.out.println("I think the client socket closed? I got a NULL object");
+                    throw new EOFException();
+                }
                 if(!(o instanceof Message)){
                     System.out.println("not of type message");
                     throw new IOException();
                 }
                 Message m = (Message) o;
-                if(m.getRequestType() == Message.RequestType.SHUT_DOWN){
-                    socket.close();
+                if(m instanceof MShutDown){
+                    //socket.close();
                     //TODO should I be placing this message also in the queue for the house to delete?
                     break;
                 }
-                if(!isRegistered){
-                    this.agentID = m.getID();
-                    if(agentID < 0 ){
-                        System.out.println("if there is no agent ID that this message didnt come from an agent. ERROR");
-                        throw new IOException();
-                    }
-                    isRegistered = true;
-                    clientOuts.put(this.agentID, out);
-                }
-                System.out.println("Agent ID " + this.agentID + " sent message of type: " + m.getRequestType());
+                System.out.println("Message received from agent: " + m);
                 messageQueue.put(m);
             }
             objectIn.close();

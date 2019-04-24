@@ -5,6 +5,7 @@ import Auction.Messages.Message;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -46,17 +47,15 @@ public class AuctionHouseListener extends Thread {
     public void run() {
         while(listening){
             try {
-
-                new AuctionHouseThread(serverSocket.accept(),houseMessageQueue, clientOuts).start();
+                while(listening) {
+                    Socket s = serverSocket.accept();
+                    new AuctionHouseThread(s, houseMessageQueue, clientOuts).start();
+                }
+                serverSocket.close();
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        try {
-            serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

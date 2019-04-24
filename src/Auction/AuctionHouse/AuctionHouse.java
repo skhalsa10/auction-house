@@ -1,5 +1,7 @@
 package Auction.AuctionHouse;
 
+import Auction.Messages.MHouseServerInfo;
+import Auction.Messages.MShutDown;
 import Auction.Messages.Message;
 
 import java.io.IOException;
@@ -35,7 +37,7 @@ public class AuctionHouse  extends Thread{
     private LinkedBlockingQueue<Message> messageQueue;
     private AuctionHouseListener socketListener;
     private AuctionToBankConnection bankConnection;
-    private int bankID;
+    private int myID;
     private HashMap<Integer, ObjectOutputStream> clientOuts;
 
     /**
@@ -54,18 +56,16 @@ public class AuctionHouse  extends Thread{
         registerWithBank(bankHost,bankPort);
 
         itemGenerator = new ItemGenerator();
-        tracker1 = new BidTracker(itemGenerator.getItem(),bankID,2);
-        tracker2 = new BidTracker(itemGenerator.getItem(),bankID,2);
-        tracker3 =new BidTracker(itemGenerator.getItem(),bankID,2);
+        tracker1 = new BidTracker(itemGenerator.getItem(),myID,2);
+        tracker2 = new BidTracker(itemGenerator.getItem(),myID,2);
+        tracker3 =new BidTracker(itemGenerator.getItem(),myID,2);
 
         try {
             //this will set up the server
             serverSocket = new ServerSocket(housePort);
             System.out.println(serverSocket.getInetAddress().getHostName());
             // send server info to the bank
-            Message m = new Message(Message.RequestType.HOUSE_SERVER_INFO);
-            m.setHouseHost(serverSocket.getInetAddress().getHostName());
-            m.setHousePort(housePort);
+            Message m = new MHouseServerInfo(myID, serverSocket.getInetAddress().getHostName(),housePort);
             bankConnection.sendMessage(m);
         } catch (IOException e) {
             e.printStackTrace();
@@ -89,7 +89,7 @@ public class AuctionHouse  extends Thread{
             bankSocket= new Socket(bankHost, bankPort);
             //we will now beild the bank connection which handles all the communication outbound to the bank
             bankConnection = new AuctionToBankConnection(bankSocket, messageQueue);
-            bankID = bankConnection.register();
+            myID = bankConnection.register();
             bankConnection.start();
 
 
@@ -106,9 +106,8 @@ public class AuctionHouse  extends Thread{
         Message m = null;
         while(true){
             try {
-
                 m = messageQueue.take();
-                if (m.getRequestType() == Message.RequestType.SHUT_DOWN) {
+                if (m instanceof MShutDown) {
                     break;
                 }
                 processMessage(m);
@@ -117,10 +116,12 @@ public class AuctionHouse  extends Thread{
                 e.printStackTrace();
             }
         }
+
+        //TODO Shutdown code here
     }
 
     private void processMessage(Message m) {
-        System.out.println("processing message from main House thread. M request type is: " + m.getRequestType());
+        System.out.println("processing message from main House thread. M request type is: " + m);
     }
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
