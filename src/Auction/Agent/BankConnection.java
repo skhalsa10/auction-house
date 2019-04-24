@@ -7,6 +7,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Connection between Agent and Bank
+ */
 public class BankConnection implements Runnable {
     private Socket socket;
     private boolean connected = false;
@@ -14,21 +17,29 @@ public class BankConnection implements Runnable {
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
+    /**
+     * Constructs BankConnection
+     * @param hostName bank host name
+     * @param portNumber bank port number
+     * @param messages agent messages
+     */
     public BankConnection(String hostName, int portNumber, LinkedBlockingQueue messages){
         this.messages = messages;
-
         try {
             this.socket = new Socket(hostName, portNumber);
             connected = true;
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
-
         }
         catch (Exception e) {
             System.err.println(e);
         }
     }
 
+    /**
+     * Sends messages to bank
+     * @param m message to be sent
+     */
     public void sendMessage(Message m) {
         try {
             out.writeObject(m);
@@ -40,6 +51,9 @@ public class BankConnection implements Runnable {
     }
 
 
+    /**
+     * Runs connection
+     */
     @Override
     public void run () {
         Message receivedMessage;

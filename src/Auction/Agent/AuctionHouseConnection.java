@@ -7,14 +7,21 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Connection between Agent and AuctionHouse
+ */
 public class AuctionHouseConnection implements Runnable {
-
     private Socket socket;
     private boolean connected = false;
-
     private LinkedBlockingQueue<Message> messages = new LinkedBlockingQueue<>();
     private ObjectInputStream in;
     private ObjectOutputStream out;
+
+    /**
+     * Constructs an AuctionHouseConnection
+     * @param socket socket
+     * @param messages agent message queue
+     */
     public AuctionHouseConnection(Socket socket, LinkedBlockingQueue messages){
         this.messages = messages;
 
@@ -30,6 +37,10 @@ public class AuctionHouseConnection implements Runnable {
         }
     }
 
+    /**
+     * Send message to auction house
+     * @param m message to be sent
+     */
     public void sendMessage(Message m) {
         try {
             out.writeObject(m);
@@ -41,6 +52,9 @@ public class AuctionHouseConnection implements Runnable {
     }
 
 
+    /**
+     * Runs connection
+     */
     @Override
     public void run () {
         Message receivedMessage;
@@ -51,7 +65,6 @@ public class AuctionHouseConnection implements Runnable {
                     messages.put(receivedMessage);
                     System.out.println(receivedMessage.toString());
                 }
-
             }
             catch (Exception e) {
                 System.err.println(e);

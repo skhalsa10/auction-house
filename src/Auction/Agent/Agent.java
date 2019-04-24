@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Class for Agent
+ */
 public class Agent implements Runnable {
     private String name;
     private int balance;
@@ -26,8 +29,14 @@ public class Agent implements Runnable {
     private HashMap<Integer, AuctionHouseConnection> auctionHouses = new HashMap<>();
     private GUI gui;
 
-
-
+    /**
+     * Constructs an Agent
+     * @param bankHost bank host name
+     * @param bankPortNum bank port number
+     * @param name agent name
+     * @param initialBalance agent initial balance
+     * @param gui gui
+     */
     public Agent(String bankHost, int bankPortNum, String name, int initialBalance, GUI gui) {
         this.bankHost = bankHost;
         this.bankPortNum = bankPortNum;
@@ -36,11 +45,18 @@ public class Agent implements Runnable {
         this.gui = gui;
         new Thread(this).start();
     }
+
+    /**
+     * Opens a bank account by sending a message to bank
+     */
     private void openBankAccount(){
         MCreateAccount m = new MCreateAccount(name,balance);
         bankConnection.sendMessage(m);
     }
 
+    /**
+     * Sends a list of houses to gui
+     */
     public void sendHouseList() {
         ArrayList<Integer> houseIds = new ArrayList<>();
         houseIds.addAll(auctionHouses.keySet());
@@ -48,7 +64,13 @@ public class Agent implements Runnable {
         gui.sendMessage(loadedM);
     }
 
-    public void setAuctionHouse(int houseId, String hostname, int portNum) {
+    /**
+     * Sets an auction house with a connection
+     * @param houseId id of house
+     * @param hostname house host name
+     * @param portNum house port number
+     */
+    private void setAuctionHouse(int houseId, String hostname, int portNum) {
         try {
             Socket socket = new Socket(hostname, portNum);
             AuctionHouseConnection connection = new AuctionHouseConnection(socket, messages);
@@ -60,24 +82,40 @@ public class Agent implements Runnable {
 
     }
 
+    /**
+     * Gets the message queue
+     * @return message queue
+     */
     public LinkedBlockingQueue<Message> getMessages(){
         return messages;
     }
 
-    public void setBankAccount() {
+    /**
+     * Sends bank account number to gui
+     */
+    public void sendBankAccount() {
         //send bank account # to gui
 
     }
 
-    private void setBalance() {
+    /**
+     * Sends updated balance to gui
+     */
+    private void sendBalance() {
 
     }
 
-    private void setAvailableFunds() {}
+    /**
+     * Sends available funds to gui
+     */
+    private void sendAvailableFunds() {}
 
+    /**
+     * Choose an auction house to connect to
+     * @param houseID id of auction house to be connected to
+     */
     private void chooseAuctionHouse(int houseID) {
         boolean alreadyConnected = connectedHouses.get(houseID);
-        Socket socket;
         AuctionHouseConnection connection;
         if(!alreadyConnected) {
             connection = auctionHouses.get(houseID);
@@ -86,19 +124,30 @@ public class Agent implements Runnable {
 
     }
 
+    /**
+     * Connect to auction house
+     * @param connection connection of auction house
+     */
     private void connectToAuctionHouse(AuctionHouseConnection connection){
-        //AuctionHouseConnection c = new AuctionHouseConnection(socket,messages);
         new Thread(connection).start();
         MRequestItems m = new MRequestItems(agentID);
         connection.sendMessage(m);
     }
 
+    /**
+     * Connect to bank
+     * @param bankHost bank host name
+     * @param bankPort bank port number
+     */
     private void connectToBank(String bankHost, int bankPort) {
         bankConnection = new BankConnection(bankHost, bankPort, messages);
         new Thread(bankConnection).start();
 
     }
 
+    /**
+     * Processes a message
+     */
     private void processMessage() {
         Message receivedMessage;
         try {
@@ -110,25 +159,36 @@ public class Agent implements Runnable {
         }
     }
 
-
-    private void updateBalance() {
-        // create message to get balance from bank
-    }
-
+    /**
+     * Sends message to house to bid on an item
+     * @param amount bid amount
+     * @param bidItem item to bid on
+     */
+    // maybe use item id
     private void bidOnItem(int amount, Item bidItem) {
 
     }
 
+    /**
+     * Send message to bank to transfer funds
+     * @param amount transfer amount
+     * @param houseAccountNum house bank account number
+     */
     private void transferFunds(int amount, int houseAccountNum){
 
     }
 
-
-    private void processStatusMessages() {
+    /**
+     * Sends message to gui about bid status message
+     */
+    private void sendStatusMessage() {
 
     }
 
 
+    /**
+     * Runs agent thread that processes messages
+     */
     @Override
     public void run() {
         connectToBank(bankHost, bankPortNum);
