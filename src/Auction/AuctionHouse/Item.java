@@ -7,7 +7,6 @@ import java.io.Serializable;
  * this class is very simple it encapulates a string as an Item and if we need to add a price to it later we can add
  * in this class.
  */
-
 public class Item implements Serializable, Cloneable{
     private final String description;
     private final int ID;
