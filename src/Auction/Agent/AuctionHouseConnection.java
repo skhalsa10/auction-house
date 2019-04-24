@@ -49,7 +49,7 @@ public class AuctionHouseConnection implements Runnable {
                 receivedMessage = (Message) in.readObject();
                 if(receivedMessage != null) {
                     messages.put(receivedMessage);
-                    receivedMessage.printMessage();
+                    System.out.println(receivedMessage.toString());
                 }
 
             }

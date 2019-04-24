@@ -4,9 +4,7 @@ import Auction.AuctionHouse.Item;
 import Auction.GUI.GUI;
 import Auction.GUI.GUIMessages.GUIMessageAccount;
 import Auction.GUI.GUIMessages.GUIMessageLoaded;
-import Auction.Messages.MCreateAccount;
-import Auction.Messages.Message;
-import Auction.Messages.MessageToAgent;
+import Auction.Messages.*;
 
 import java.net.Socket;
 import java.util.ArrayList;
@@ -17,7 +15,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Agent implements Runnable {
     private String name;
     private int balance;
-    private int bankAccount;
+    private int agentID;
     private int availFunds;
     private LinkedBlockingQueue<Message> messages = new LinkedBlockingQueue<>();
     private String bankHost;
@@ -90,8 +88,8 @@ public class Agent implements Runnable {
     private void connectToAuctionHouse(Socket socket){
         AuctionHouseConnection c = new AuctionHouseConnection(socket,messages);
         new Thread(c).start();
-        Message m = new Message(Message.RequestType.REGISTER);
-        m.setAgentID(bankAccount);
+        MRequestItems m = new MRequestItems(agentID);
+        c.sendMessage(m);
     }
 
     private void connectToBank(String bankHost, int bankPort) {
@@ -124,7 +122,7 @@ public class Agent implements Runnable {
         Message receivedMessage;
         try {
             receivedMessage = messages.take();
-            receivedMessage.printMessage();
+            System.out.println(receivedMessage.toString());
         }
         catch(Exception e) {
             System.err.println(e);
@@ -138,8 +136,8 @@ public class Agent implements Runnable {
         while(running) {
             try {
                 receivedMessage = messages.take();
-                receivedMessage.printMessage();
-                if(receivedMessage.getRequestType() == Message.RequestType.ITEM_WON) {
+                System.out.println(receivedMessage.toString());
+                if(receivedMessage instanceof MShutDown) {
                     shutDown();
                 }
 
