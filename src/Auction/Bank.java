@@ -7,23 +7,14 @@ package Auction;
 
 import Auction.Messages.Message;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Bank implements Runnable {
     public static int accountCounter = 0;
 
-    private Thread thread;
     private List<Account> clientAccounts;
     private LinkedBlockingQueue<Message> blockQ;
-
-    public Bank() {
-        clientAccounts = new ArrayList<>();
-        blockQ = new LinkedBlockingQueue<>();
-        thread = new Thread(this);
-        thread.start();
-    }
 
     public void run() {
         while(!Thread.interrupted()) {
@@ -33,13 +24,7 @@ public class Bank implements Runnable {
 
                 if(msg.getRequestType() == Message.RequestType.CREATE_ACCOUNT) {
                     //Create an account!
-                    Account newAccount;
-                    if(msg.getStartingBalance() != 0.0) {
-                        newAccount = new Account(msg.getStartingBalance());
-                    }
-                    else {
-                        newAccount = new Account();
-                    }
+                    Account newAccount = new Account();
                     clientAccounts.add(newAccount);
                 }
                 else if(msg.getRequestType() == Message.RequestType.CHECK_BALANCE) {
@@ -68,7 +53,7 @@ public class Bank implements Runnable {
         return accountCounter;
     }
 
-    public static void incrementAccountCounter() {
+    public static void incrememntAccountCounter() {
         accountCounter++;
     }
 }
