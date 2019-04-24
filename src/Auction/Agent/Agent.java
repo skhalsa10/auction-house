@@ -4,6 +4,7 @@ import Auction.AuctionHouse.Item;
 import Auction.GUI.GUI;
 import Auction.GUI.GUIMessages.GUIMessageAccount;
 import Auction.GUI.GUIMessages.GUIMessageLoaded;
+import Auction.Messages.MCreateAccount;
 import Auction.Messages.Message;
 import Auction.Messages.MessageToAgent;
 
@@ -39,9 +40,7 @@ public class Agent implements Runnable {
         new Thread(this).start();
     }
     private void openBankAccount(){
-        Message m = new Message(Message.RequestType.CREATE_ACCOUNT);
-        m.setAgentName(name);
-        m.setAgentBalance(balance);
+        MCreateAccount m = new MCreateAccount(name, balance);
         bankConnection.sendMessage(m);
     }
 
