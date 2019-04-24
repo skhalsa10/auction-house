@@ -1,6 +1,6 @@
 package Auction.Messages;
 
-public class MShutDown implements Message {
+public class MShutDown extends Message {
 
     private final int ID;
 

@@ -2,7 +2,7 @@ package Auction.Messages;
 
 import Auction.AuctionHouse.BidTracker;
 
-public class MBidWon implements Message {
+public class MBidWon extends Message {
     private final BidTracker itemInfo;
     private final int houseID;
 

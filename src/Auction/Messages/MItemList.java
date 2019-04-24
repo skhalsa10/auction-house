@@ -3,7 +3,7 @@ package Auction.Messages;
 import Auction.AuctionHouse.BidTracker;
 import java.util.ArrayList;
 
-public class MItemList implements Message{
+public class MItemList extends Message{
 
     private final int houseID;
     private final ArrayList<BidTracker> bidTrackers;

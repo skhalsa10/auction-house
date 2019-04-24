@@ -1,6 +1,6 @@
 package Auction.Messages;
 
-public class MBlockRejected implements Message {
+public class MBlockRejected extends Message {
 
 
     private final int itemID;

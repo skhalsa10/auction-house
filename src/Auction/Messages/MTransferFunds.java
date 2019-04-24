@@ -1,6 +1,6 @@
 package Auction.Messages;
 
-public class MTransferFunds implements Message {
+public class MTransferFunds extends Message {
 
     private final int amount;
     private final int fromAccount;

@@ -1,6 +1,6 @@
 package Auction.Messages;
 
-public class MHouseServerInfo implements Message {
+public class MHouseServerInfo extends Message {
 
     private final int housePort;
     private final int houseID;
