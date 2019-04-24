@@ -12,6 +12,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * the purpose of this class is encapsulate a stream to this server over a socket.
  * It will literally just read objects and put them into the messageQueue for the Auction house
+ *
+ * This pretty much handles the input stream from the Clients (agents) after the first message is received it adds the output
+ * stream to the clientOuts hash
+ *
+ * @author Siri Khalsa
+ * @version 2 this version converts the message to incorporate Abstract type
  */
 public class AuctionHouseThread extends Thread {
     private Socket socket;

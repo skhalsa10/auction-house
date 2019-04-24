@@ -13,14 +13,24 @@ import java.util.concurrent.LinkedBlockingQueue;
  * I made this because I want the action House to use its main thread to process messages for bidding
  * this class literally only listens on the server socket and accepts connections and passes it to an auctionHouseThread
  *
+ * @author Siri Khalsa
+ * @version 1
  *
  */
 public class AuctionHouseListener extends Thread {
+    //needed by the spawned sockets/threads
     private LinkedBlockingQueue<Message> houseMessageQueue;
     private HashMap<Integer, ObjectOutputStream> clientOuts;
+    //server socket to listen on
     private ServerSocket serverSocket;
     private boolean listening;
 
+    /**
+     *
+     * @param serverSocket this is the server socket to listen on
+     * @param messageQueue needed to pass to the spawned socket and thread
+     * @param clientOuts needed to pass to the spawned socket and thread
+     */
     public AuctionHouseListener(ServerSocket serverSocket, LinkedBlockingQueue<Message> messageQueue, HashMap<Integer, ObjectOutputStream> clientOuts){
         this.houseMessageQueue = messageQueue;
         this.clientOuts = clientOuts;
@@ -29,6 +39,9 @@ public class AuctionHouseListener extends Thread {
 
     }
 
+    /**
+     * literally just listens for new connections and accepts them...dude
+     */
     @Override
     public void run() {
         while(listening){
@@ -40,5 +53,14 @@ public class AuctionHouseListener extends Thread {
                 e.printStackTrace();
             }
         }
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void shutDown(){
+        listening = false;
     }
 }
