@@ -72,11 +72,11 @@ public class Message implements Serializable {
     /**
      * this constructor is compatible with type  BID only
      * @param type this needs to be BID to use this constructor
-     * @param agentID the agent ID/Account number making the bid
-     * @param itemID the item ID the agent is bidding on this ID can be the same in different houses but is unique to the house
+     * @param ID1 the agent ID/Account number making the bid
+     * @param ID2 the item ID the agent is bidding on this ID can be the same in different houses but is unique to the house
      * @param bidAmount the dollar amount being bid.
      */
-    public Message(RequestType type, int agentID, int itemID, int bidAmount){
+    public Message(RequestType type, int ID1, int ID2, int bidAmount){
         this.requestType = type;
         this.agentID = agentID;
         this.itemID = itemID;
@@ -109,6 +109,10 @@ public class Message implements Serializable {
     public Message(RequestType type, BidTracker bidInfo){
         this.requestType = type;
         this.bidInfo = bidInfo;
+
+    }
+
+    public Message(RequestType type, int fromAccount, int toAccount, int amount){
 
     }
 
