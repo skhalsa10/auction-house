@@ -2,9 +2,8 @@ package Auction.Agent;
 
 import Auction.AuctionHouse.Item;
 import Auction.GUI.GUI;
-import Auction.GUI.GUIMessages.GUIMessageAccount;
 import Auction.GUI.GUIMessages.GUIMessageLoaded;
-import Auction.Messages.*;
+import Auction.Messages.Message;
 
 import java.net.Socket;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Agent implements Runnable {
     private String name;
     private int balance;
-    private int agentID;
+    private int bankAccount;
     private int availFunds;
     private LinkedBlockingQueue<Message> messages = new LinkedBlockingQueue<>();
     private String bankHost;
@@ -24,8 +23,6 @@ public class Agent implements Runnable {
     private HashMap<Integer, Boolean> connectedHouses = new HashMap<>();
     private HashMap<Integer, Socket> auctionHouses = new HashMap<>();
     private GUI gui;
-    private boolean running = true;
-    private int ongoingBids = 0;
 
 
 
@@ -38,7 +35,9 @@ public class Agent implements Runnable {
         new Thread(this).start();
     }
     private void openBankAccount(){
-        MCreateAccount m = new MCreateAccount(name, balance);
+        Message m = new Message(Message.RequestType.CREATE_ACCOUNT);
+        m.setAgentName(name);
+        m.setAgentBalance(balance);
         bankConnection.sendMessage(m);
     }
 
@@ -56,18 +55,9 @@ public class Agent implements Runnable {
         return messages;
     }
 
-    public void addAuctionHouse() {
-
-    }
-
-    public void shutDown() {
-        bankConnection.closeConnection();
-        running = false;
-
-    }
-
     public void setBankAccount() {
-        //GUIMessageAccount accountM = new GUIMessageAccount();
+        //send bank account # to gui
+
     }
 
     private void setBalance() {
@@ -88,8 +78,8 @@ public class Agent implements Runnable {
     private void connectToAuctionHouse(Socket socket){
         AuctionHouseConnection c = new AuctionHouseConnection(socket,messages);
         new Thread(c).start();
-        MRequestItems m = new MRequestItems(agentID);
-        c.sendMessage(m);
+        Message m = new Message(Message.RequestType.REGISTER);
+        m.setAgentID(bankAccount);
     }
 
     private void connectToBank(String bankHost, int bankPort) {
@@ -98,7 +88,16 @@ public class Agent implements Runnable {
 
     }
 
-
+    private void processMessage() {
+        Message receivedMessage;
+        try {
+            receivedMessage = messages.take();
+            receivedMessage.printMessage();
+        }
+        catch(Exception e) {
+            System.err.println(e);
+        }
+    }
 
 
     private void updateBalance() {
@@ -118,33 +117,13 @@ public class Agent implements Runnable {
 
     }
 
-    private void processMessage() {
-        Message receivedMessage;
-        try {
-            receivedMessage = messages.take();
-            System.out.println(receivedMessage.toString());
-        }
-        catch(Exception e) {
-            System.err.println(e);
-        }
-    }
+
     @Override
     public void run() {
-        Message receivedMessage;
         connectToBank(bankHost, bankPortNum);
         openBankAccount();
-        while(running) {
-            try {
-                receivedMessage = messages.take();
-                System.out.println(receivedMessage.toString());
-                if(receivedMessage instanceof MShutDown) {
-                    shutDown();
-                }
-
-            }
-            catch (Exception e) {
-                System.err.println(e);
-            }
+        while(true) {
+            processMessage();
         }
 
     }

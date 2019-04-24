@@ -207,7 +207,7 @@ public class GUI extends AnimationTimer {
         if(m instanceof GUIMessageAccount) {
             System.out.println("gui message account");
             String num = Integer.toString(((GUIMessageAccount) m).getAccountID());
-            accountNum.setText("Account: " + num);
+            accountNum = new Text("Account: " + num);
         }
     }
 
