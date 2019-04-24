@@ -47,7 +47,7 @@ public class ItemGenerator {
         adjective = adjectives.get(random.nextInt(aCount+1));
         noun = nouns.get(random.nextInt(nCount+1));
         //System.out.println(adjective + " " + noun);
-        return (new Item(adjective + " " + noun));
+        return (new Item(adjective + " " + noun, 0));
     }
 
     public static void main(String args[]){

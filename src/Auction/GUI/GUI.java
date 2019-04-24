@@ -2,9 +2,7 @@ package Auction.GUI;
 
 import Auction.Agent.GUIAgentConnection;
 import Auction.AuctionHouse.Item;
-import Auction.GUI.GUIMessages.GUIMessage;
-import Auction.GUI.GUIMessages.GUIMessageAccount;
-import Auction.GUI.GUIMessages.GUIMessageLoaded;
+import Auction.GUI.GUIMessages.*;
 import Auction.Messages.Message;
 import Auction.Messages.MessageToAgent;
 import javafx.animation.AnimationTimer;
@@ -204,10 +202,27 @@ public class GUI extends AnimationTimer {
             houseIDs = ((GUIMessageLoaded) m).getHouseIDs();
             refreshNeeded = true;
         }
-        if(m instanceof GUIMessageAccount) {
+        else if(m instanceof GUIMessageAccount) {
             System.out.println("gui message account");
             String num = Integer.toString(((GUIMessageAccount) m).getAccountID());
-            accountNum = new Text("Account: " + num);
+            accountNum.setText("Account: " + num);
+        }
+        else if(m instanceof GUIMessageBalance) {
+            String balanceValue = Integer.toString(((GUIMessageBalance) m).getBalance());
+            balance.setText("Balance: $" + balanceValue);
+
+        }
+        else if(m instanceof GUIMessageItems) {
+            items = ((GUIMessageItems) m).getItems();
+            rendorItemPage();
+
+        }
+        else if(m instanceof GUIMessageAvailableFunds) {
+
+        }
+        else if(m instanceof GUIMessageStatus) {
+            statusMessage.setText(((GUIMessageStatus) m).getStatus());
+
         }
     }
 
