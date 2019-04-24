@@ -1,9 +1,9 @@
 package Auction.AuctionHouse;
 
+import Auction.Messages.MHouseServerInfo;
 import Auction.Messages.Message;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class AuctionHouse  extends Thread{
     private LinkedBlockingQueue<Message> messageQueue;
     private AuctionHouseListener socketListener;
     private AuctionToBankConnection bankConnection;
-    private int bankID;
+    private int houseID;
     private HashMap<Integer, ObjectOutputStream> clientOuts;
 
     /**
@@ -63,9 +63,7 @@ public class AuctionHouse  extends Thread{
             serverSocket = new ServerSocket(housePort);
             System.out.println(serverSocket.getInetAddress().getHostName());
             // send server info to the bank
-            Message m = new Message(Message.RequestType.HOUSE_SERVER_INFO);
-            m.setHouseHost(serverSocket.getInetAddress().getHostName());
-            m.setHousePort(housePort);
+            Message m = new MHouseServerInfo(houseID,serverSocket.getInetAddress().getHostName(),housePort);
             bankConnection.sendMessage(m);
         } catch (IOException e) {
             e.printStackTrace();
@@ -89,7 +87,7 @@ public class AuctionHouse  extends Thread{
             bankSocket= new Socket(bankHost, bankPort);
             //we will now beild the bank connection which handles all the communication outbound to the bank
             bankConnection = new AuctionToBankConnection(bankSocket, messageQueue);
-            bankID = bankConnection.register();
+            houseID = bankConnection.register();
             bankConnection.start();
 
 
