@@ -1,6 +1,6 @@
 package Auction.GUI.GUIMessages;
 
-public class GUIMessageAccount extends GUIMessage{
+public class GUIMessageAccount implements GUIMessage{
 
     private int accountID;
     public GUIMessageAccount(int accountID) {

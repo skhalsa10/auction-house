@@ -3,7 +3,7 @@ package Auction.GUI.GUIMessages;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GUIMessageLoaded extends GUIMessage{
+public class GUIMessageLoaded implements GUIMessage{
     private List<Integer> houseIDs;
 
     public GUIMessageLoaded(List<Integer> houseIDs){
