@@ -39,6 +39,34 @@ public class BankConnection implements Runnable {
 
     }
 
+    public void closeConnection() {
+        try {
+            out.close();
+        }
+        catch (Exception e) {
+            System.err.println(e);
+        }
+        finally {
+            try {
+                in.close();
+            }
+            catch (Exception e) {
+                System.err.println(e);
+            }
+            finally {
+                try {
+                    socket.close();
+                    connected = false;
+                }
+                catch (Exception e) {
+                    System.err.println(e);
+                }
+            }
+        }
+
+
+    }
+
 
     @Override
     public void run () {

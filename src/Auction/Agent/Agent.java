@@ -2,8 +2,10 @@ package Auction.Agent;
 
 import Auction.AuctionHouse.Item;
 import Auction.GUI.GUI;
+import Auction.GUI.GUIMessages.GUIMessageAccount;
 import Auction.GUI.GUIMessages.GUIMessageLoaded;
 import Auction.Messages.Message;
+import Auction.Messages.MessageToAgent;
 
 import java.net.Socket;
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ public class Agent implements Runnable {
     private HashMap<Integer, Boolean> connectedHouses = new HashMap<>();
     private HashMap<Integer, Socket> auctionHouses = new HashMap<>();
     private GUI gui;
+    private boolean running = true;
+    private int ongoingBids = 0;
 
 
 
@@ -55,9 +59,18 @@ public class Agent implements Runnable {
         return messages;
     }
 
-    public void setBankAccount() {
-        //send bank account # to gui
+    public void addAuctionHouse() {
 
+    }
+
+    public void shutDown() {
+        bankConnection.closeConnection();
+        running = false;
+
+    }
+
+    public void setBankAccount() {
+        //GUIMessageAccount accountM = new GUIMessageAccount();
     }
 
     private void setBalance() {
@@ -88,16 +101,7 @@ public class Agent implements Runnable {
 
     }
 
-    private void processMessage() {
-        Message receivedMessage;
-        try {
-            receivedMessage = messages.take();
-            receivedMessage.printMessage();
-        }
-        catch(Exception e) {
-            System.err.println(e);
-        }
-    }
+
 
 
     private void updateBalance() {
@@ -117,13 +121,33 @@ public class Agent implements Runnable {
 
     }
 
-
+    private void processMessage() {
+        Message receivedMessage;
+        try {
+            receivedMessage = messages.take();
+            receivedMessage.printMessage();
+        }
+        catch(Exception e) {
+            System.err.println(e);
+        }
+    }
     @Override
     public void run() {
+        Message receivedMessage;
         connectToBank(bankHost, bankPortNum);
         openBankAccount();
-        while(true) {
-            processMessage();
+        while(running) {
+            try {
+                receivedMessage = messages.take();
+                receivedMessage.printMessage();
+                if(receivedMessage.getRequestType() == Message.RequestType.ITEM_WON) {
+                    shutDown();
+                }
+
+            }
+            catch (Exception e) {
+                System.err.println(e);
+            }
         }
 
     }
