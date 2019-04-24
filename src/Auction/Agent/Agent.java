@@ -2,10 +2,8 @@ package Auction.Agent;
 
 import Auction.AuctionHouse.Item;
 import Auction.GUI.GUI;
-import Auction.GUI.GUIMessages.GUIMessageLoaded;
-import Auction.Messages.MCreateAccount;
-import Auction.Messages.MRequestItems;
-import Auction.Messages.Message;
+import Auction.GUI.GUIMessages.*;
+import Auction.Messages.*;
 
 import java.net.Socket;
 import java.util.ArrayList;
@@ -94,21 +92,25 @@ public class Agent implements Runnable {
      * Sends bank account number to gui
      */
     public void sendBankAccount() {
-        //send bank account # to gui
-
+        GUIMessageAccount accountM = new GUIMessageAccount(agentID);
+        gui.sendMessage(accountM);
     }
 
     /**
      * Sends updated balance to gui
      */
     private void sendBalance() {
-
+        GUIMessageBalance balanceM = new GUIMessageBalance(balance);
+        gui.sendMessage(balanceM);
     }
 
     /**
      * Sends available funds to gui
      */
-    private void sendAvailableFunds() {}
+    private void sendAvailableFunds() {
+        GUIMessageAvailableFunds fundsM = new GUIMessageAvailableFunds(availFunds);
+        gui.sendMessage(fundsM);
+    }
 
     /**
      * Choose an auction house to connect to
@@ -116,12 +118,13 @@ public class Agent implements Runnable {
      */
     private void chooseAuctionHouse(int houseID) {
         boolean alreadyConnected = connectedHouses.get(houseID);
-        AuctionHouseConnection connection;
+        AuctionHouseConnection connection = auctionHouses.get(houseID);
         if(!alreadyConnected) {
-            connection = auctionHouses.get(houseID);
             connectToAuctionHouse(connection);
+            connectedHouses.put(houseID, true);
         }
-
+        MRequestItems m = new MRequestItems(agentID);
+        connection.sendMessage(m);
     }
 
     /**
@@ -130,8 +133,8 @@ public class Agent implements Runnable {
      */
     private void connectToAuctionHouse(AuctionHouseConnection connection){
         new Thread(connection).start();
-        MRequestItems m = new MRequestItems(agentID);
-        connection.sendMessage(m);
+        //MRequestItems m = new MRequestItems(agentID);
+        //connection.sendMessage(m);
     }
 
     /**
@@ -161,12 +164,14 @@ public class Agent implements Runnable {
 
     /**
      * Sends message to house to bid on an item
-     * @param amount bid amount
-     * @param bidItem item to bid on
+     * @param houseId house id
+     * @param bidAmount bid amount
+     * @param itemId item id
      */
-    // maybe use item id
-    private void bidOnItem(int amount, Item bidItem) {
-
+    private void bidOnItem(int houseId, int bidAmount, int itemId) {
+        AuctionHouseConnection connection = auctionHouses.get(houseId);
+        MBid m = new MBid(agentID, itemId, bidAmount);
+        connection.sendMessage(m);
     }
 
     /**
@@ -175,7 +180,8 @@ public class Agent implements Runnable {
      * @param houseAccountNum house bank account number
      */
     private void transferFunds(int amount, int houseAccountNum){
-
+        MTransferFunds m = new MTransferFunds(agentID, houseAccountNum, amount);
+        bankConnection.sendMessage(m);
     }
 
     /**
@@ -183,6 +189,15 @@ public class Agent implements Runnable {
      */
     private void sendStatusMessage() {
 
+    }
+
+    /**
+     * Sends message to gui about items
+     * @param items list of items
+     */
+    private void sendItems(ArrayList<Item> items) {
+        GUIMessageItems itemsM = new GUIMessageItems(items);
+        gui.sendMessage(itemsM);
     }
 
 
