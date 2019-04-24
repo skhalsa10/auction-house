@@ -3,6 +3,8 @@ package Auction.Agent;
 import Auction.AuctionHouse.Item;
 import Auction.GUI.GUI;
 import Auction.GUI.GUIMessages.GUIMessageLoaded;
+import Auction.Messages.MCreateAccount;
+import Auction.Messages.MRequestItems;
 import Auction.Messages.Message;
 
 import java.net.Socket;
@@ -14,14 +16,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Agent implements Runnable {
     private String name;
     private int balance;
-    private int bankAccount;
+    private int agentID;
     private int availFunds;
     private LinkedBlockingQueue<Message> messages = new LinkedBlockingQueue<>();
     private String bankHost;
     private int bankPortNum;
     private BankConnection bankConnection;
     private HashMap<Integer, Boolean> connectedHouses = new HashMap<>();
-    private HashMap<Integer, Socket> auctionHouses = new HashMap<>();
+    private HashMap<Integer, AuctionHouseConnection> auctionHouses = new HashMap<>();
     private GUI gui;
 
 
@@ -35,20 +37,27 @@ public class Agent implements Runnable {
         new Thread(this).start();
     }
     private void openBankAccount(){
-        Message m = new Message(Message.RequestType.CREATE_ACCOUNT);
-        m.setAgentName(name);
-        m.setAgentBalance(balance);
+        MCreateAccount m = new MCreateAccount(name,balance);
         bankConnection.sendMessage(m);
     }
 
-    public void setAuctionHouses() {
-        //send auction house id's to gui
-        List<Integer> houseIDs = new ArrayList<>();
-        houseIDs.add(1);
-        houseIDs.add(2);
-        houseIDs.add(3);
-        GUIMessageLoaded loadedM = new GUIMessageLoaded(houseIDs);
+    public void sendHouseList() {
+        ArrayList<Integer> houseIds = new ArrayList<>();
+        houseIds.addAll(auctionHouses.keySet());
+        GUIMessageLoaded loadedM = new GUIMessageLoaded(houseIds);
         gui.sendMessage(loadedM);
+    }
+
+    public void setAuctionHouse(int houseId, String hostname, int portNum) {
+        try {
+            Socket socket = new Socket(hostname, portNum);
+            AuctionHouseConnection connection = new AuctionHouseConnection(socket, messages);
+            auctionHouses.put(houseId, connection);
+        }
+        catch (Exception e) {
+            System.err.println(e);
+        }
+
     }
 
     public LinkedBlockingQueue<Message> getMessages(){
@@ -69,17 +78,19 @@ public class Agent implements Runnable {
     private void chooseAuctionHouse(int houseID) {
         boolean alreadyConnected = connectedHouses.get(houseID);
         Socket socket;
+        AuctionHouseConnection connection;
         if(!alreadyConnected) {
-            socket = auctionHouses.get(houseID);
-            connectToAuctionHouse(socket);
+            connection = auctionHouses.get(houseID);
+            connectToAuctionHouse(connection);
         }
+
     }
 
-    private void connectToAuctionHouse(Socket socket){
-        AuctionHouseConnection c = new AuctionHouseConnection(socket,messages);
-        new Thread(c).start();
-        Message m = new Message(Message.RequestType.REGISTER);
-        m.setAgentID(bankAccount);
+    private void connectToAuctionHouse(AuctionHouseConnection connection){
+        //AuctionHouseConnection c = new AuctionHouseConnection(socket,messages);
+        new Thread(connection).start();
+        MRequestItems m = new MRequestItems(agentID);
+        connection.sendMessage(m);
     }
 
     private void connectToBank(String bankHost, int bankPort) {
@@ -92,7 +103,7 @@ public class Agent implements Runnable {
         Message receivedMessage;
         try {
             receivedMessage = messages.take();
-            receivedMessage.printMessage();
+            System.out.println(receivedMessage.toString());
         }
         catch(Exception e) {
             System.err.println(e);

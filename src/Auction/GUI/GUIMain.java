@@ -19,7 +19,7 @@ public class GUIMain extends Application {
         Agent a = new Agent(bankHost, bankPortNum, name, initialBalance, gui);
         gui.setGUIAgentConnection(a.getMessages());
 
-        a.setAuctionHouses();
+        a.sendHouseList();
 
     }
 

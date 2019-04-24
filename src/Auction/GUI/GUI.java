@@ -294,10 +294,10 @@ public class GUI extends AnimationTimer {
         listPane.getChildren().add(itemList);
 
         //here I get the list of items but I am making a dummy one for now
-        items = new ArrayList<>();
+        /*items = new ArrayList<>();
         items.add(new Item("test1"));
         items.add(new Item("test2"));
-        items.add(new Item("test3"));
+        items.add(new Item("test3"));*/
 
         itemList.setAlignment(Pos.CENTER);
         itemList.setSpacing(25);

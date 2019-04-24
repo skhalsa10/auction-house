@@ -26,7 +26,6 @@ public class TestServer {
                     System.out.println("no message");
                 }
                 else {
-                    System.out.println(m.getRequestType());
                     System.out.println("Message Received");
                     out.writeObject(m);
                 }
