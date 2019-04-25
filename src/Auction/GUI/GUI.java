@@ -3,6 +3,7 @@ package Auction.GUI;
 import Auction.Agent.GUIAgentConnection;
 import Auction.AuctionHouse.Item;
 import Auction.GUI.GUIMessages.*;
+import Auction.Messages.MSelectHouse;
 import Auction.Messages.Message;
 import Auction.Messages.MessageToAgent;
 import javafx.animation.AnimationTimer;
@@ -268,7 +269,7 @@ public class GUI extends AnimationTimer {
                     Text t = (Text) temp.getChildren().get(2);
                     System.out.println("ID is " + t.getText());
                     int selectHouseId = Integer.parseInt(t.getText());
-                    MessageToAgent m = new MessageToAgent(MessageToAgent.RequestType.SELECT_HOUSE, selectHouseId);
+                    MSelectHouse m = new MSelectHouse(selectHouseId);
                     connection.sendMessage(m);
                 }
             });

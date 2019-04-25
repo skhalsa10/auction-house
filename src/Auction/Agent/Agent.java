@@ -134,8 +134,8 @@ public class Agent implements Runnable {
      */
     private void connectToAuctionHouse(AuctionHouseConnection connection){
         new Thread(connection).start();
-        //MRequestItems m = new MRequestItems(agentID);
-        //connection.sendMessage(m);
+        MRequestItems m = new MRequestItems(agentID);
+        connection.sendMessage(m);
     }
 
     /**
@@ -236,6 +236,9 @@ public class Agent implements Runnable {
         }
         else if(m instanceof MBidAccepted) {
             sendStatusMessage(m);
+        }
+        else if(m instanceof MSelectHouse) {
+            chooseAuctionHouse(((MSelectHouse) m).getHouseId());
         }
     }
 
