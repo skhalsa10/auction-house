@@ -4,12 +4,9 @@ import Auction.AuctionHouse.Item;
 import Auction.GUI.GUI;
 import Auction.GUI.GUIMessages.*;
 import Auction.Messages.*;
-
-import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -75,6 +72,8 @@ public class Agent implements Runnable {
             Socket socket = new Socket(hostname, portNum);
             AuctionHouseConnection connection = new AuctionHouseConnection(socket, messages);
             auctionHouses.put(houseId, connection);
+            connectedHouses.put(houseId, false);
+            new Thread(connection).start();
         }
         catch (Exception e) {
             System.err.println(e);
@@ -156,7 +155,7 @@ public class Agent implements Runnable {
         Message receivedMessage;
         try {
             receivedMessage = messages.take();
-            System.out.println(receivedMessage.toString());
+            checkMessage(receivedMessage);
         }
         catch(Exception e) {
             System.err.println(e);
@@ -164,7 +163,7 @@ public class Agent implements Runnable {
     }
 
     private void setBankAccount(int accountNum) {
-        this.agentID = accountNum;
+        agentID = accountNum;
         sendBankAccount();
     }
 
@@ -173,12 +172,14 @@ public class Agent implements Runnable {
         sendAvailableFunds();
     }
 
-    private void setHouseList(ArrayList<Integer> houseList) {
-        for(int houseId: houseList) {
-            if(!auctionHouses.containsKey(houseId)) {
-
+    private void setHouseList(Message m) {
+        ArrayList<MHouseServerInfo> houses = ((MAuctionHouses) m).getHouses();
+        for(MHouseServerInfo h: houses) {
+            if(!auctionHouses.containsKey(h.getHouseID())) {
+                setAuctionHouse(h.getHouseID(),h.getHouseHostName(),h.getHousePort());
             }
         }
+        sendHouseList();
     }
 
     private void shutDown() {
@@ -207,7 +208,8 @@ public class Agent implements Runnable {
 
         }
         else if(m instanceof MAuctionHouses) {
-
+            System.out.println("auction house");
+            setHouseList(m);
         }
         else if(m instanceof MAvailableFunds) {
             setAvailFunds(((MAvailableFunds) m).getAvailableFunds());
@@ -243,6 +245,7 @@ public class Agent implements Runnable {
         AuctionHouseConnection connection = auctionHouses.get(houseId);
         MBid m = new MBid(agentID, itemId, bidAmount);
         connection.sendMessage(m);
+        ongoingBids++;
     }
 
     /**

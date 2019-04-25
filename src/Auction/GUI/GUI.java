@@ -172,7 +172,7 @@ public class GUI extends AnimationTimer {
                 switch (page) {
                     case LOADING_PAGE: {
                         //System.out.println("hi");
-                        System.out.println(loadState);
+                        //System.out.println(loadState);
                         renderLoadingPage();
                         break;
                     }
@@ -197,6 +197,7 @@ public class GUI extends AnimationTimer {
         GUIMessage m = messages.poll();
         if(m == null) {return;}
         if(m instanceof GUIMessageLoaded){
+            System.out.println("loaded");
             isLoading = false;
             page = pageType.HOUSE_PAGE;
             houseIDs = ((GUIMessageLoaded) m).getHouseIDs();

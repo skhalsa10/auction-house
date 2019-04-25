@@ -61,7 +61,15 @@ public class FakeServer {
                         break;
                     }
                     case "MAuctionHouses":{
-                        out.writeObject(new MAuctionHouses());
+                        MHouseServerInfo m1 = new MHouseServerInfo(1, "0.0.0.0", 8080);
+                        //MHouseServerInfo m2 = new MHouseServerInfo(2, "localhost", 8081);
+                        //MHouseServerInfo m3 = new MHouseServerInfo(3, "localhost", 8082);
+                        ArrayList<MHouseServerInfo> houses = new ArrayList<>();
+                        houses.add(m1);
+                        //houses.add(m2);
+                        //houses.add(m3);
+                        System.out.println("auction house");
+                        out.writeObject(new MAuctionHouses(houses));
                         break;
                     }
                     case "MAvailableFunds":{

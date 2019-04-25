@@ -24,7 +24,6 @@ public class AuctionHouseConnection implements Runnable {
      */
     public AuctionHouseConnection(Socket socket, LinkedBlockingQueue messages){
         this.messages = messages;
-
         try {
             this.socket = socket;
             connected = true;
