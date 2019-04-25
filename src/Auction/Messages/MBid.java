@@ -1,6 +1,6 @@
 package Auction.Messages;
 
-public class MBid implements Message {
+public class MBid extends Message {
 
     private final int agentID;
     private final int bidAmount;
