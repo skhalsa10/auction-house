@@ -29,6 +29,7 @@ public class AuctionHouseConnection implements Runnable {
             connected = true;
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
+            new Thread(this).start();
 
         }
         catch (Exception e) {
@@ -56,8 +57,9 @@ public class AuctionHouseConnection implements Runnable {
      */
     @Override
     public void run () {
+        System.out.println("connected to house");
         Message receivedMessage;
-        while(connected) {
+        while(true) {
             try {
                 receivedMessage = (Message) in.readObject();
                 if(receivedMessage != null) {

@@ -73,7 +73,7 @@ public class Agent implements Runnable {
             AuctionHouseConnection connection = new AuctionHouseConnection(socket, messages);
             auctionHouses.put(houseId, connection);
             connectedHouses.put(houseId, false);
-            new Thread(connection).start();
+            //new Thread(connection).start();
         }
         catch (Exception e) {
             System.err.println(e);
@@ -145,7 +145,7 @@ public class Agent implements Runnable {
      */
     private void connectToBank(String bankHost, int bankPort) {
         bankConnection = new BankConnection(bankHost, bankPort, messages);
-        new Thread(bankConnection).start();
+        //new Thread(bankConnection).start();
     }
 
     /**
@@ -203,6 +203,7 @@ public class Agent implements Runnable {
 
     private void checkMessage(Message m){
         if(m instanceof MAccountCreated) {
+            System.out.println("account");
             setBankAccount(((MAccountCreated) m).getAccountID());
         }
         else if(m instanceof MFundsTransferred) {
@@ -228,7 +229,10 @@ public class Agent implements Runnable {
             sendStatusMessage(m);
         }
         else if(m instanceof MBidWon) {
+            int amount = ((MBidWon)m).getItemInfo().getCurrentBid();
+            int houseAccountNum = ((MBidWon) m).getHouseID();
             sendStatusMessage(m);
+            transferFunds(amount, houseAccountNum);
         }
         else if(m instanceof MBidAccepted) {
             sendStatusMessage(m);

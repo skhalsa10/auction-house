@@ -30,6 +30,7 @@ public class BankConnection implements Runnable {
             connected = true;
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
+            new Thread(this).start();
         }
         catch (Exception e) {
             System.err.println(e);
@@ -57,7 +58,8 @@ public class BankConnection implements Runnable {
     @Override
     public void run () {
         Message receivedMessage;
-        while(connected) {
+        System.out.println("connected to bank");
+        while(true) {
             try {
                 receivedMessage = (Message) in.readObject();
                 if(receivedMessage != null) {
