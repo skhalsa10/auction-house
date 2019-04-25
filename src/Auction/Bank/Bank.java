@@ -30,9 +30,11 @@ public class Bank implements Runnable {
 
     public void run() {
         while(!Thread.interrupted()) {
+            System.out.println("Runnin'");
+            /*
             try {
-                Message msg;
-                msg = blockQ.take();
+                Message msg = null;
+                //msg = blockQ.take();
 
                 if (msg instanceof MCreateAccount) {
                     MCreateAccount m = ((MCreateAccount) msg);
@@ -70,16 +72,7 @@ public class Bank implements Runnable {
             }
             catch(InterruptedException e){
                 e.printStackTrace();
-            }
-        }
-    }
-
-    public synchronized void receiveMessage(Message msg) {
-        try {
-            blockQ.put(msg);
-        }
-        catch (InterruptedException e){
-            e.printStackTrace();
+            }*/
         }
     }
 
@@ -92,14 +85,7 @@ public class Bank implements Runnable {
     }
 
     public static void main(String args[]) throws IOException {
-        int portNum = Integer.parseInt(args[0]);
-        ServerSocket serverSocket = new ServerSocket(portNum);
+        ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
 
-        while (true) {
-            Socket clientSocket = serverSocket.accept();
-            Client client = new Client(clientSocket);
-            Thread thread = new Thread(client);
-            thread.start();
-        }
     }
 }
