@@ -1,12 +1,15 @@
 /***********************************
  * Alexandra Valdez
  * CS 351-002
- * April 15, 2019
+ * April 24, 2019
  ***********************************/
 package Auction.Bank;
 
-import Auction.Messages.Message;
+import Auction.Messages.*;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -31,22 +34,38 @@ public class Bank implements Runnable {
                 Message msg;
                 msg = blockQ.take();
 
-                if(msg.getRequestType() == Message.RequestType.CREATE_ACCOUNT) {
-                    //Create an account!
+                if (msg instanceof MCreateAccount) {
+                    MCreateAccount m = ((MCreateAccount) msg);
+                    // Create new account and add to our list of accounts
                     Account newAccount;
-                    if(msg.getStartingBalance() != 0.0) {
-                        newAccount = new Account(msg.getStartingBalance());
-                    }
-                    else {
-                        newAccount = new Account();
-                    }
+                    newAccount = new Account(m.getName(), m.getStartingBalance());
                     clientAccounts.add(newAccount);
+
+                    // Then send MAccountCreated message to the requesting agent or house
+                    MAccountCreated outgoingMsg = new MAccountCreated(newAccount.getAccountID());
+
                 }
-                else if(msg.getRequestType() == Message.RequestType.CHECK_BALANCE) {
-                    //Check da balance!
+                else if (msg instanceof MTransferFunds) {
+                    MTransferFunds m = ((MTransferFunds) msg);
+                    //Transfer funds, then send MFundsTransferred to the requesting agent or house
                 }
-                else if(msg.getRequestType() == Message.RequestType.TRANSFER_FUNDS) {
-                    //Transfer them funds!
+                else if (msg instanceof MBlockFunds) {
+                    MBlockFunds m = ((MBlockFunds) msg);
+                    //Block funds on given account, then send the house MBlockAccepted or MBlockRejected message
+                }
+                else if (msg instanceof MUnblockFunds) {
+                    MUnblockFunds m = ((MUnblockFunds) msg);
+                }
+                else if (msg instanceof MHouseServerInfo) {
+                    MHouseServerInfo m = ((MHouseServerInfo) msg);
+                    //Send MAuctionHouses message to the requesting agent
+                }
+                else if (msg instanceof MShutDown) {
+                    MShutDown m = ((MShutDown) msg);
+                    //Agent or house requesting to shut down and stop being tracked by the bank
+                }
+                else {
+                    System.out.println("Ran into message type not intended for bank use.");
                 }
             }
             catch(InterruptedException e){
@@ -70,5 +89,17 @@ public class Bank implements Runnable {
 
     public static void incrementAccountCounter() {
         accountCounter++;
+    }
+
+    public static void main(String args[]) throws IOException {
+        int portNum = Integer.parseInt(args[0]);
+        ServerSocket serverSocket = new ServerSocket(portNum);
+
+        while (true) {
+            Socket clientSocket = serverSocket.accept();
+            Client client = new Client(clientSocket);
+            Thread thread = new Thread(client);
+            thread.start();
+        }
     }
 }
