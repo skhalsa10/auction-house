@@ -1,50 +1,62 @@
 /***********************************
  * Alexandra Valdez
  * CS 351-002
- * April 24, 2019
+ * April 25, 2019
  ***********************************/
 package Auction.Bank;
 
 import Auction.Messages.*;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class Bank implements Runnable {
+public class Bank extends Thread{
     public static int accountCounter = 0;
 
-    private Thread thread;
     private List<Account> clientAccounts;
     private LinkedBlockingQueue<Message> blockQ;
+    private BankServer bankServer;
+    private HashMap<String, ObjectOutputStream> clientConnections;
 
     public Bank() {
         clientAccounts = new ArrayList<>();
         blockQ = new LinkedBlockingQueue<>();
-        thread = new Thread(this);
-        thread.start();
+        try {
+            bankServer = new BankServer(7878, blockQ, clientConnections);
+            bankServer.run();
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void run() {
         while(!Thread.interrupted()) {
-            System.out.println("Runnin'");
-            /*
+            //System.out.println("Bank itself running.");
             try {
                 Message msg = null;
-                //msg = blockQ.take();
+                msg = blockQ.take();
 
                 if (msg instanceof MCreateAccount) {
-                    MCreateAccount m = ((MCreateAccount) msg);
                     // Create new account and add to our list of accounts
+                    MCreateAccount m = ((MCreateAccount) msg);
                     Account newAccount;
                     newAccount = new Account(m.getName(), m.getStartingBalance());
                     clientAccounts.add(newAccount);
 
-                    // Then send MAccountCreated message to the requesting agent or house
+                    // Create MAccountCreated message with new account's ID attached
+                    // Then send the message to the requesting agent or house
                     MAccountCreated outgoingMsg = new MAccountCreated(newAccount.getAccountID());
+                    try {
+                        clientConnections.get(m.getName()).writeObject(outgoingMsg);
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                 }
                 else if (msg instanceof MTransferFunds) {
@@ -72,7 +84,7 @@ public class Bank implements Runnable {
             }
             catch(InterruptedException e){
                 e.printStackTrace();
-            }*/
+            }
         }
     }
 
@@ -85,7 +97,7 @@ public class Bank implements Runnable {
     }
 
     public static void main(String args[]) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]));
-
+        Bank daBank = new Bank();
+        daBank.start();
     }
 }
