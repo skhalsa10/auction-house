@@ -62,8 +62,6 @@ public class BankConnection implements Runnable {
                 receivedMessage = (Message) in.readObject();
                 if(receivedMessage != null) {
                     messages.put(receivedMessage);
-                    System.out.println(receivedMessage.toString());
-                    //receivedMessage.printMessage();
                 }
             }
             catch (Exception e) {

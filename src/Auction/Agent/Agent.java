@@ -156,6 +156,7 @@ public class Agent implements Runnable {
         try {
             receivedMessage = messages.take();
             checkMessage(receivedMessage);
+            System.out.println(receivedMessage);
         }
         catch(Exception e) {
             System.err.println(e);
