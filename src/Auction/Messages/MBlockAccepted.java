@@ -1,6 +1,6 @@
 package Auction.Messages;
 
-public class MBlockAccepted implements Message {
+public class MBlockAccepted extends Message {
     private final int itemID;
     private final int agentID;
     private final int amount;

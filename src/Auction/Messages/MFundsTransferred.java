@@ -1,6 +1,6 @@
 package Auction.Messages;
 
-public class MFundsTransferred implements Message {
+public class MFundsTransferred extends Message {
 
     private final int newBalance;
     private final int fromAccount;
