@@ -120,10 +120,10 @@ public class Agent implements Runnable {
     private void chooseAuctionHouse(int houseID) {
         boolean alreadyConnected = connectedHouses.get(houseID);
         AuctionHouseConnection connection = auctionHouses.get(houseID);
-        if(!alreadyConnected) {
+        /*if(!alreadyConnected) {
             connectToAuctionHouse(connection);
             connectedHouses.put(houseID, true);
-        }
+        }*/
         MRequestItems m = new MRequestItems(agentID);
         connection.sendMessage(m);
     }
@@ -205,9 +205,11 @@ public class Agent implements Runnable {
         if(m instanceof MAccountCreated) {
             System.out.println("account");
             setBankAccount(((MAccountCreated) m).getAccountID());
+            requestHouses();
         }
         else if(m instanceof MFundsTransferred) {
-
+            //request balance
+            //request available funds
         }
         else if(m instanceof MAuctionHouses) {
             System.out.println("auction house");
@@ -239,6 +241,7 @@ public class Agent implements Runnable {
         }
         else if(m instanceof MSelectHouse) {
             chooseAuctionHouse(((MSelectHouse) m).getHouseId());
+            requestItems(((MSelectHouse) m).getHouseId());
         }
     }
 
@@ -281,6 +284,24 @@ public class Agent implements Runnable {
     private void sendItems(ArrayList<Item> items) {
         GUIMessageItems itemsM = new GUIMessageItems(items);
         gui.sendMessage(itemsM);
+    }
+
+    /**
+     * Requests a list of items from auction house
+     * @param houseId id of auction house
+     */
+    private void requestItems(int houseId) {
+        AuctionHouseConnection connection = auctionHouses.get(houseId);
+        MRequestItems m = new MRequestItems(agentID);
+        connection.sendMessage(m);
+    }
+
+    /**
+     * Requests a list of houses from bank
+     */
+    private void requestHouses() {
+        MRequestHouses m = new MRequestHouses(agentID);
+        bankConnection.sendMessage(m);
     }
 
 
