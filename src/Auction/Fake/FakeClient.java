@@ -58,7 +58,7 @@ public class FakeClient {
                         break;
                     }
                     case "MAvailableFunds":{
-                        out.writeObject(new MAvailableFunds(300));
+                        out.writeObject(new MAvailableFunds(30000));
                         break;
                     }
                     case "MBid":{
@@ -82,15 +82,15 @@ public class FakeClient {
                         break;
                     }
                     case "MBlockAccepted":{
-                        out.writeObject(new MBlockAccepted(1,2,200));
+                        out.writeObject(new MBlockAccepted(73,2,200));
                         break;
                     }
                     case "MBlockFunds":{
-                        out.writeObject(new MBlockFunds(7,3,4,40));
+                        out.writeObject(new MBlockFunds(7,73,4,40));
                         break;
                     }
                     case "MBlockRejected":{
-                        out.writeObject(new MBlockRejected(1,2,200));
+                        out.writeObject(new MBlockRejected(73,2,200));
                         break;
                     }
                     case "MCreateAccount":{
@@ -98,7 +98,7 @@ public class FakeClient {
                         break;
                     }
                     case "MFundsTransferred":{
-                        out.writeObject(new MFundsTransferred(1,2,200));
+                        out.writeObject(new MFundsTransferred(73,88,200));
                         break;
                     }
                     case "MHouseServerInfo":{
@@ -114,19 +114,22 @@ public class FakeClient {
                         break;
                     }
                     case "MRequestItems":{
-                        out.writeObject(new MRequestItems(13));
+                        out.writeObject(new MRequestItems(73));
                         break;
                     }
                     case "MShutDown":{
-                        out.writeObject(new MShutDown(10));
+                        out.writeObject(new MShutDown(73));
                         break;
                     }
                     case "MTransferFunds":{
-                        out.writeObject(new MTransferFunds(1,2,200));
+                        out.writeObject(new MTransferFunds(73,88,200));
                         break;
                     }
                     case "MUnblockFunds":{
-                        out.writeObject(new MUnblockFunds(1,2,200));
+                        out.writeObject(new MUnblockFunds(1,73,200));
+                        break;
+                    }
+                    case "skip":{
                         break;
                     }
                     default:{
