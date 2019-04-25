@@ -155,10 +155,11 @@ public class AuctionHouse  extends Thread{
             if(m2.getItemID() == tracker3.getItem().getID()){
                 t = tracker3;
             }
-            int oldWinner = t.getBidOwnerID();
+            Integer oldWinner = t.getBidOwnerID();
             if(t.setBid(m2.getAmount(),m2.getAgentID())){
                 try {
                     clientOuts.get(m2.getAgentID()).writeObject(new MBidAccepted(myID,t));
+                    if(oldWinner != null)
                     clientOuts.get(oldWinner).writeObject(new MBidOutbid(myID,t));
                 } catch (IOException e) {
                     e.printStackTrace();
