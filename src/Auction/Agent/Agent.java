@@ -1,5 +1,6 @@
 package Auction.Agent;
 
+import Auction.AuctionHouse.BidTracker;
 import Auction.AuctionHouse.Item;
 import Auction.GUI.GUI;
 import Auction.GUI.GUIMessages.*;
@@ -203,7 +204,6 @@ public class Agent implements Runnable {
 
     private void checkMessage(Message m){
         if(m instanceof MAccountCreated) {
-            System.out.println("account");
             setBankAccount(((MAccountCreated) m).getAccountID());
             requestHouses();
         }
@@ -212,14 +212,13 @@ public class Agent implements Runnable {
             //request available funds
         }
         else if(m instanceof MAuctionHouses) {
-            System.out.println("auction house");
             setHouseList(m);
         }
         else if(m instanceof MAvailableFunds) {
             setAvailFunds(((MAvailableFunds) m).getAvailableFunds());
         }
         else if(m instanceof MItemList) {
-
+            sendItems(m);
         }
         else if(m instanceof MShutDown) {
             processShutDown(m);
@@ -277,11 +276,13 @@ public class Agent implements Runnable {
         gui.sendMessage(statusM);
     }
 
-    /**
-     * Sends message to gui about items
-     * @param items list of items
-     */
-    private void sendItems(ArrayList<Item> items) {
+
+    private void sendItems(Message m) {
+        ArrayList<Item> items = new ArrayList<>();
+        ArrayList<BidTracker> trackers = ((MItemList)m).getBidTrackers();
+        for(BidTracker t: trackers) {
+            items.add(t.getItem());
+        }
         GUIMessageItems itemsM = new GUIMessageItems(items);
         gui.sendMessage(itemsM);
     }

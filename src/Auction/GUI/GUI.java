@@ -213,7 +213,8 @@ public class GUI extends AnimationTimer {
         }
         else if(m instanceof GUIMessageItems) {
             items = ((GUIMessageItems) m).getItems();
-            rendorItemPage();
+            page = pageType.ITEM_PAGE;
+            refreshNeeded = true;
 
         }
         else if(m instanceof GUIMessageAvailableFunds) {
