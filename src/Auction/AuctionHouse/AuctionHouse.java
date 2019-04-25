@@ -1,13 +1,12 @@
 package Auction.AuctionHouse;
 
-import Auction.Messages.MHouseServerInfo;
-import Auction.Messages.MShutDown;
-import Auction.Messages.Message;
+import Auction.Messages.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -122,6 +121,80 @@ public class AuctionHouse  extends Thread{
 
     private void processMessage(Message m) {
         System.out.println("processing message from main House thread. M request type is: " + m);
+
+        if(m instanceof MRequestItems){
+            MRequestItems m2 = (MRequestItems) m;
+            if(clientOuts.get(m2.getAgentID()) == null){
+                System.out.println("error there is no agentID " + m2.getAgentID() + " in clientouts");
+            }
+            ArrayList<BidTracker> list = new ArrayList<>();
+            list.add(tracker1.clone());
+            list.add(tracker2.clone());
+            list.add(tracker3.clone());
+            try {
+                clientOuts.get(m2.getAgentID()).writeObject(new MItemList(myID,list));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(m instanceof MBid){
+            MBid m2 = (MBid) m;
+            MBlockFunds mbf = new MBlockFunds(myID,m2.getAgentID(),m2.getItemID(),m2.getBidAmount());
+            bankConnection.sendMessage(mbf);
+        }
+        else if(m instanceof MBlockAccepted){
+            MBlockAccepted m2 = (MBlockAccepted) m;
+            BidTracker t = null;
+            //find the correct tracker
+            if(m2.getItemID() == tracker1.getItem().getID()){
+                t = tracker1;
+            }
+            if(m2.getItemID() == tracker2.getItem().getID()){
+                t = tracker2;
+            }
+            if(m2.getItemID() == tracker3.getItem().getID()){
+                t = tracker3;
+            }
+            int oldWinner = t.getBidOwnerID();
+            if(t.setBid(m2.getAmount(),m2.getAgentID())){
+                try {
+                    clientOuts.get(m2.getAgentID()).writeObject(new MBidAccepted(myID,t));
+                    clientOuts.get(oldWinner).writeObject(new MBidOutbid(myID,t));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                try {
+                    clientOuts.get(m2.getAgentID()).writeObject(new MBidRejected(myID,t));
+                    bankConnection.sendMessage(new MUnblockFunds(myID,m2.getAgentID(),m2.getAmount()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        else if(m instanceof MBlockRejected){
+            MBlockRejected m2 = (MBlockRejected) m;
+            BidTracker t = null;
+            //find the correct tracker
+            if(m2.getItemID() == tracker1.getItem().getID()){
+                t = tracker1;
+            }
+            if(m2.getItemID() == tracker2.getItem().getID()){
+                t = tracker2;
+            }
+            if(m2.getItemID() == tracker3.getItem().getID()){
+                t = tracker3;
+            }
+            try {
+                clientOuts.get(m2.getAgentID()).writeObject(new MBidRejected(myID,t));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            System.out.println("dont know how to process this message: " + m);
+        }
     }
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {

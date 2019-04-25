@@ -45,14 +45,8 @@ public class FakeClient {
                 BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));) {
 
             System.out.println("connected!!");
-            out.writeObject(new MCreateAccount("client", 9000));
-            Object o = in.readObject();
-            while(o != null){
-                if(!(o instanceof Message)){
-                    System.out.println("wrong object type not Message");
-                    throw new IOException();
-                }
-                Message m = (Message) o;
+            Object o = null;
+            while(true){
                 String userLine = stdIn.readLine();
                 switch(userLine){
                     case "MAccountCreated":{
@@ -135,13 +129,17 @@ public class FakeClient {
                         out.writeObject(new MUnblockFunds(1,2,200));
                         break;
                     }
-
                     default:{
                         System.out.println("error reading input");
                     }
                 }
-
                 o = in.readObject();
+                if(!(o instanceof Message)){
+                    System.out.println("wrong object type not Message");
+                    throw new IOException();
+                }
+                Message m = (Message) o;
+                System.out.println("message received on client: " + m);
             }
 
         } catch (UnknownHostException e1) {

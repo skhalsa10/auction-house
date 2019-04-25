@@ -1,5 +1,7 @@
 package Auction.AuctionHouse;
 
+import Auction.Messages.MBid;
+import Auction.Messages.MRequestItems;
 import Auction.Messages.MShutDown;
 import Auction.Messages.Message;
 
@@ -62,6 +64,9 @@ public class AuctionHouseThread extends Thread {
                     break;
                 }
                 System.out.println("Message received from agent: " + m);
+                if(!isRegistered) {
+                    addToOuts(m, out);
+                }
                 messageQueue.put(m);
             }
             objectIn.close();
@@ -75,5 +80,21 @@ public class AuctionHouseThread extends Thread {
             e.printStackTrace();
         }
 
+    }
+
+    private void addToOuts(Message m, ObjectOutputStream out) {
+        if(m instanceof MBid){
+            MBid m2 = (MBid) m;
+            clientOuts.put(m2.getAgentID(),out);
+        }
+        else if(m instanceof MRequestItems){
+            MRequestItems m2 = (MRequestItems) m;
+            clientOuts.put(m2.getAgentID(), out);
+        }
+        else{
+            System.out.println("addToOuts cant handle this message " + m);
+            return;
+        }
+        isRegistered = true;
     }
 }
