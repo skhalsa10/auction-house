@@ -5,6 +5,7 @@ import Auction.GUI.GUI;
 import Auction.GUI.GUIMessages.*;
 import Auction.Messages.*;
 
+import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ public class Agent implements Runnable {
     private HashMap<Integer, Boolean> connectedHouses = new HashMap<>();
     private HashMap<Integer, AuctionHouseConnection> auctionHouses = new HashMap<>();
     private GUI gui;
+    private int ongoingBids = 0;
 
     /**
      * Constructs an Agent
@@ -145,7 +147,6 @@ public class Agent implements Runnable {
     private void connectToBank(String bankHost, int bankPort) {
         bankConnection = new BankConnection(bankHost, bankPort, messages);
         new Thread(bankConnection).start();
-
     }
 
     /**
@@ -162,9 +163,45 @@ public class Agent implements Runnable {
         }
     }
 
+    private void setBankAccount(int accountNum) {
+        this.agentID = accountNum;
+        sendBankAccount();
+    }
+
+    private void setAvailFunds(int availFunds) {
+        this.availFunds = availFunds;
+        sendAvailableFunds();
+    }
+
+    private void setHouseList(ArrayList<Integer> houseList) {
+        for(int houseId: houseList) {
+            if(!auctionHouses.containsKey(houseId)) {
+
+            }
+        }
+    }
+
+    private void shutDown() {
+
+    }
+
+    private void closeConnection(int houseId) {
+
+    }
+
+    private void processShutDown(Message m) {
+        int id = ((MShutDown) m).getID();
+        if(id == agentID) {
+            shutDown();
+        }
+        else {
+            closeConnection(id);
+        }
+    }
+
     private void checkMessage(Message m){
         if(m instanceof MAccountCreated) {
-
+            setBankAccount(((MAccountCreated) m).getAccountID());
         }
         else if(m instanceof MFundsTransferred) {
 
@@ -173,15 +210,28 @@ public class Agent implements Runnable {
 
         }
         else if(m instanceof MAvailableFunds) {
-
+            setAvailFunds(((MAvailableFunds) m).getAvailableFunds());
         }
         else if(m instanceof MItemList) {
 
         }
         else if(m instanceof MShutDown) {
-
+            processShutDown(m);
+        }
+        else if(m instanceof MBidRejected) {
+            sendStatusMessage(m);
+        }
+        else if(m instanceof MBidOutbid) {
+            sendStatusMessage(m);
+        }
+        else if(m instanceof MBidWon) {
+            sendStatusMessage(m);
+        }
+        else if(m instanceof MBidAccepted) {
+            sendStatusMessage(m);
         }
     }
+
 
     /**
      * Sends message to house to bid on an item
@@ -208,8 +258,9 @@ public class Agent implements Runnable {
     /**
      * Sends message to gui about bid status message
      */
-    private void sendStatusMessage() {
-
+    private void sendStatusMessage(Message m) {
+        GUIMessageStatus statusM = new GUIMessageStatus(m);
+        gui.sendMessage(statusM);
     }
 
     /**
