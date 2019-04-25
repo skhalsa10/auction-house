@@ -6,7 +6,7 @@ import Auction.Messages.*;
 /**
  * Message to gui about bid statuses
  */
-public class GUIMessageStatus implements GUIMessage {
+public class GUIMessageStatus extends GUIMessage {
     private String status;
 
     /**
@@ -15,6 +15,7 @@ public class GUIMessageStatus implements GUIMessage {
      */
     public GUIMessageStatus(Message statusMessage) {
         if(statusMessage instanceof MBidAccepted) {
+
             status = "Bid Accepted! ";
         }
         else if(statusMessage instanceof MBidOutbid) {

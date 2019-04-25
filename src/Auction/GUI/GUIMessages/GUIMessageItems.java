@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Message to gui about items
  */
-public class GUIMessageItems implements GUIMessage {
+public class GUIMessageItems extends GUIMessage {
     private ArrayList<Item> items;
 
     /**

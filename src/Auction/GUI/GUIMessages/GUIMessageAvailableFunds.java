@@ -3,7 +3,7 @@ package Auction.GUI.GUIMessages;
 /**
  * Message to gui about available funds
  */
-public class GUIMessageAvailableFunds implements GUIMessage {
+public class GUIMessageAvailableFunds extends GUIMessage {
     private int availFunds;
 
     /**

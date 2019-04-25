@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Message to gui that houses are available
  */
-public class GUIMessageLoaded implements GUIMessage{
+public class GUIMessageLoaded extends GUIMessage{
     private List<Integer> houseIDs;
 
     /**

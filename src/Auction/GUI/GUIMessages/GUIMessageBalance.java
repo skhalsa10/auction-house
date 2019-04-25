@@ -3,7 +3,7 @@ package Auction.GUI.GUIMessages;
 /**
  * Message to gui to update agent balance
  */
-public class GUIMessageBalance implements GUIMessage {
+public class GUIMessageBalance extends GUIMessage {
     private int balance;
 
     /**
