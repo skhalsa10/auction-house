@@ -17,13 +17,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Bank extends Thread{
     public static int accountCounter = 0;
 
-    private List<Account> clientAccounts;
+    private static final int bankID = -1;
+    private HashMap<Integer, Account> clientAccounts;
     private LinkedBlockingQueue<Message> blockQ;
     private BankServer bankServer;
     private HashMap<String, ObjectOutputStream> clientConnections;
 
     public Bank() {
-        clientAccounts = new ArrayList<>();
+        clientAccounts = new HashMap<>();
         blockQ = new LinkedBlockingQueue<>();
         try {
             bankServer = new BankServer(7878, blockQ, clientConnections);
@@ -46,7 +47,7 @@ public class Bank extends Thread{
                     MCreateAccount m = ((MCreateAccount) msg);
                     Account newAccount;
                     newAccount = new Account(m.getName(), m.getStartingBalance());
-                    clientAccounts.add(newAccount);
+                    clientAccounts.put(newAccount.getAccountID(), newAccount);
 
                     // Create MAccountCreated message with new account's ID attached
                     // Then send the message to the requesting agent or house
@@ -60,8 +61,25 @@ public class Bank extends Thread{
 
                 }
                 else if (msg instanceof MTransferFunds) {
+                    // Get the "to" and "from" accounts and the amount to transfer
                     MTransferFunds m = ((MTransferFunds) msg);
-                    //Transfer funds, then send MFundsTransferred to the requesting agent or house
+                    int transferAmount = m.getAmount();
+                    Account fromAccount = clientAccounts.get(m.getAmount());
+                    Account toAccount = clientAccounts.get(m.getToAccount());
+
+                    // Do the transfer
+                    fromAccount.deductFunds(transferAmount);
+                    toAccount.addFunds(transferAmount);
+
+                    // Tell the requesting agent or house the transfer is complete
+                    MFundsTransferred outgoingMsg = new MFundsTransferred
+                            (m.getFromAccount(), m.getToAccount(), fromAccount.getTotalBalance());
+                    try {
+                        clientConnections.get(m.getName()).writeObject(outgoingMsg);
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else if (msg instanceof MBlockFunds) {
                     MBlockFunds m = ((MBlockFunds) msg);
@@ -94,6 +112,10 @@ public class Bank extends Thread{
 
     public static void incrementAccountCounter() {
         accountCounter++;
+    }
+
+    public static int getAccountID() {
+        return bankID;
     }
 
     public static void main(String args[]) throws IOException {

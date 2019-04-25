@@ -43,6 +43,18 @@ public class Account {
         System.out.println("Created new account " + this.accountNum + " with balance $" + df.format(this.totalBalance));
     }
 
+    public void deductFunds(int amount) {
+        totalBalance -= amount;
+    }
+
+    public void addFunds(int amount) {
+        totalBalance += amount;
+    }
+
+    public double getTotalBalance() {
+        return totalBalance;
+    }
+
     public int getAccountID() {
       return accountNum;
     }

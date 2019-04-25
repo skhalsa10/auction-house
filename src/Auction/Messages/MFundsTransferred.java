@@ -2,17 +2,17 @@ package Auction.Messages;
 
 public class MFundsTransferred extends Message {
 
-    private final int newBalance;
+    private final double newBalance;
     private final int fromAccount;
     private final int toAccount;
 
-    public MFundsTransferred(int fromAccount, int toAccount, int newBalance){
+    public MFundsTransferred(int fromAccount, int toAccount, double newBalance){
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
         this.newBalance = newBalance;
     }
 
-    public int getNewBalance() {
+    public double getNewBalance() {
         return newBalance;
     }
 
