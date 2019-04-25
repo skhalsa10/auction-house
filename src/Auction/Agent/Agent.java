@@ -162,6 +162,27 @@ public class Agent implements Runnable {
         }
     }
 
+    private void checkMessage(Message m){
+        if(m instanceof MAccountCreated) {
+
+        }
+        else if(m instanceof MFundsTransferred) {
+
+        }
+        else if(m instanceof MAuctionHouses) {
+
+        }
+        else if(m instanceof MAvailableFunds) {
+
+        }
+        else if(m instanceof MItemList) {
+
+        }
+        else if(m instanceof MShutDown) {
+
+        }
+    }
+
     /**
      * Sends message to house to bid on an item
      * @param houseId house id

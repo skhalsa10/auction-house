@@ -26,7 +26,7 @@ public class Bank implements Runnable {
     }
 
     public void run() {
-        while(!Thread.interrupted()) {
+        /*while(!Thread.interrupted()) {
             try {
                 Message msg;
                 msg = blockQ.take();
@@ -52,7 +52,7 @@ public class Bank implements Runnable {
             catch(InterruptedException e){
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     public synchronized void receiveMessage(Message msg) {
