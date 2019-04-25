@@ -69,7 +69,7 @@ public class FakeServer {
                         break;
                     }
                     case "MBid":{
-                        out.writeObject(new MBid(73,9,149));
+                        out.writeObject(new MBid(73,2,149));
                         break;
                     }
                     case "MBidAccepted":{
@@ -89,15 +89,15 @@ public class FakeServer {
                         break;
                     }
                     case "MBlockAccepted":{
-                        out.writeObject(new MBlockAccepted(73,2,200));
+                        out.writeObject(new MBlockAccepted(73,2,1));
                         break;
                     }
                     case "MBlockFunds":{
-                        out.writeObject(new MBlockFunds(7,73,4,40));
+                        out.writeObject(new MBlockFunds(7,73,1,40));
                         break;
                     }
                     case "MBlockRejected":{
-                        out.writeObject(new MBlockRejected(73,2,200));
+                        out.writeObject(new MBlockRejected(73,2,2));
                         break;
                     }
                     case "MCreateAccount":{
@@ -117,7 +117,7 @@ public class FakeServer {
                         list.add(new BidTracker(new Item("fakeItem1",1),7,2));
                         list.add(new BidTracker(new Item("fakeItem2",2),7,2));
                         list.add(new BidTracker(new Item("fakeItem3",3),7,2));
-                        out.writeObject(new MItemList(9,list));
+                        out.writeObject(new MItemList(7,list));
                         break;
                     }
                     case "MRequestItems":{
