@@ -184,18 +184,34 @@ public class Agent implements Runnable {
         sendHouseList();
     }
 
-    private void shutDown() {
+    /**
+     * Notifies bank and auction house that agent is shutting down
+     */
+    private void sendShutDown() {
+        MShutDown m = new MShutDown(agentID);
+        AuctionHouseConnection connection;
+        bankConnection.sendMessage(m);
+        for(int h: auctionHouses.keySet()) {
+            connection = auctionHouses.get(h);
+            connection.sendMessage(m);
+        }
+    }
 
+    private void shutDown() {
+        sendShutDown();
     }
 
     private void closeConnection(int houseId) {
-
+        AuctionHouseConnection connection = auctionHouses.get(houseId);
+        connection.closeConnection();
     }
 
     private void processShutDown(Message m) {
         int id = ((MShutDown) m).getID();
         if(id == agentID) {
-            shutDown();
+            if(ongoingBids == 0) {
+                shutDown();
+            }
         }
         else {
             closeConnection(id);
@@ -225,13 +241,18 @@ public class Agent implements Runnable {
         }
         else if(m instanceof MBidRejected) {
             sendStatusMessage(m);
+            ongoingBids--;
+            //get available funds
         }
         else if(m instanceof MBidOutbid) {
             sendStatusMessage(m);
+            ongoingBids--;
+            //get available funds
         }
         else if(m instanceof MBidWon) {
             int amount = ((MBidWon)m).getItemInfo().getCurrentBid();
             int houseAccountNum = ((MBidWon) m).getHouseID();
+            ongoingBids--;
             sendStatusMessage(m);
             transferFunds(amount, houseAccountNum);
         }
@@ -241,6 +262,9 @@ public class Agent implements Runnable {
         else if(m instanceof MSelectHouse) {
             chooseAuctionHouse(((MSelectHouse) m).getHouseId());
             requestItems(((MSelectHouse) m).getHouseId());
+        }
+        else if(m instanceof MBid) {
+            ongoingBids++;
         }
     }
 
@@ -255,7 +279,6 @@ public class Agent implements Runnable {
         AuctionHouseConnection connection = auctionHouses.get(houseId);
         MBid m = new MBid(agentID, itemId, bidAmount);
         connection.sendMessage(m);
-        ongoingBids++;
     }
 
     /**

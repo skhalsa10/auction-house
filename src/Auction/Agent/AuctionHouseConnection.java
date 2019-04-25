@@ -1,5 +1,6 @@
 package Auction.Agent;
 
+import Auction.Messages.MShutDown;
 import Auction.Messages.Message;
 
 import java.io.ObjectInputStream;
@@ -47,6 +48,30 @@ public class AuctionHouseConnection implements Runnable {
         }
         catch(Exception e) {
             System.err.println(e);
+        }
+
+    }
+
+    public void closeConnection() {
+        try {
+            closeAll();
+        }
+        catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+
+    public void closeAll() throws Exception {
+        try {
+            out.close();
+        }
+        finally {
+            try {
+                in.close();
+            }
+            finally {
+                socket.close();
+            }
         }
 
     }
