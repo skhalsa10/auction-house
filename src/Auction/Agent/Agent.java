@@ -224,8 +224,10 @@ public class Agent implements Runnable {
             requestHouses();
         }
         else if(m instanceof MFundsTransferred) {
-            //request balance
-            //request available funds
+            MRequestBalance balanceM = new MRequestBalance(agentID);
+            bankConnection.sendMessage(balanceM);
+            MRequestAvailFunds fundsM = new MRequestAvailFunds(agentID);
+            bankConnection.sendMessage(fundsM);
         }
         else if(m instanceof MAuctionHouses) {
             setHouseList(m);
@@ -254,8 +256,6 @@ public class Agent implements Runnable {
             int houseAccountNum = ((MBidWon) m).getHouseID();
             sendStatusMessage(m);
             transferFunds(amount, houseAccountNum);
-            MRequestBalance balanceM = new MRequestBalance(agentID);
-            bankConnection.sendMessage(balanceM);
             ongoingBids--;
 
         }
