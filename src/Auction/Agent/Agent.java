@@ -242,22 +242,27 @@ public class Agent implements Runnable {
         else if(m instanceof MBidRejected) {
             sendStatusMessage(m);
             ongoingBids--;
-            //get available funds
         }
         else if(m instanceof MBidOutbid) {
             sendStatusMessage(m);
             ongoingBids--;
-            //get available funds
+            MRequestAvailFunds fundsM = new MRequestAvailFunds(agentID);
+            bankConnection.sendMessage(fundsM);
         }
         else if(m instanceof MBidWon) {
             int amount = ((MBidWon)m).getItemInfo().getCurrentBid();
             int houseAccountNum = ((MBidWon) m).getHouseID();
-            ongoingBids--;
             sendStatusMessage(m);
             transferFunds(amount, houseAccountNum);
+            MRequestBalance balanceM = new MRequestBalance(agentID);
+            bankConnection.sendMessage(balanceM);
+            ongoingBids--;
+
         }
         else if(m instanceof MBidAccepted) {
             sendStatusMessage(m);
+            MRequestAvailFunds fundsM = new MRequestAvailFunds(agentID);
+            bankConnection.sendMessage(fundsM);
         }
         else if(m instanceof MSelectHouse) {
             chooseAuctionHouse(((MSelectHouse) m).getHouseId());
