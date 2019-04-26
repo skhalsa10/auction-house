@@ -265,7 +265,7 @@ public class Agent implements Runnable {
             bankConnection.sendMessage(fundsM);
         }
         else if(m instanceof MSelectHouse) {
-            chooseAuctionHouse(((MSelectHouse) m).getHouseId());
+            //chooseAuctionHouse(((MSelectHouse) m).getHouseId());
             requestItems(((MSelectHouse) m).getHouseId());
         }
         else if(m instanceof MBid) {

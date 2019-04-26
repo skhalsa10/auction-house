@@ -57,11 +57,11 @@ public class FakeServer {
                 String userLine = stdIn.readLine();
                 switch(userLine){
                     case "MAccountCreated":{
-                        out.writeObject(new MAccountCreated(88));
+                        out.writeObject(new MAccountCreated(73));
                         break;
                     }
                     case "MAuctionHouses":{
-                        MHouseServerInfo m1 = new MHouseServerInfo(73, "0.0.0.0", 8080);
+                        MHouseServerInfo m1 = new MHouseServerInfo(88, "192.168.43.135", 7777);
                         //MHouseServerInfo m2 = new MHouseServerInfo(2, "localhost", 8081);
                         //MHouseServerInfo m3 = new MHouseServerInfo(3, "localhost", 8082);
                         ArrayList<MHouseServerInfo> houses = new ArrayList<>();
