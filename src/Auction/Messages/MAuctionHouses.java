@@ -1,7 +1,6 @@
 package Auction.Messages;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MAuctionHouses extends Message {
     ArrayList<MHouseServerInfo> houses;
