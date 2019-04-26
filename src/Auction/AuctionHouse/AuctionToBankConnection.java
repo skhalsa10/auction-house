@@ -22,8 +22,10 @@ public class AuctionToBankConnection extends Thread{
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private boolean isRegistered;
+    private boolean isRunning;
 
     public AuctionToBankConnection(Socket bankSocket, LinkedBlockingQueue<Message> houseMessageQueue){
+        isRunning = true;
         isRegistered = false;
         this.bankSocket = bankSocket;
         this.houseMessageQueue = houseMessageQueue;
@@ -63,9 +65,9 @@ public class AuctionToBankConnection extends Thread{
         }
         Object o = null;
         //does a null get set when the socket or stream is broken on the other side?
-        while(true){
+        while(isRunning){
             try {
-
+                System.out.println(isRunning);
                 o = in.readObject();
                 if (o == null) {
                     break;
@@ -86,14 +88,15 @@ public class AuctionToBankConnection extends Thread{
             }
 
         }
+        System.out.println("EXITING FROM BANKCONNECTION");
         //TODO close everything here
     }
 
-    public int register() {
+    public int register(String name) {
 
         try {
             int id = -1;
-            Message m = new MCreateAccount(null,0);
+            Message m = new MCreateAccount(name,0);
             sendMessage(m);
             Object o =  in.readObject();
             if(!(o instanceof Message)){
@@ -119,4 +122,16 @@ public class AuctionToBankConnection extends Thread{
         return -1;
     }
 
+    public void shutDown() {
+        isRunning = false;
+        try {
+            out.close();
+            in.close();
+            bankSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 }

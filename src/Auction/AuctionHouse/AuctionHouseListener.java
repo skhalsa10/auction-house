@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -25,6 +27,7 @@ public class AuctionHouseListener extends Thread {
     //server socket to listen on
     private ServerSocket serverSocket;
     private boolean listening;
+    private ArrayList<AuctionHouseThread> clientThreads;
 
     /**
      *
@@ -33,6 +36,7 @@ public class AuctionHouseListener extends Thread {
      * @param clientOuts needed to pass to the spawned socket and thread
      */
     public AuctionHouseListener(ServerSocket serverSocket, LinkedBlockingQueue<Message> messageQueue, HashMap<Integer, ObjectOutputStream> clientOuts){
+        clientThreads = new ArrayList<>();
         this.houseMessageQueue = messageQueue;
         this.clientOuts = clientOuts;
         this.serverSocket = serverSocket;
@@ -45,21 +49,37 @@ public class AuctionHouseListener extends Thread {
      */
     @Override
     public void run() {
-        while(listening){
-            try {
-                while(listening) {
-                    Socket s = serverSocket.accept();
-                    new AuctionHouseThread(s, houseMessageQueue, clientOuts).start();
-                }
-                serverSocket.close();
 
-            } catch (IOException e) {
-                e.printStackTrace();
+
+        try {
+            while (listening) {
+                System.out.println(listening);
+                Socket s = serverSocket.accept();
+                AuctionHouseThread t = new AuctionHouseThread(s, houseMessageQueue, clientOuts);
+                clientThreads.add(t);
+                t.start();
             }
+        } catch (IOException e) {
+            System.out.println("ISTHIS HERE AT ALL");
+            //e.printStackTrace();
+            return;
         }
+
+
     }
 
     public void shutDown(){
+
         listening = false;
+        for(AuctionHouseThread t: clientThreads){
+            t.shutDown();
+        }
+        Thread.currentThread().interrupt();
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

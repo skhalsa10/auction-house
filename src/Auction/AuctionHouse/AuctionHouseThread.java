@@ -27,8 +27,11 @@ public class AuctionHouseThread extends Thread {
     private Socket socket;
     private LinkedBlockingQueue<Message> messageQueue;
     private HashMap<Integer, ObjectOutputStream> clientOuts;
-    private Boolean isRegistered;
+    private boolean isRegistered;
+    private boolean isRunning;
     private int agentID;
+    ObjectInputStream objectIn = null;
+    ObjectOutputStream out = null;
 
     public AuctionHouseThread(Socket socket, LinkedBlockingQueue<Message> messageQueue,HashMap<Integer, ObjectOutputStream> clientOuts){
         super("AuctionHouseThread");
@@ -36,6 +39,7 @@ public class AuctionHouseThread extends Thread {
         this.messageQueue = messageQueue;
         this.clientOuts = clientOuts;
         isRegistered = false;
+        isRunning = true;
     }
 
     /**
@@ -45,9 +49,9 @@ public class AuctionHouseThread extends Thread {
     public void run() {
 
         try {
-            ObjectInputStream objectIn = new ObjectInputStream(socket.getInputStream());
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            while(true){
+            objectIn = new ObjectInputStream(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
+            while(isRunning){
                 Object o = objectIn.readObject();
                 if(o == null){
                     System.out.println("I think the client socket closed? I got a NULL object");
@@ -96,5 +100,17 @@ public class AuctionHouseThread extends Thread {
             return;
         }
         isRegistered = true;
+    }
+
+    public void shutDown() {
+        isRunning = false;
+        try {
+            objectIn.close();
+            out.close();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

@@ -32,12 +32,15 @@ public class AuctionHouse  extends Thread{
     private ServerSocket serverSocket;
     //client socket of the bank
     private Socket bankSocket;
+    private String houseName;
     // queue for messages to process
     private LinkedBlockingQueue<Message> messageQueue;
     private AuctionHouseListener socketListener;
     private AuctionToBankConnection bankConnection;
     private int myID;
     private HashMap<Integer, ObjectOutputStream> clientOuts;
+    private ShutDownTimer shutDownTimer;
+    private boolean isRunning;
 
     /**
      * this constructor instantiates a new AuctionHouse that connects to the bank host and bank port.
@@ -46,10 +49,13 @@ public class AuctionHouse  extends Thread{
      * @param bankPort port of the bank server we will connect to
      * @param housePort this is the port that the Auction house server will be listening on
      */
-    public AuctionHouse(String bankHost, int bankPort, int housePort){
+    public AuctionHouse(String houseName, String bankHost, int bankPort, int housePort){
         //initialize some data
         messageQueue = new LinkedBlockingQueue<>();
         clientOuts = new HashMap<>();
+        shutDownTimer = new ShutDownTimer(messageQueue);
+        isRunning = true;
+
 
         //register with bank first before anything!
         registerWithBank(bankHost,bankPort);
@@ -73,6 +79,7 @@ public class AuctionHouse  extends Thread{
         //this literally just listens on the house socket and brokers new connections
         socketListener = new AuctionHouseListener(serverSocket,messageQueue, clientOuts);
         socketListener.start();
+        shutDownTimer.start();
 
     }
 
@@ -88,7 +95,7 @@ public class AuctionHouse  extends Thread{
             bankSocket= new Socket(bankHost, bankPort);
             //we will now beild the bank connection which handles all the communication outbound to the bank
             bankConnection = new AuctionToBankConnection(bankSocket, messageQueue);
-            myID = bankConnection.register();
+            myID = bankConnection.register(houseName);
             bankConnection.start();
 
 
@@ -103,8 +110,9 @@ public class AuctionHouse  extends Thread{
     @Override
     public void run() {
         Message m = null;
-        while(true){
+        while(isRunning){
             try {
+                System.out.println(isRunning);
                 m = messageQueue.take();
                 if (m instanceof MShutDown) {
                     break;
@@ -113,9 +121,12 @@ public class AuctionHouse  extends Thread{
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                System.out.println("ISTHIS HERE AT ALL");
+                //e.printStackTrace();
+                //return;
             }
         }
-
+        System.out.println("I exited the main thread?");
         //TODO Shutdown code here
     }
 
@@ -194,6 +205,14 @@ public class AuctionHouse  extends Thread{
                 e.printStackTrace();
             }
         }
+        else if(m instanceof MHouseClosedTimer){
+            //here I will send out messages to everything I am closing and close all connections
+            isRunning = false;
+            bankConnection.sendMessage(new MShutDown(myID));
+            bankConnection.shutDown();
+            socketListener.shutDown();
+
+        }
         else{
             System.out.println("dont know how to process this message: " + m);
         }
@@ -201,10 +220,9 @@ public class AuctionHouse  extends Thread{
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
 
-        AuctionHouse auctionHouse = new AuctionHouse("0.0.0.0",7788,7777);
+        AuctionHouse auctionHouse = new AuctionHouse("Ted's Store","0.0.0.0",7788,7777);
         auctionHouse.start();
         //Socket s1 = serve1.accept();
-        //System.out.println("hi");
 
     }
 
