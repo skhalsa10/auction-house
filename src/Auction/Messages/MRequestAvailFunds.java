@@ -8,7 +8,7 @@ public class MRequestAvailFunds extends Message {
 
     /**
      * Request for available funds
-     * @param agentId 
+     * @param agentId
      */
     public MRequestAvailFunds(int agentId) {
         this.agentId = agentId;
