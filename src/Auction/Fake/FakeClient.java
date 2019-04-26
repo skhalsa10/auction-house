@@ -54,7 +54,7 @@ public class FakeClient {
                         break;
                     }
                     case "MAuctionHouses":{
-                        out.writeObject(new MAuctionHouses());
+                        out.writeObject(new MAuctionHouses(new ArrayList<MHouseServerInfo>()));
                         break;
                     }
                     case "MAvailableFunds":{

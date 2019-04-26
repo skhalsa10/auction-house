@@ -49,7 +49,7 @@ public class AuctionToBankConnection extends Thread{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(m);
+        System.out.println("Sending message to bank from house: " + m);
 
     }
 
@@ -67,7 +67,7 @@ public class AuctionToBankConnection extends Thread{
         //does a null get set when the socket or stream is broken on the other side?
         while(isRunning){
             try {
-                System.out.println(isRunning);
+                //System.out.println(isRunning);
                 o = in.readObject();
                 if (o == null) {
                     break;

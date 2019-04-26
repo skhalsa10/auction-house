@@ -16,7 +16,7 @@ public class ShutDownTimer {
 
     public ShutDownTimer(LinkedBlockingQueue<Message> messageQueue){
         this.messageQueue = messageQueue;
-        timer = new Timer("Shut Down Timer");
+        //timer = new Timer("Shut Down Timer");
 
         shutDownTask = new TimerTask() {
             @Override
@@ -32,15 +32,27 @@ public class ShutDownTimer {
     }
 
     public void start(){
-        timer.schedule(shutDownTask, DELAY);
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    messageQueue.put(new MHouseClosedTimer());
+                    timer.cancel();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, DELAY);
     }
     public void restart(){
         timer.cancel();
-        timer.purge();
-        this.start();
+        //timer.purge();
+        start();
     }
 
     public void shutdown() {
         timer.cancel();
     }
+
 }

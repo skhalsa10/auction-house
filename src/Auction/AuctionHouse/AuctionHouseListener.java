@@ -58,8 +58,11 @@ public class AuctionHouseListener extends Thread {
                 t.start();
             }
         } catch (IOException e) {
-            System.out.println("Cought IOException e from AuctionHouseListener");
-            e.printStackTrace();
+            if(!listening) {
+                System.out.println("gracefully cought IOException");
+            }else {
+                e.printStackTrace();
+            }
         }
         System.out.println("Leaving listener run");
         for(AuctionHouseThread t: clientThreads){

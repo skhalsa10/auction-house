@@ -26,6 +26,10 @@ public class AuctionHouse  extends Thread{
     private BidTracker tracker1;
     private BidTracker tracker2;
     private BidTracker tracker3;
+    //three item bid winner timers
+    private ItemWonTimer itemWonTimer1;
+    private ItemWonTimer itemWonTimer2;
+    private ItemWonTimer itemWonTimer3;
     //Item generator
     private ItemGenerator itemGenerator;
     //Auction House server socket
@@ -64,11 +68,14 @@ public class AuctionHouse  extends Thread{
         tracker1 = new BidTracker(itemGenerator.getItem(),myID,2);
         tracker2 = new BidTracker(itemGenerator.getItem(),myID,2);
         tracker3 =new BidTracker(itemGenerator.getItem(),myID,2);
+        itemWonTimer1 = new ItemWonTimer(messageQueue,tracker1);
+        itemWonTimer2 = new ItemWonTimer(messageQueue,tracker2);
+        itemWonTimer3 = new ItemWonTimer(messageQueue,tracker3);
 
         try {
             //this will set up the server
             serverSocket = new ServerSocket(housePort);
-            System.out.println(serverSocket.getInetAddress().getHostName());
+            //System.out.println(serverSocket.getInetAddress().getHostName());
             // send server info to the bank
             Message m = new MHouseServerInfo(myID, serverSocket.getInetAddress().getHostName(),housePort);
             bankConnection.sendMessage(m);
@@ -112,7 +119,7 @@ public class AuctionHouse  extends Thread{
         Message m = null;
         while(isRunning){
             try {
-                System.out.println(isRunning);
+                //System.out.println(isRunning);
                 m = messageQueue.take();
                 processMessage(m);
 
@@ -133,7 +140,9 @@ public class AuctionHouse  extends Thread{
     private void processMessage(Message m) {
         System.out.println("processing message from main House thread. M request type is: " + m);
         if(m instanceof MRequestItems){
+            System.out.println("before the restart");
             shutDownTimer.restart();
+            System.out.println("passed the restart?");
             MRequestItems m2 = (MRequestItems) m;
             if(clientOuts.get(m2.getAgentID()) == null){
                 System.out.println("error there is no agentID " + m2.getAgentID() + " in clientouts");
@@ -173,22 +182,31 @@ public class AuctionHouse  extends Thread{
             shutDownTimer.restart();
             MBlockAccepted m2 = (MBlockAccepted) m;
             BidTracker t = null;
+            ItemWonTimer bidTimer = null;
             //find the correct tracker
             if(m2.getItemID() == tracker1.getItem().getID()){
                 t = tracker1;
+                bidTimer = itemWonTimer1;
             }
             if(m2.getItemID() == tracker2.getItem().getID()){
                 t = tracker2;
+                bidTimer = itemWonTimer2;
             }
             if(m2.getItemID() == tracker3.getItem().getID()){
                 t = tracker3;
+                bidTimer = itemWonTimer3;
             }
+            //store the old winner
             int oldWinner = t.getBidOwnerID();
             if(t.setBid(m2.getAmount(),m2.getAgentID())){
                 try {
                     clientOuts.get(m2.getAgentID()).writeObject(new MBidAccepted(myID,t));
                     if(oldWinner >= 0) {
+                        bidTimer.restart();
                         clientOuts.get(oldWinner).writeObject(new MBidOutbid(myID, t));
+                    }
+                    else{
+                        bidTimer.start();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -232,13 +250,16 @@ public class AuctionHouse  extends Thread{
             //shutDownTimer.shutdown();
 
         }
+        else if(m instanceof MHouseWonTimer){
+
+        }
         else{
             System.out.println("dont know how to process this message: " + m);
         }
     }
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
-
+        //System.out.println(InetAddress.getLocalHost().getHostAddress());
         AuctionHouse auctionHouse = new AuctionHouse("Ted's Store","0.0.0.0",7788,7777);
         auctionHouse.start();
         //Socket s1 = serve1.accept();
