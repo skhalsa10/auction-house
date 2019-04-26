@@ -12,3 +12,4 @@ public class MAuctionHouses extends Message {
         return houses;
     }
 }
+

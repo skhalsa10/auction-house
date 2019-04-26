@@ -22,3 +22,4 @@ public class MRequestHouses extends Message {
         return agentId;
     }
 }
+
