@@ -84,7 +84,7 @@ public class AuctionHouseConnection implements Runnable {
     public void run () {
         System.out.println("connected to house");
         Message receivedMessage;
-        while(true) {
+        while(connected) {
             try {
                 receivedMessage = (Message) in.readObject();
                 if(receivedMessage != null) {
