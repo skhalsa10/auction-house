@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class ShutDownTimer {
-    private final int DELAY = 100;
+    private final int DELAY = 60000;
     private Timer timer;
     private TimerTask shutDownTask;
     private LinkedBlockingQueue<Message> messageQueue;
@@ -23,6 +23,7 @@ public class ShutDownTimer {
             public void run() {
                 try {
                     messageQueue.put(new MHouseClosedTimer());
+                    timer.cancel();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -39,4 +40,7 @@ public class ShutDownTimer {
         this.start();
     }
 
+    public void shutdown() {
+        timer.cancel();
+    }
 }

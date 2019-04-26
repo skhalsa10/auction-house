@@ -114,26 +114,26 @@ public class AuctionHouse  extends Thread{
             try {
                 System.out.println(isRunning);
                 m = messageQueue.take();
-                if (m instanceof MShutDown) {
-                    break;
-                }
                 processMessage(m);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                System.out.println("ISTHIS HERE AT ALL");
-                //e.printStackTrace();
-                //return;
+                System.out.println("Int");
+
             }
         }
-        System.out.println("I exited the main thread?");
+        System.out.println("Leaving the main auction house thread");
         //TODO Shutdown code here
     }
 
+    /**
+     * This method process the Message m type and performs the appropriate tasks
+     * @param m
+     */
     private void processMessage(Message m) {
         System.out.println("processing message from main House thread. M request type is: " + m);
-
         if(m instanceof MRequestItems){
+            shutDownTimer.restart();
             MRequestItems m2 = (MRequestItems) m;
             if(clientOuts.get(m2.getAgentID()) == null){
                 System.out.println("error there is no agentID " + m2.getAgentID() + " in clientouts");
@@ -148,12 +148,29 @@ public class AuctionHouse  extends Thread{
                 e.printStackTrace();
             }
         }
+        else if (m instanceof MShutDown) {
+            MShutDown msd = (MShutDown)m;
+            if(msd.getID()<0){
+                //the bank has shut down shut down everything else
+                isRunning = false;
+                socketListener.shutDown();
+                shutDownTimer.shutdown();
+            }
+            else if(msd.getID() ==myID){
+                System.out.println("Mshutdown id is myID is this right?");
+            }
+            else{
+                socketListener.shutDownClient(msd.getID());
+            }
+        }
         else if(m instanceof MBid){
+            shutDownTimer.restart();
             MBid m2 = (MBid) m;
             MBlockFunds mbf = new MBlockFunds(myID,m2.getAgentID(),m2.getItemID(),m2.getBidAmount());
             bankConnection.sendMessage(mbf);
         }
         else if(m instanceof MBlockAccepted){
+            shutDownTimer.restart();
             MBlockAccepted m2 = (MBlockAccepted) m;
             BidTracker t = null;
             //find the correct tracker
@@ -187,6 +204,7 @@ public class AuctionHouse  extends Thread{
             }
         }
         else if(m instanceof MBlockRejected){
+            shutDownTimer.restart();
             MBlockRejected m2 = (MBlockRejected) m;
             BidTracker t = null;
             //find the correct tracker
@@ -211,6 +229,7 @@ public class AuctionHouse  extends Thread{
             bankConnection.sendMessage(new MShutDown(myID));
             bankConnection.shutDown();
             socketListener.shutDown();
+            //shutDownTimer.shutdown();
 
         }
         else{

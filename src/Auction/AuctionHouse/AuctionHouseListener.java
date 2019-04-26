@@ -50,36 +50,37 @@ public class AuctionHouseListener extends Thread {
     @Override
     public void run() {
 
-
         try {
             while (listening) {
-                System.out.println(listening);
                 Socket s = serverSocket.accept();
                 AuctionHouseThread t = new AuctionHouseThread(s, houseMessageQueue, clientOuts);
                 clientThreads.add(t);
                 t.start();
             }
         } catch (IOException e) {
-            System.out.println("ISTHIS HERE AT ALL");
-            //e.printStackTrace();
-            return;
+            System.out.println("Cought IOException e from AuctionHouseListener");
+            e.printStackTrace();
         }
-
+        System.out.println("Leaving listener run");
+        for(AuctionHouseThread t: clientThreads){
+            t.shutDown();
+        }
 
     }
 
     public void shutDown(){
 
         listening = false;
-        for(AuctionHouseThread t: clientThreads){
-            t.shutDown();
-        }
-        Thread.currentThread().interrupt();
+
         try {
             serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    public void shutDownClient(int id) {
+        clientThreads.get(id).shutDown();
     }
 }

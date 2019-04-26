@@ -83,6 +83,7 @@ public class AuctionHouseThread extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.out.println("leaving a client thread's run");
 
     }
 
