@@ -217,7 +217,7 @@ public class GUI extends AnimationTimer {
 
         }
         else if(m instanceof GUIMessageItems) {
-            items = ((GUIMessageItems) m).getItems();
+            bidTrackers = ((GUIMessageItems) m).getItems();
             page = pageType.ITEM_PAGE;
             refreshNeeded = true;
 

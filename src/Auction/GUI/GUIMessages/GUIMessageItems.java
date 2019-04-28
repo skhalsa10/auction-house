@@ -1,5 +1,6 @@
 package Auction.GUI.GUIMessages;
 
+import Auction.AuctionHouse.BidTracker;
 import Auction.AuctionHouse.Item;
 
 import java.util.ArrayList;
@@ -8,21 +9,21 @@ import java.util.ArrayList;
  * Message to gui about items
  */
 public class GUIMessageItems extends GUIMessage {
-    private ArrayList<Item> items;
+    private ArrayList<BidTracker> bidTrackers;
 
     /**
      * Constructs message to be sent to gui about items
-     * @param items list of items
+     * @param bidTrackers list of items
      */
-    public GUIMessageItems(ArrayList<Item> items) {
-        this.items = items;
+    public GUIMessageItems(ArrayList<BidTracker> bidTrackers) {
+        this.bidTrackers = bidTrackers;
     }
 
     /**
      * Gets items
      * @return list of items
      */
-    public ArrayList<Item> getItems() {
-        return items;
+    public ArrayList<BidTracker> getItems() {
+        return bidTrackers;
     }
 }
