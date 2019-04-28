@@ -311,7 +311,7 @@ public class Agent implements Runnable {
         for(BidTracker t: trackers) {
             items.add(t.getItem());
         }
-        GUIMessageItems itemsM = new GUIMessageItems(items);
+        GUIMessageItems itemsM = new GUIMessageItems(trackers);
         gui.sendMessage(itemsM);
     }
 
