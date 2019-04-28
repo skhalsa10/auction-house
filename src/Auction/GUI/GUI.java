@@ -1,6 +1,7 @@
 package Auction.GUI;
 
 import Auction.Agent.GUIAgentConnection;
+import Auction.AuctionHouse.BidTracker;
 import Auction.AuctionHouse.Item;
 import Auction.GUI.GUIMessages.*;
 import Auction.Messages.MSelectHouse;
@@ -54,6 +55,7 @@ public class GUI extends AnimationTimer {
     //private final Text accountNum;
     private Text accountNum;
     private Text balance;
+    private Text availableFunds;
     private Text statusMessage;
 
 
@@ -72,7 +74,9 @@ public class GUI extends AnimationTimer {
     private Button placeBidBtn;
     private TextField bidAmount;
     private Text selectedItem;
-    private List<Item> items;
+
+    //Item Stuff
+    private List<BidTracker> bidTrackers;
     private VBox itemList;
 
     private GUIAgentConnection connection;
@@ -105,13 +109,14 @@ public class GUI extends AnimationTimer {
         root.setAlignment(Pos.CENTER);
 
         //init info data
+        availableFunds = new Text("Available: --");
         accountNum = new Text("Account: --");
         balance = new Text("Balance: $670,000");
         statusMessage = new Text("this is where a status will go---Siri theory");
         infoBox = new HBox();
         infoBox.setId("info-box");
         infoPane.getChildren().add(infoBox);
-        infoBox.getChildren().addAll(accountNum,balance,statusMessage);
+        infoBox.getChildren().addAll(accountNum,balance,availableFunds ,statusMessage);
         infoBox.setHgrow(statusMessage, Priority.ALWAYS);
 
         //Auction House stuff
@@ -316,8 +321,15 @@ public class GUI extends AnimationTimer {
 
         itemList.setAlignment(Pos.CENTER);
         itemList.setSpacing(25);
-        for (Item item:items) {
-            Text t = new Text(item.toString());
+        for (BidTracker bt:bidTrackers) {
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("" + bt.getItem().getID() + ": ");
+            sb.append(bt.getItem().getDescription());
+            sb.append(" Current Bid: " + bt.getCurrentBid());
+            sb.append(" Bid Owner ID: " + bt.getBidOwnerID());
+            sb.append(" Minimum bid " + bt.getMinimumBid());
+            Text t = new Text(sb.toString());
             t.setId("item-list");
             itemList.getChildren().add(t);
         }
