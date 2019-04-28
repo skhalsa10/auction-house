@@ -54,6 +54,7 @@ public class ItemGenerator {
         noun = nouns.get(random.nextInt(nCount+1));
         //System.out.println(adjective + " " + noun);
         return (new Item(adjective + " " + noun, counterID++));
+
     }
 
 }

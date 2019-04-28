@@ -1,7 +1,7 @@
 package Auction.Messages;
 
 public class MTransferFunds extends Message {
-
+    private String name;
     private final int amount;
     private final int fromAccount;
     private final int toAccount;
@@ -22,5 +22,9 @@ public class MTransferFunds extends Message {
 
     public int getToAccount() {
         return toAccount;
+    }
+
+    public String getName() {
+        return name;
     }
 }
