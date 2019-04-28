@@ -314,6 +314,7 @@ public class Agent implements Runnable {
         for(BidTracker t: trackers) {
             items.add(t.getItem());
         }
+        System.out.println("Trackers size: " + trackers.size());
         GUIMessageItems itemsM = new GUIMessageItems(trackers);
         gui.sendMessage(itemsM);
     }
