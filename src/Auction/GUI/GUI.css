@@ -16,6 +16,18 @@
     -fx-border-width: 2px;
 }
 
+.text-field{
+    -fx-font-family: "Quicksand";
+    -fx-font-size: 18;
+    -fx-padding: 1,1,1,1;
+    -fx-border-color: purple;
+    -fx-border-width: 2;
+    -fx-border-radius: 1;
+    -fx-border: gone;
+    -fx-background-color: grey;
+    -fx-text-fill: purple;
+}
+
 
 #load-text{
     -fx-fill: white;
@@ -39,6 +51,11 @@
 }
 #item-list{
     -fx-fill: white;
+    -fx-font-size: 20;
+    -fx-font-family:   "cursive";
+}
+#item-list-selected{
+    -fx-fill: yellow;
     -fx-font-size: 20;
     -fx-font-family:   "cursive";
 }

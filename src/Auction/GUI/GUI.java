@@ -78,6 +78,7 @@ public class GUI extends AnimationTimer {
     //Item Stuff
     private List<BidTracker> bidTrackers;
     private VBox itemList;
+    private int selectedItemID;
 
     private GUIAgentConnection connection;
     
@@ -89,6 +90,7 @@ public class GUI extends AnimationTimer {
         refreshNeeded = false;
         isLoading = true;
         messages = new LinkedBlockingQueue<>();
+        selectedItemID = -1;
 
         //initialize all skeleton panes
         root = new VBox();
@@ -133,6 +135,7 @@ public class GUI extends AnimationTimer {
         backBtn = new Button("<-");
         backBtn.getStyleClass().add("control-button");
         placeBidBtn = new Button("Place Bid");
+        //TODO place bid button action here
         placeBidBtn.getStyleClass().add("control-button");
         bidAmount =  new TextField();
         selectedItem = new Text();
@@ -313,25 +316,47 @@ public class GUI extends AnimationTimer {
         listPane.getChildren().clear();
         listPane.getChildren().add(itemList);
 
-        //here I get the list of items but I am making a dummy one for now
-        /*items = new ArrayList<>();
-        items.add(new Item("test1"));
-        items.add(new Item("test2"));
-        items.add(new Item("test3"));*/
-
         itemList.setAlignment(Pos.CENTER);
         itemList.setSpacing(25);
         for (BidTracker bt:bidTrackers) {
+            HBox h = new HBox();
+            Pane spacer1 = new Pane();
+            Pane spacer2 = new Pane();
+            Text itemID = new Text(""+bt.getItem().getID());
 
             StringBuilder sb = new StringBuilder();
-            sb.append("" + bt.getItem().getID() + ": ");
-            sb.append(bt.getItem().getDescription());
-            sb.append(" Current Bid: " + bt.getCurrentBid());
-            sb.append(" Bid Owner ID: " + bt.getBidOwnerID());
-            sb.append(" Minimum bid " + bt.getMinimumBid());
+            sb.append(" | " +bt.getItem().getDescription());
+            sb.append(" | Current Bid: " + bt.getCurrentBid());
+            sb.append(" | Bid Owner ID: " + bt.getBidOwnerID());
+            sb.append(" | Minimum bid " + bt.getMinimumBid());
             Text t = new Text(sb.toString());
             t.setId("item-list");
-            itemList.getChildren().add(t);
+            itemID.setId("item-list");
+            h.getChildren().addAll(spacer1,itemID,t,spacer2);
+            h.setHgrow(spacer1,Priority.ALWAYS);
+            h.setHgrow(spacer2,Priority.ALWAYS);
+            itemList.getChildren().add(h);
+            h.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    HBox temp = (HBox) event.getSource();
+                    Text t2 = (Text) temp.getChildren().get(1);
+                    if(t2.getId().equals("item-list")) {
+                        selectedItemID = Integer.parseInt(t2.getText());
+                        selectedItem.setText(t2.getText());
+                        ((Text) temp.getChildren().get(1)).setId("item-list-selected");
+                        t2.setId("item-list-selected");
+                    }else{
+                        t2.setId("item-list");
+                        selectedItem.setText("");
+                        ((Text) temp.getChildren().get(1)).setId("item-list");
+                        selectedItemID = -1;
+                    }
+                    System.out.println(bidAmount.getText());
+
+
+                }
+            });
         }
 
         controlPane.getChildren().clear();
