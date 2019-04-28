@@ -153,7 +153,7 @@ public class GUI extends AnimationTimer {
                         return;
                     }
                 }
-                new MBid(selectedHouseID,Integer.parseInt(selectedItem.getText()),Integer.parseInt(bidAmount.getText()));
+                connection.sendMessage(new MBid(selectedHouseID,Integer.parseInt(selectedItem.getText()),Integer.parseInt(bidAmount.getText())));
             }
         });
         bidAmount =  new TextField();
