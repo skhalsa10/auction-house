@@ -38,6 +38,7 @@ public class BankServer implements Runnable {
                 ClientConnection clientConnection = new ClientConnection(clientSocket, bankQ, bankConnections);
                 Thread thread = new Thread(clientConnection);
                 thread.start();
+                System.out.println("Connected to a client!");
             }
             catch (IOException e) {
                 e.printStackTrace();
