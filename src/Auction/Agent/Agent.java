@@ -269,6 +269,9 @@ public class Agent implements Runnable {
             requestItems(((MSelectHouse) m).getHouseId());
         }
         else if(m instanceof MBid) {
+            MBid bidM = new MBid(agentID,((MBid) m).getItemID(), ((MBid) m).getBidAmount());
+            AuctionHouseConnection connection = auctionHouses.get(((MBid) m).getAgentID());
+            connection.sendMessage(bidM);
             ongoingBids++;
         }
     }
