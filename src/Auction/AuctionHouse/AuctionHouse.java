@@ -208,6 +208,13 @@ public class AuctionHouse  extends Thread{
                     else{
                         bidTimer.start();
                     }
+                    ArrayList<BidTracker> list = new ArrayList<>();
+                    list.add(tracker1.clone());
+                    list.add(tracker2.clone());
+                    list.add(tracker3.clone());
+                    for(ObjectOutputStream out:clientOuts.values()){
+                        out.writeObject(new MItemList(myID,list));
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
