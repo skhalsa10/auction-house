@@ -93,6 +93,7 @@ public class GUI extends AnimationTimer {
         isLoading = true;
         messages = new LinkedBlockingQueue<>();
         selectedItemID = -1;
+        selectedHouseID = -1;
 
         //initialize all skeleton panes
         root = new VBox();
@@ -238,8 +239,14 @@ public class GUI extends AnimationTimer {
 
         }
         else if(m instanceof GUIMessageItems) {
-            bidTrackers = ((GUIMessageItems) m).getItems();
-            page = pageType.ITEM_PAGE;
+
+
+            if(selectedHouseID != -1){
+                page = pageType.ITEM_PAGE;
+            }
+            if(((GUIMessageItems) m).getItems().get(0).getHouseID() == selectedHouseID){
+                bidTrackers = ((GUIMessageItems) m).getItems();
+            }
             refreshNeeded = true;
 
         }
