@@ -54,11 +54,7 @@
     -fx-font-size: 20;
     -fx-font-family:   "cursive";
 }
-#item-list-selected{
-    -fx-fill: yellow;
-    -fx-font-size: 20;
-    -fx-font-family:   "cursive";
-}
+
 #selected-id-text{
     -fx-fill: purple;
     -fx-font-size: 30;
@@ -75,8 +71,6 @@
     -fx-background-color: lightgrey;
     -fx-spacing: 10;
 }
-
-
 
 .control-button{
     -fx-text-fill: purple;

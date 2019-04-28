@@ -4,9 +4,11 @@ import Auction.Agent.GUIAgentConnection;
 import Auction.AuctionHouse.BidTracker;
 import Auction.AuctionHouse.Item;
 import Auction.GUI.GUIMessages.*;
+import Auction.Messages.MBid;
 import Auction.Messages.MSelectHouse;
 import Auction.Messages.Message;
 import javafx.animation.AnimationTimer;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -135,8 +137,24 @@ public class GUI extends AnimationTimer {
         backBtn = new Button("<-");
         backBtn.getStyleClass().add("control-button");
         placeBidBtn = new Button("Place Bid");
-        //TODO place bid button action here
         placeBidBtn.getStyleClass().add("control-button");
+        placeBidBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if(selectedItem.getText().equals("")){
+                    System.out.println("No item Selected");
+                    return;
+                }
+                String s = bidAmount.getText();
+                for(int i = 0; i< s.length(); i++){
+                    if(s.charAt(i)<'0'||s.charAt(i)>'9'){
+                        System.out.println("must use Numerical values in bidAmmount Text field. TRY AGAIN!");
+                        return;
+                    }
+                }
+                new MBid(selectedHouseID,Integer.parseInt(selectedItem.getText()),Integer.parseInt(bidAmount.getText()));
+            }
+        });
         bidAmount =  new TextField();
         selectedItem = new Text();
         selectedItem.setId("selected-id-text");
@@ -274,8 +292,8 @@ public class GUI extends AnimationTimer {
                     //System.out.println(temp.getChildren().size());
                     Text t = (Text) temp.getChildren().get(2);
                     System.out.println("ID is " + t.getText());
-                    int selectHouseId = Integer.parseInt(t.getText());
-                    MSelectHouse m = new MSelectHouse(selectHouseId);
+                    selectedHouseID = Integer.parseInt(t.getText());
+                    MSelectHouse m = new MSelectHouse(selectedHouseID);
                     connection.sendMessage(m);
                 }
             });
@@ -341,19 +359,11 @@ public class GUI extends AnimationTimer {
                 public void handle(MouseEvent event) {
                     HBox temp = (HBox) event.getSource();
                     Text t2 = (Text) temp.getChildren().get(1);
-                    if(t2.getId().equals("item-list")) {
-                        selectedItemID = Integer.parseInt(t2.getText());
-                        selectedItem.setText(t2.getText());
-                        ((Text) temp.getChildren().get(1)).setId("item-list-selected");
-                        t2.setId("item-list-selected");
-                    }else{
-                        t2.setId("item-list");
+                    if(selectedItem.getText().equals(t2.getText())){
                         selectedItem.setText("");
-                        ((Text) temp.getChildren().get(1)).setId("item-list");
-                        selectedItemID = -1;
+                    }else{
+                        selectedItem.setText(t2.getText());
                     }
-                    System.out.println(bidAmount.getText());
-
 
                 }
             });
