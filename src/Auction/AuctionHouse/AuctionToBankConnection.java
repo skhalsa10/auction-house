@@ -80,7 +80,11 @@ public class AuctionToBankConnection extends Thread{
                 System.out.println(((Message) o));
 
             } catch (IOException e) {
-                e.printStackTrace();
+                if(!isRunning) {
+                    System.out.println("gracefully cought IOException");
+                }else {
+                    e.printStackTrace();
+                }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

@@ -57,7 +57,7 @@ public class FakeServer {
                 String userLine = stdIn.readLine();
                 switch(userLine){
                     case "MAccountCreated":{
-                        out.writeObject(new MAccountCreated(73));
+                        out.writeObject(new MAccountCreated(88));
                         break;
                     }
                     case "MAuctionHouses":{
