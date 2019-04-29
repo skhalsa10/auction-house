@@ -7,6 +7,7 @@ package Auction.Bank;
 
 import Auction.Messages.*;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -60,7 +61,12 @@ public class ClientConnection implements Runnable {
                         bankConnections.put(((MRequestHouses)m).getAgentName(), out);
                     }
                 }
-                o = in.readObject();
+                try {
+                    o = in.readObject();
+                }
+                catch (EOFException e) {
+                    System.out.println("A client disconnected.");
+                }
             }
         }
         catch (IOException ex) {

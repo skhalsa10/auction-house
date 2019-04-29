@@ -126,7 +126,7 @@ public class FakeClient {
                         break;
                     }
                     case "MShutDown":{
-                        out.writeObject(new MShutDown(73));
+                        out.writeObject(new MShutDown(73, ""));
                         break;
                     }
                     case "MTransferFunds":{

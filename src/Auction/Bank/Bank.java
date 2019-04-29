@@ -41,7 +41,7 @@ public class Bank extends Thread{
     @Override
     public void run() {
         while(true) {
-            System.out.println("Bank itself running.");
+            //System.out.println("Bank itself running.");
 
             try {
                 Message msg = null;
@@ -58,6 +58,7 @@ public class Bank extends Thread{
                     // Then send the message to the requesting agent or house
                     MAccountCreated outgoingMsg = new MAccountCreated(newAccount.getAccountID());
                     try {
+                    System.out.println(clientConnections.get(m.getAgentName()));
                         clientConnections.get(m.getAgentName()).writeObject(outgoingMsg);
                     }
                     catch (IOException e) {
@@ -162,10 +163,10 @@ public class Bank extends Thread{
                     auctionHouses.add(m);
 
                     //Send MAuctionHouses message to all clients so they know a new house exists
-                    for (Object value : clientConnections.values()) {
+                    for (ObjectOutputStream value : clientConnections.values()) {
                         MAuctionHouses outgoingMsg = new MAuctionHouses(auctionHouses);
                         try {
-                            clientConnections.get(value).writeObject(outgoingMsg);
+                            value.writeObject(outgoingMsg);
                         }
                         catch (IOException e) {
                             e.printStackTrace();
