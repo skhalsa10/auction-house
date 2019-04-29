@@ -13,12 +13,18 @@ public class ItemWonTimer {
     private Timer timer;
     private TimerTask itemWonTask;
     private LinkedBlockingQueue<Message> messageQueue;
+    private BidTracker itemInfo;
 
     public ItemWonTimer(LinkedBlockingQueue<Message> messageQueue, BidTracker itemInfo){
         this.messageQueue = messageQueue;
         timer = new Timer("Item Won Timer");
+        this.itemInfo = itemInfo;
+    }
 
-        itemWonTask = new TimerTask() {
+    public void start(){
+        timer = new Timer("Item Won Timer");
+
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 try {
@@ -28,15 +34,13 @@ public class ItemWonTimer {
                     e.printStackTrace();
                 }
             }
-        };
+        }, DELAY);
     }
 
-    public void start(){
-        timer.schedule(itemWonTask, DELAY);
-    }
+
     public void restart(){
         timer.cancel();
-        timer.purge();
+        //timer.purge();
         this.start();
     }
 

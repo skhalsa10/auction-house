@@ -265,6 +265,41 @@ public class AuctionHouse  extends Thread{
 
         }
         else if(m instanceof MHouseWonTimer){
+            //send winner a message, generate a new item and blast our new itemlist messages
+            MHouseWonTimer m2 = (MHouseWonTimer)m;
+            //send a message to the agent that won
+            MBidWon wonM = new MBidWon(myID, m2.getItemWon());
+            try {
+                clientOuts.get(m2.getAgentID()).writeObject(wonM);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //get a new tracker for the won that won
+            if(tracker1.getItem().getID() == m2.getItemWon().getItem().getID()){
+                tracker1 = new BidTracker(itemGenerator.getItem(),myID,2);
+                itemWonTimer1 = new ItemWonTimer(messageQueue,tracker1);
+            }
+            if(tracker2.getItem().getID() == m2.getItemWon().getItem().getID()){
+                tracker2 = new BidTracker(itemGenerator.getItem(),myID,2);
+                itemWonTimer2 = new ItemWonTimer(messageQueue,tracker2);
+            }
+            if(tracker3.getItem().getID() == m2.getItemWon().getItem().getID()){
+                tracker3 =new BidTracker(itemGenerator.getItem(),myID,2);
+                itemWonTimer3 = new ItemWonTimer(messageQueue,tracker3);
+            }
+            //last thing I need to do is blast out a new message to all the agents about the new item list
+            ArrayList<BidTracker> items = new ArrayList<>();
+            items.add(tracker1.clone());
+            items.add(tracker2.clone());
+            items.add(tracker3.clone());
+            MItemList Mil = new MItemList(myID,items);
+            for(ObjectOutputStream out: clientOuts.values()){
+                try {
+                    out.writeObject(Mil);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
         }
         else{
@@ -272,14 +307,20 @@ public class AuctionHouse  extends Thread{
         }
     }
 
+    public void shutDown() {
+        //TODO send shutdown message from here
+    }
+
     public static void main(String args[]) throws IOException, ClassNotFoundException {
         //System.out.println(InetAddress.getLocalHost().getHostAddress());
-        AuctionHouse auctionHouse = new AuctionHouse("Ted's Store","192.168.43.183",7878,7777);
+        AuctionHouse auctionHouse = new AuctionHouse("Ted's Store","192.168.43.253",7878,7777);
         //AuctionHouse auctionHouse = new AuctionHouse("Ted's Store","0.0.0.0",7878,7777);
 
         auctionHouse.start();
+        auctionHouse.shutDown();
         //Socket s1 = serve1.accept();
 
     }
+
 
 }
