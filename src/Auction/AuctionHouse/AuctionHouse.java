@@ -179,7 +179,7 @@ public class AuctionHouse  extends Thread{
         else if(m instanceof MBid){
             //shutDownTimer.restart();
             MBid m2 = (MBid) m;
-            MBlockFunds mbf = new MBlockFunds(myID,m2.getAgentID(),m2.getItemID(),m2.getBidAmount());
+            MBlockFunds mbf = new MBlockFunds(myID,m2.getAgentID(),m2.getItemID(),m2.getBidAmount(),houseName);
             bankConnection.sendMessage(mbf);
         }
         else if(m instanceof MBlockAccepted){
@@ -202,6 +202,7 @@ public class AuctionHouse  extends Thread{
             }
             //store the old winner
             int oldWinner = t.getBidOwnerID();
+            System.out.println("bidowner before setting: " + t.getBidOwnerID());
             if(t.setBid(m2.getAmount(),m2.getAgentID())){
                 try {
                     clientOuts.get(m2.getAgentID()).writeObject(new MBidAccepted(myID,t));
@@ -231,6 +232,7 @@ public class AuctionHouse  extends Thread{
                     e.printStackTrace();
                 }
             }
+            System.out.println("bidowner after setting: " + t.getBidOwnerID());
         }
         else if(m instanceof MBlockRejected){
             //shutDownTimer.restart();
