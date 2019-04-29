@@ -6,13 +6,15 @@ public class MBlockFunds extends Message {
     private final int houseID;
     private final int agentID;
     private final int itemID;
+    private final String houseName;
 
-    public  MBlockFunds(int houseID, int agentID, int itemID, int amount){
+    public  MBlockFunds(int houseID, int agentID, int itemID, int amount, String houseName){
 
         this.houseID = houseID;
         this.agentID = agentID;
         this.itemID = itemID;
         this.amount = amount;
+        this.houseName = houseName;
 
     }
 
@@ -30,5 +32,9 @@ public class MBlockFunds extends Message {
 
     public int getItemID() {
         return itemID;
+    }
+
+    public String getHouseName() {
+        return houseName;
     }
 }

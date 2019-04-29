@@ -1,14 +1,14 @@
 package Auction.Messages;
 
 public class MAvailableFunds extends Message {
+    private final int availableFunds;
 
-    private final double availableFunds;
-
-    public MAvailableFunds(double availableFunds){
+    public MAvailableFunds(int availableFunds){
         this.availableFunds = availableFunds;
     }
 
-    public double getAvailableFunds() {
+    public int getAvailableFunds() {
         return availableFunds;
     }
+
 }

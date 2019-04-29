@@ -5,15 +5,15 @@ package Auction.Messages;
  */
 public class MRequestAvailFunds extends Message {
     private int agentId;
-    private String name;
+    private String agentName;
 
     /**
      * Request for available funds
      * @param agentId
      */
-    public MRequestAvailFunds(int agentId, String name) {
+    public MRequestAvailFunds(int agentId, String agentName) {
+        this.agentName = agentName;
         this.agentId = agentId;
-        this.name = name;
     }
 
     /**
@@ -24,7 +24,7 @@ public class MRequestAvailFunds extends Message {
         return agentId;
     }
 
-    public String getName() {
-        return name;
+    public String getAgentName() {
+        return agentName;
     }
 }
