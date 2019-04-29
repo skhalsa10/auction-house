@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class BankServer implements Runnable {
+public class BankServer extends Thread {
     private final ServerSocket serverSocket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -29,6 +29,7 @@ public class BankServer implements Runnable {
         this.bankConnections = bankConnections;
     }
 
+    @Override
     public void run() {
         System.out.println("Bank server running.");
         // If a client tries to connect, open a socket for it
@@ -38,7 +39,7 @@ public class BankServer implements Runnable {
                 ClientConnection clientConnection = new ClientConnection(clientSocket, bankQ, bankConnections);
                 Thread thread = new Thread(clientConnection);
                 thread.start();
-                System.out.println("Client connected");
+                System.out.println("Client connected!");
             }
             catch (IOException e) {
                 e.printStackTrace();

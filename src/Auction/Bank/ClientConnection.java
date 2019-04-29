@@ -5,6 +5,7 @@
  ***********************************/
 package Auction.Bank;
 
+import Auction.Messages.MCreateAccount;
 import Auction.Messages.Message;
 
 import java.io.IOException;
@@ -39,8 +40,11 @@ public class ClientConnection implements Runnable {
                     //Add message to bank's blockQ
                     Message m = (Message) o;
                     bankQ.add(m);
-                    //bankConnections.put("name", out);
+                    if (m instanceof MCreateAccount) {
+                        bankConnections.put(((MCreateAccount) m).getName(), out);
+                    }
                 }
+                o = in.readObject();
             }
         }
         catch (IOException ex) {

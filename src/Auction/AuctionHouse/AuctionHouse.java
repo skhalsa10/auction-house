@@ -268,6 +268,7 @@ public class AuctionHouse  extends Thread{
     public static void main(String args[]) throws IOException, ClassNotFoundException {
         //System.out.println(InetAddress.getLocalHost().getHostAddress());
         AuctionHouse auctionHouse = new AuctionHouse("Ted's Store","192.168.43.183",7878,7777);
+
         auctionHouse.start();
         //Socket s1 = serve1.accept();
 
