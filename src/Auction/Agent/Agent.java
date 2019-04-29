@@ -175,6 +175,9 @@ public class Agent implements Runnable {
     }
 
     private void setHouseList(Message m) {
+        if(((MAuctionHouses) m).getHouses().isEmpty()) {
+            return;
+        }
         ArrayList<MHouseServerInfo> houses = ((MAuctionHouses) m).getHouses();
         for(MHouseServerInfo h: houses) {
             if(!auctionHouses.containsKey(h.getHouseID())) {
