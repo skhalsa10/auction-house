@@ -1,6 +1,6 @@
 package Auction.Messages;
 
-public class MRequestItems implements Message {
+public class MRequestItems extends Message {
 
     private final int agentID;
 

@@ -1,6 +1,6 @@
 package Auction.Messages;
 
-public class MUnblockFunds implements Message {
+public class MUnblockFunds extends Message {
 
     private final int amount;
     private final int houseID;

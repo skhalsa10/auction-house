@@ -1,6 +1,6 @@
 package Auction.Messages;
 
-public class MCreateAccount implements Message {
+public class MCreateAccount extends Message {
 
     private final int startingBalance;
     private final String name;
