@@ -175,7 +175,7 @@ public class Bank extends Thread{
                 else if (msg instanceof MShutDown) {
                     MShutDown m = ((MShutDown) msg);
                     try {
-                        clientConnections.get(m.getID()).close();
+                        clientConnections.get(m.getName()).close();
                     }
                     catch (IOException e) {
                         e.printStackTrace();
