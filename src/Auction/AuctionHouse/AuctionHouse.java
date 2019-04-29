@@ -257,7 +257,7 @@ public class AuctionHouse  extends Thread{
         else if(m instanceof MHouseClosedTimer){
             //here I will send out messages to everything I am closing and close all connections
             isRunning = false;
-            bankConnection.sendMessage(new MShutDown(myID));
+            bankConnection.sendMessage(new MShutDown(myID, houseName));
             bankConnection.shutDown();
             socketListener.shutDown();
             //shutDownTimer.shutdown();
