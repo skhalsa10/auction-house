@@ -94,12 +94,16 @@ public class Bank extends Thread{
                     MUnblockFunds m = ((MUnblockFunds) msg);
                 }
                 else if (msg instanceof MHouseServerInfo) {
+                    //Add to list of house server info
                     MHouseServerInfo m = ((MHouseServerInfo) msg);
-                    //Send MAuctionHouses message to the requesting agent
+                    //Send MAuctionHouses message to all clients so they know a new house exists
                 }
                 else if (msg instanceof MShutDown) {
                     MShutDown m = ((MShutDown) msg);
                     //Agent or house requesting to shut down and stop being tracked by the bank
+                }
+                else if (msg instanceof MRequestHouses) {
+
                 }
                 else {
                     System.out.println("Ran into message type not intended for bank use.");
