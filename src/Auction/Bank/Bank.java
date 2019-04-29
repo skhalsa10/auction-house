@@ -9,9 +9,7 @@ import Auction.Messages.*;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Bank extends Thread{
@@ -41,13 +39,12 @@ public class Bank extends Thread{
     public void run() {
         while(true) {
             System.out.println("Bank itself running.");
+
             try {
                 Message msg = null;
                 msg = blockQ.take();
-                System.out.println("Taking msgs from the Q");
 
                 if (msg instanceof MCreateAccount) {
-                    System.out.println("Rec'd msg to create an account");
                     // Create new account and add to our list of accounts
                     MCreateAccount m = ((MCreateAccount) msg);
                     Account newAccount;
@@ -72,9 +69,16 @@ public class Bank extends Thread{
                     Account fromAccount = clientAccounts.get(m.getAmount());
                     Account toAccount = clientAccounts.get(m.getToAccount());
 
-                    // Do the transfer
-                    fromAccount.deductFunds(transferAmount);
-                    toAccount.addFunds(transferAmount);
+                    //Double check that the funds are available in total balance
+                    if (transferAmount >= fromAccount.getTotalBalance()) {
+                        // Do the transfer
+                        fromAccount.deductFunds(transferAmount);
+                        toAccount.addFunds(transferAmount);
+                    }
+                    else {
+                        System.out.println("INSUFFICIENT FUNDS. TRANSFER FAILED!");
+                        return;
+                    }
 
                     // Tell the requesting agent or house the transfer is complete
                     MFundsTransferred outgoingMsg = new MFundsTransferred
@@ -86,12 +90,44 @@ public class Bank extends Thread{
                         e.printStackTrace();
                     }
                 }
+                else if (msg instanceof MRequestAvailFunds) {
+                    MRequestAvailFunds m = (MRequestAvailFunds) msg;
+                    Account currentAccount = clientAccounts.get(m.getAgentId());
+                    MAvailableFunds outgoingMsg = new MAvailableFunds(currentAccount.getAvailableBalance());
+
+                    try {
+                        clientConnections.get(m.getName()).writeObject(outgoingMsg);
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if (msg instanceof MRequestBalance) {
+                    MRequestBalance m = (MRequestBalance) msg;
+                    Account currentAccount = clientAccounts.get(m.getAgentId());
+                    MAvailableFunds outgoingMsg = new MAvailableFunds(currentAccount.getTotalBalance());
+
+                    try {
+                        clientConnections.get(m.getName()).writeObject(outgoingMsg);
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 else if (msg instanceof MBlockFunds) {
                     MBlockFunds m = ((MBlockFunds) msg);
+                    Account currentAccount = clientAccounts.get(m.getAgentID());
+
                     //Block funds on given account, then send the house MBlockAccepted or MBlockRejected message
+                    //See if funds are avail - MBlockAccepted or MBlockRejected
+                    //Take amt out of avail balance, add to total balance
+                    if (currentAccount.getTotalBalance() >=)
+
                 }
                 else if (msg instanceof MUnblockFunds) {
                     MUnblockFunds m = ((MUnblockFunds) msg);
+                    //Add funds back into available balance
+
                 }
                 else if (msg instanceof MHouseServerInfo) {
                     //Add to list of house server info
@@ -103,7 +139,7 @@ public class Bank extends Thread{
                     //Agent or house requesting to shut down and stop being tracked by the bank
                 }
                 else if (msg instanceof MRequestHouses) {
-
+                    //Send info to all clients
                 }
                 else {
                     System.out.println("Ran into message type not intended for bank use.");

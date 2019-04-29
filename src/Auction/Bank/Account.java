@@ -56,6 +56,10 @@ public class Account {
         return totalBalance;
     }
 
+    public double getAvailableBalance() {
+        return availableBalance;
+    }
+
     public int getAccountID() {
       return accountNum;
     }
