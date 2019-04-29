@@ -5,8 +5,7 @@
  ***********************************/
 package Auction.Bank;
 
-import Auction.Messages.MCreateAccount;
-import Auction.Messages.Message;
+import Auction.Messages.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -32,7 +31,6 @@ public class ClientConnection implements Runnable {
 
     public void run() {
         //Read incoming stuff?
-        //Put in bank message queue?
         try {
             Object o = in.readObject();
             while(o != null) {
@@ -41,7 +39,25 @@ public class ClientConnection implements Runnable {
                     Message m = (Message) o;
                     bankQ.add(m);
                     if (m instanceof MCreateAccount) {
-                        bankConnections.put(((MCreateAccount) m).getName(), out);
+                        bankConnections.put(((MCreateAccount) m).getAgentName(), out);
+                    }
+                    else if (m instanceof MTransferFunds) {
+                        bankConnections.put(((MTransferFunds) m).getAgentName(), out);
+                    }
+                    else if (m instanceof MRequestAvailFunds) {
+                        bankConnections.put(((MRequestAvailFunds)m).getAgentName(), out);
+                    }
+                    else if (m instanceof MRequestBalance) {
+                        bankConnections.put(((MRequestBalance)m).getAgentName(), out);
+                    }
+                    else if (m instanceof MBlockFunds) {
+                        bankConnections.put(((MBlockFunds)m).getHouseName(), out);
+                    }
+                    else if (m instanceof MShutDown) {
+                        //bankConnections.put(((MShutDown)m).getName(), out); <---- check the method for getting name
+                    }
+                    else if (m instanceof MRequestHouses) {
+                        bankConnections.put(((MRequestHouses)m).getAgentName(), out);
                     }
                 }
                 o = in.readObject();

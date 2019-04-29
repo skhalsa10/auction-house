@@ -5,14 +5,12 @@
  ***********************************/
 package Auction.Bank;
 
-import java.text.DecimalFormat;
-
 public class Account {
 
     private String name;
     private int accountNum;
-    private double totalBalance;
-    private double availableBalance;
+    private int totalBalance;
+    private int availableBalance;
 
     // No arguments constructor
     public Account() {
@@ -22,13 +20,13 @@ public class Account {
 
         this.name = null;
         this.accountNum = newNum;
-        this.totalBalance = 0.00;
-        this.availableBalance = 0.00;
+        this.totalBalance = 0;
+        this.availableBalance = 0;
         System.out.println("Created new account " + this.accountNum + " with balance $" + this.totalBalance);
     }
 
     // Given name and starting balance constructor - handles null name
-    public Account(String name, double balance) {
+    public Account(String name, int balance) {
         int newNum = Bank.getAccountCounter();
         newNum++;
         Bank.incrementAccountCounter();
@@ -40,8 +38,7 @@ public class Account {
         this.accountNum = newNum;
         this.totalBalance = balance;
         this.availableBalance = balance;
-        DecimalFormat df = new DecimalFormat("0.00");
-        System.out.println("Created new account " + this.accountNum + " with balance $" + df.format(this.totalBalance));
+        System.out.println("Created new account " + this.accountNum + " with balance $" + this.totalBalance);
     }
 
     public void deductFunds(int amount) {
@@ -52,11 +49,19 @@ public class Account {
         totalBalance += amount;
     }
 
-    public double getTotalBalance() {
+    public void blockFunds(int amount) {
+        availableBalance -= amount;
+    }
+
+    public void unblockFunds(int amount) {
+        availableBalance += amount;
+    }
+
+    public int getTotalBalance() {
         return totalBalance;
     }
 
-    public double getAvailableBalance() {
+    public int getAvailableBalance() {
         return availableBalance;
     }
 

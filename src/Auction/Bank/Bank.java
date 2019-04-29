@@ -9,6 +9,7 @@ import Auction.Messages.*;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -20,11 +21,13 @@ public class Bank extends Thread{
     private LinkedBlockingQueue<Message> blockQ;
     private BankServer bankServer;
     private HashMap<String, ObjectOutputStream> clientConnections;
+    private ArrayList<MHouseServerInfo> auctionHouses;
 
     public Bank() {
         clientAccounts = new HashMap<>();
         blockQ = new LinkedBlockingQueue<>();
         clientConnections = new HashMap<>();
+        auctionHouses = new ArrayList<>();
 
         try {
             bankServer = new BankServer(7878, blockQ, clientConnections);
@@ -48,14 +51,14 @@ public class Bank extends Thread{
                     // Create new account and add to our list of accounts
                     MCreateAccount m = ((MCreateAccount) msg);
                     Account newAccount;
-                    newAccount = new Account(m.getName(), m.getStartingBalance());
+                    newAccount = new Account(m.getAgentName(), m.getStartingBalance());
                     clientAccounts.put(newAccount.getAccountID(), newAccount);
 
                     // Create MAccountCreated message with new account's ID attached
                     // Then send the message to the requesting agent or house
                     MAccountCreated outgoingMsg = new MAccountCreated(newAccount.getAccountID());
                     try {
-                        clientConnections.get(m.getName()).writeObject(outgoingMsg);
+                        clientConnections.get(m.getAgentName()).writeObject(outgoingMsg);
                     }
                     catch (IOException e) {
                         e.printStackTrace();
@@ -84,7 +87,7 @@ public class Bank extends Thread{
                     MFundsTransferred outgoingMsg = new MFundsTransferred
                             (m.getFromAccount(), m.getToAccount(), fromAccount.getTotalBalance());
                     try {
-                        clientConnections.get(m.getName()).writeObject(outgoingMsg);
+                        clientConnections.get(m.getAgentName()).writeObject(outgoingMsg);
                     }
                     catch (IOException e) {
                         e.printStackTrace();
@@ -96,7 +99,7 @@ public class Bank extends Thread{
                     MAvailableFunds outgoingMsg = new MAvailableFunds(currentAccount.getAvailableBalance());
 
                     try {
-                        clientConnections.get(m.getName()).writeObject(outgoingMsg);
+                        clientConnections.get(m.getAgentName()).writeObject(outgoingMsg);
                     }
                     catch (IOException e) {
                         e.printStackTrace();
@@ -117,33 +120,83 @@ public class Bank extends Thread{
                 else if (msg instanceof MBlockFunds) {
                     MBlockFunds m = ((MBlockFunds) msg);
                     Account currentAccount = clientAccounts.get(m.getAgentID());
+                    int blockAmt = m.getAmount();
 
-                    //Block funds on given account, then send the house MBlockAccepted or MBlockRejected message
                     //See if funds are avail - MBlockAccepted or MBlockRejected
-                    //Take amt out of avail balance, add to total balance
-                    //if (currentAccount.getTotalBalance() >=)
-
+                    if (currentAccount.getTotalBalance() < blockAmt) {
+                        System.out.println("INSUFFICIENT FUNDS. BLOCK FUNDS FAILED!");
+                        MBlockRejected outgoingMsg = new MBlockRejected(m.getAgentID(), m.getAmount(), m.getItemID());
+                        try {
+                            clientConnections.get(m.getHouseName()).writeObject(outgoingMsg);
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        System.out.println("BLOCKING FUNDS FOR A BID!");
+                        MBlockAccepted outgoingMsg = new MBlockAccepted(m.getAgentID(), m.getAmount(), m.getItemID());
+                        try {
+                            // Deduct block amount from available balance, leave in total balance
+                            currentAccount.blockFunds(blockAmt);
+                            clientConnections.get(m.getHouseName()).writeObject(outgoingMsg);
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
                 else if (msg instanceof MUnblockFunds) {
                     MUnblockFunds m = ((MUnblockFunds) msg);
-                    //Add funds back into available balance
+                    Account currentAccount = clientAccounts.get(m.getAgentID());
+                    int unblockAmt = m.getAgentID();
+
+                    //Add funds back into available balance -- no need to send message
+                    currentAccount.unblockFunds(unblockAmt);
+                    System.out.println("Unblocking funds for agent "+ m.getAgentID());
 
                 }
                 else if (msg instanceof MHouseServerInfo) {
                     //Add to list of house server info
                     MHouseServerInfo m = ((MHouseServerInfo) msg);
+                    auctionHouses.add(m);
+
                     //Send MAuctionHouses message to all clients so they know a new house exists
+                    for (Object value : clientConnections.values()) {
+                        MAuctionHouses outgoingMsg = new MAuctionHouses(auctionHouses);
+                        try {
+                            clientConnections.get(value).writeObject(outgoingMsg);
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
                 else if (msg instanceof MShutDown) {
                     MShutDown m = ((MShutDown) msg);
+                    try {
+                        clientConnections.get(m.getID()).close();
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                     //Agent or house requesting to shut down and stop being tracked by the bank
                 }
                 else if (msg instanceof MRequestHouses) {
                     //Send info to all clients
+                    MRequestHouses m = (MRequestHouses) msg;
+                    MAuctionHouses outgoingMsg = new MAuctionHouses(auctionHouses);
+                    try {
+                        clientConnections.get(m.getAgentName()).writeObject(outgoingMsg);
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-                else {
-                    System.out.println("Ran into message type not intended for bank use.");
-                }
+                    else {
+                        System.out.println("Ran into message type not intended for bank use.");
+                    }
             }
             catch(InterruptedException e){
                 e.printStackTrace();

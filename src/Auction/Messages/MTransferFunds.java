@@ -24,7 +24,7 @@ public class MTransferFunds extends Message {
         return toAccount;
     }
 
-    public String getName() {
+    public String getAgentName() {
         return name;
     }
 }

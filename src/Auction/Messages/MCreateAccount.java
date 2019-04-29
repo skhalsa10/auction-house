@@ -14,7 +14,7 @@ public class MCreateAccount extends Message {
         return startingBalance;
     }
 
-    public String getName() {
+    public String getAgentName() {
         return name;
     }
 }
