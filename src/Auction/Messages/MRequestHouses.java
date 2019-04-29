@@ -5,12 +5,14 @@ package Auction.Messages;
  */
 public class MRequestHouses extends Message {
     private final int agentId;
+    private String agentName;
 
     /**
      * Constructs request houses message
      * @param agentId
      */
-    public MRequestHouses(int agentId) {
+    public MRequestHouses(int agentId, String agentName) {
+        this.agentName = agentName;
         this.agentId = agentId;
     }
 
@@ -21,5 +23,11 @@ public class MRequestHouses extends Message {
     public int getAgentId() {
         return agentId;
     }
+
+    public String getAgentName() {
+        return agentName;
+    }
+
+
 }
 
