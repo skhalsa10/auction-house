@@ -85,4 +85,9 @@ public class BidTracker implements Serializable, Cloneable {
         }
         return temp;
     }
+
+    @Override
+    public String toString() {
+        return "ITEM: " + item.getID() + " " + item.getDescription() + "bid owner: "+ bidOwnerID + " bid amount " + currentBid;
+    }
 }
