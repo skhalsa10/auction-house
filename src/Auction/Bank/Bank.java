@@ -35,9 +35,10 @@ public class Bank extends Thread{
         }
     }
 
+    @Override
     public void run() {
-        while(!Thread.interrupted()) {
-            //System.out.println("Bank itself running.");
+        while(true) {
+            System.out.println("Bank itself running.");
             try {
                 Message msg = null;
                 msg = blockQ.take();
