@@ -191,7 +191,7 @@ public class Agent implements Runnable {
      * Notifies bank and auction house that agent is shutting down
      */
     private void sendShutDown() {
-        MShutDown m = new MShutDown(agentID);
+        MShutDown m = new MShutDown(agentID, name);
         AuctionHouseConnection connection;
         bankConnection.sendMessage(m);
         for(int h: auctionHouses.keySet()) {
