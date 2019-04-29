@@ -227,9 +227,9 @@ public class Agent implements Runnable {
             requestHouses();
         }
         else if(m instanceof MFundsTransferred) {
-            MRequestBalance balanceM = new MRequestBalance(agentID);
+            MRequestBalance balanceM = new MRequestBalance(agentID, name);
             bankConnection.sendMessage(balanceM);
-            MRequestAvailFunds fundsM = new MRequestAvailFunds(agentID);
+            MRequestAvailFunds fundsM = new MRequestAvailFunds(agentID, name);
             bankConnection.sendMessage(fundsM);
         }
         else if(m instanceof MAuctionHouses) {
@@ -251,7 +251,7 @@ public class Agent implements Runnable {
         else if(m instanceof MBidOutbid) {
             sendStatusMessage(m);
             ongoingBids--;
-            MRequestAvailFunds fundsM = new MRequestAvailFunds(agentID);
+            MRequestAvailFunds fundsM = new MRequestAvailFunds(agentID, name);
             bankConnection.sendMessage(fundsM);
         }
         else if(m instanceof MBidWon) {
@@ -264,7 +264,7 @@ public class Agent implements Runnable {
         }
         else if(m instanceof MBidAccepted) {
             sendStatusMessage(m);
-            MRequestAvailFunds fundsM = new MRequestAvailFunds(agentID);
+            MRequestAvailFunds fundsM = new MRequestAvailFunds(agentID, name);
             bankConnection.sendMessage(fundsM);
         }
         else if(m instanceof MSelectHouse) {
@@ -336,7 +336,7 @@ public class Agent implements Runnable {
      * Requests a list of houses from bank
      */
     private void requestHouses() {
-        MRequestHouses m = new MRequestHouses(agentID);
+        MRequestHouses m = new MRequestHouses(agentID, name);
         bankConnection.sendMessage(m);
     }
 
