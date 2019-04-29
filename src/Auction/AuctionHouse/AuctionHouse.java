@@ -157,6 +157,9 @@ public class AuctionHouse  extends Thread{
                 e.printStackTrace();
             }
         }
+        else if(m instanceof MAuctionHouses){
+            return;
+        }
         else if (m instanceof MShutDown) {
             MShutDown msd = (MShutDown)m;
             if(msd.getID()<0){
