@@ -178,7 +178,7 @@ public class AuctionHouse  extends Thread{
         else if(m instanceof MBid){
             //shutDownTimer.restart();
             MBid m2 = (MBid) m;
-            MBlockFunds mbf = new MBlockFunds(myID,m2.getAgentID(),m2.getItemID(),m2.getBidAmount());
+            MBlockFunds mbf = new MBlockFunds(myID,m2.getAgentID(),m2.getItemID(),m2.getBidAmount(),houseName);
             bankConnection.sendMessage(mbf);
         }
         else if(m instanceof MBlockAccepted){
