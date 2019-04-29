@@ -59,6 +59,7 @@ public class AuctionHouse  extends Thread{
         clientOuts = new HashMap<>();
         //shutDownTimer = new ShutDownTimer(messageQueue);
         isRunning = true;
+        this.houseName = houseName;
 
 
         //register with bank first before anything!
