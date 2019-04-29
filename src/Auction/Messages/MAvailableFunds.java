@@ -1,11 +1,9 @@
 package Auction.Messages;
 
 public class MAvailableFunds extends Message {
-    private int agentId;
     private final int availableFunds;
 
-    public MAvailableFunds(int agentId, int availableFunds){
-        this.agentId = agentId;
+    public MAvailableFunds(int availableFunds){
         this.availableFunds = availableFunds;
     }
 
@@ -13,7 +11,4 @@ public class MAvailableFunds extends Message {
         return availableFunds;
     }
 
-    public int getAgentId() {
-        return agentId;
-    }
 }

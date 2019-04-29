@@ -5,12 +5,14 @@ package Auction.Messages;
  */
 public class MRequestBalance extends Message {
     private int agentId;
+    private String agentName;
 
     /**
      * Request for balance
      * @param agentId
      */
-    public MRequestBalance (int agentId) {
+    public MRequestBalance (int agentId, String agentName) {
+        this.agentName = agentName;
         this.agentId = agentId;
     }
 
@@ -20,5 +22,9 @@ public class MRequestBalance extends Message {
      */
     public int getAgentId() {
         return agentId;
+    }
+
+    public String getAgentName() {
+        return agentName;
     }
 }
