@@ -108,7 +108,7 @@ public class Bank extends Thread{
                     MAvailableFunds outgoingMsg = new MAvailableFunds(currentAccount.getTotalBalance());
 
                     try {
-                        clientConnections.get(m.getName()).writeObject(outgoingMsg);
+                        clientConnections.get(m.getAgentName()).writeObject(outgoingMsg);
                     }
                     catch (IOException e) {
                         e.printStackTrace();
@@ -121,7 +121,7 @@ public class Bank extends Thread{
                     //Block funds on given account, then send the house MBlockAccepted or MBlockRejected message
                     //See if funds are avail - MBlockAccepted or MBlockRejected
                     //Take amt out of avail balance, add to total balance
-                    if (currentAccount.getTotalBalance() >=)
+                    //if (currentAccount.getTotalBalance() >=)
 
                 }
                 else if (msg instanceof MUnblockFunds) {
