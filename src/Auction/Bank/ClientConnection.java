@@ -39,7 +39,7 @@ public class ClientConnection implements Runnable {
                     //Add message to bank's blockQ
                     Message m = (Message) o;
                     bankQ.add(m);
-                    bankConnections.put("name", out);
+                    //bankConnections.put("name", out);
                 }
             }
         }

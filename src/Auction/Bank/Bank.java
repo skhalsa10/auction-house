@@ -41,8 +41,10 @@ public class Bank extends Thread{
             try {
                 Message msg = null;
                 msg = blockQ.take();
+                System.out.println("Taking msgs from the Q");
 
                 if (msg instanceof MCreateAccount) {
+                    System.out.println("Rec'd msg to create an account");
                     // Create new account and add to our list of accounts
                     MCreateAccount m = ((MCreateAccount) msg);
                     Account newAccount;
@@ -120,6 +122,6 @@ public class Bank extends Thread{
 
     public static void main(String args[]) throws IOException {
         Bank daBank = new Bank();
-        daBank.start();
+        daBank.run();
     }
 }
