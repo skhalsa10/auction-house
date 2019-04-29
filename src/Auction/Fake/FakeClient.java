@@ -62,6 +62,7 @@ public class FakeClient {
                         houses.add(m2);
                         houses.add(m3);
                         out.writeObject(new MAuctionHouses(houses));
+
                         break;
                     }
                     case "MAvailableFunds":{
@@ -93,7 +94,7 @@ public class FakeClient {
                         break;
                     }
                     case "MBlockFunds":{
-                        out.writeObject(new MBlockFunds(7,73,1,40));
+                        out.writeObject(new MBlockFunds(7,73,1,40,"fakeHouse"));
                         break;
                     }
                     case "MBlockRejected":{
