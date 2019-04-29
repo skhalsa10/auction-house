@@ -26,23 +26,28 @@ public class Bank extends Thread{
     public Bank() {
         clientAccounts = new HashMap<>();
         blockQ = new LinkedBlockingQueue<>();
+        clientConnections = new HashMap<>();
+
         try {
             bankServer = new BankServer(7878, blockQ, clientConnections);
-            bankServer.run();
+            bankServer.start();
         }
         catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
+    @Override
     public void run() {
-        while(!Thread.interrupted()) {
-            //System.out.println("Bank itself running.");
+        while(true) {
+            System.out.println("Bank itself running.");
             try {
                 Message msg = null;
                 msg = blockQ.take();
+                System.out.println("Taking msgs from the Q");
 
                 if (msg instanceof MCreateAccount) {
+                    System.out.println("Rec'd msg to create an account");
                     // Create new account and add to our list of accounts
                     MCreateAccount m = ((MCreateAccount) msg);
                     Account newAccount;
@@ -89,12 +94,16 @@ public class Bank extends Thread{
                     MUnblockFunds m = ((MUnblockFunds) msg);
                 }
                 else if (msg instanceof MHouseServerInfo) {
+                    //Add to list of house server info
                     MHouseServerInfo m = ((MHouseServerInfo) msg);
-                    //Send MAuctionHouses message to the requesting agent
+                    //Send MAuctionHouses message to all clients so they know a new house exists
                 }
                 else if (msg instanceof MShutDown) {
                     MShutDown m = ((MShutDown) msg);
                     //Agent or house requesting to shut down and stop being tracked by the bank
+                }
+                else if (msg instanceof MRequestHouses) {
+
                 }
                 else {
                     System.out.println("Ran into message type not intended for bank use.");

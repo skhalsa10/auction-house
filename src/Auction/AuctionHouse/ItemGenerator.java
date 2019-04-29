@@ -19,10 +19,12 @@ public class ItemGenerator {
     private int aCount;
     private int nCount;
     private Random random;
+    private int counterID;
 
     public ItemGenerator() {
         aCount = 0;
         nCount = 0;
+        counterID = 1;
         adjectives = new ArrayList<>();
         nouns = new ArrayList<>();
         random = new Random();
@@ -30,7 +32,7 @@ public class ItemGenerator {
     }
 
     /**
-     *
+     * this will just initialize the arrays that are used to build random items
      */
     private void initLists() {
         try {
@@ -43,17 +45,16 @@ public class ItemGenerator {
         }
     }
 
+    /**
+     *
+     * @return this will return a newly generated ITEM for the Auction house's selling pleasure.
+     */
     public Item getItem(){
         adjective = adjectives.get(random.nextInt(aCount+1));
         noun = nouns.get(random.nextInt(nCount+1));
         //System.out.println(adjective + " " + noun);
-        return (new Item(adjective + " " + noun, 1));
-    }
+        return (new Item(adjective + " " + noun, counterID++));
 
-    public static void main(String args[]){
-        ItemGenerator test = new ItemGenerator();
-        System.out.println(test.getItem());
     }
-
 
 }

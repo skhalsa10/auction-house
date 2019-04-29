@@ -2,7 +2,6 @@ package Auction.AuctionHouse;
 
 import java.io.Serializable;
 
-
 /**
  * this class is very simple it encapulates a string as an Item and if we need to add a price to it later we can add
  * in this class.

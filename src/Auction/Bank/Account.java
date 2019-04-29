@@ -8,6 +8,7 @@ package Auction.Bank;
 import java.text.DecimalFormat;
 
 public class Account {
+
     private String name;
     private int accountNum;
     private double totalBalance;
@@ -58,4 +59,5 @@ public class Account {
     public int getAccountID() {
       return accountNum;
     }
+
 }

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * The goal of this class is to keep track of an item  and its bidding status
  */
-public class BidTracker implements Serializable {
+public class BidTracker implements Serializable, Cloneable {
     private final Item item;
     private int  currentBid;
     private int bidOwnerID;
@@ -73,5 +73,15 @@ public class BidTracker implements Serializable {
         currentBid = bidAmount;
         bidOwnerID = agentID;
         return true;
+    }
+
+    public BidTracker clone(){
+        BidTracker temp = null;
+        try {
+            temp = new BidTracker(item.clone(),this.houseID,this.minimumBid);
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return temp;
     }
 }
