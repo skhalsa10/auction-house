@@ -135,7 +135,7 @@ public class FakeServer {
                         break;
                     }
                     case "MShutDown":{
-                        out.writeObject(new MShutDown(73));
+                        out.writeObject(new MShutDown(73, "fake shutdown"));
                         break;
                     }
                     case "MTransferFunds":{
