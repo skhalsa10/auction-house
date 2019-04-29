@@ -343,6 +343,7 @@ public class GUI extends AnimationTimer {
 
         itemList.setAlignment(Pos.CENTER);
         itemList.setSpacing(25);
+        itemList.getChildren().clear();
         for (BidTracker bt:bidTrackers) {
             HBox h = new HBox();
             Pane spacer1 = new Pane();
