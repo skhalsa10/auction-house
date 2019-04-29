@@ -26,9 +26,11 @@ public class Bank extends Thread{
     public Bank() {
         clientAccounts = new HashMap<>();
         blockQ = new LinkedBlockingQueue<>();
+        clientConnections = new HashMap<>();
+
         try {
             bankServer = new BankServer(7878, blockQ, clientConnections);
-            bankServer.run();
+            bankServer.start();
         }
         catch (IOException ex) {
             ex.printStackTrace();
@@ -123,6 +125,6 @@ public class Bank extends Thread{
 
     public static void main(String args[]) throws IOException {
         Bank daBank = new Bank();
-        daBank.run();
+        daBank.start();
     }
 }
