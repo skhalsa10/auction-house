@@ -79,6 +79,7 @@ public class BidTracker implements Serializable, Cloneable {
         BidTracker temp = null;
         try {
             temp = new BidTracker(item.clone(),this.houseID,this.minimumBid);
+            temp.setBid(currentBid,bidOwnerID);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
