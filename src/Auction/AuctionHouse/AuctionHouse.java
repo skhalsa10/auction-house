@@ -201,6 +201,7 @@ public class AuctionHouse  extends Thread{
             }
             //store the old winner
             int oldWinner = t.getBidOwnerID();
+            System.out.println("bidowner before setting: " + t.getBidOwnerID());
             if(t.setBid(m2.getAmount(),m2.getAgentID())){
                 try {
                     clientOuts.get(m2.getAgentID()).writeObject(new MBidAccepted(myID,t));
@@ -230,6 +231,7 @@ public class AuctionHouse  extends Thread{
                     e.printStackTrace();
                 }
             }
+            System.out.println("bidowner after setting: " + t.getBidOwnerID());
         }
         else if(m instanceof MBlockRejected){
             //shutDownTimer.restart();
