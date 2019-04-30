@@ -79,7 +79,7 @@ public class AuctionHouse  extends Thread{
             //System.out.println(serverSocket.getInetAddress().getHostName());
             // send server info to the bank
             //Message m = new MHouseServerInfo(myID, serverSocket.getInetAddress().getHostName(),housePort);
-            Message m = new MHouseServerInfo(myID, "192.168.43.135",housePort);
+            Message m = new MHouseServerInfo(myID, "76.113.84.188",housePort);
             bankConnection.sendMessage(m);
         } catch (IOException e) {
             e.printStackTrace();
