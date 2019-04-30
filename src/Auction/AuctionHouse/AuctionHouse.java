@@ -99,6 +99,7 @@ public class AuctionHouse  extends Thread{
 
         try {
             //first lets connect a socket to the bank
+            System.out.println(bankHost + " " + bankPort);
             bankSocket= new Socket(bankHost, bankPort);
             //we will now beild the bank connection which handles all the communication outbound to the bank
             bankConnection = new AuctionToBankConnection(bankSocket, messageQueue);
@@ -339,7 +340,7 @@ public class AuctionHouse  extends Thread{
      */
     public static void main(String args[]) throws IOException, ClassNotFoundException {
 
-        if(args.length != 4){
+        if(args.length != 5){
             System.out.println("USAGE: auctionHouse.jar [House Name] [Bank Host Name] [Bank Port #] [House Host name] [House Port #]");
             return;
         }
