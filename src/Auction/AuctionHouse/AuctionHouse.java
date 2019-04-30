@@ -20,6 +20,8 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class AuctionHouse  extends Thread{
 
+    private boolean shuttingDown;
+
     private final String houseHost;
     //three items for sale
     private BidTracker tracker1;
@@ -62,6 +64,7 @@ public class AuctionHouse  extends Thread{
         isRunning = true;
         this.houseName = houseName;
         this.houseHost = houseHost;
+        shuttingDown = false;
 
 
         //register with bank first before anything!
@@ -179,6 +182,10 @@ public class AuctionHouse  extends Thread{
         else if(m instanceof MBid){
             //shutDownTimer.restart();
             MBid m2 = (MBid) m;
+            //first check to see if This is already shutting down
+
+
+
             MBlockFunds mbf = new MBlockFunds(myID,m2.getAgentID(),m2.getItemID(),m2.getBidAmount(),houseName);
             bankConnection.sendMessage(mbf);
         }
@@ -267,7 +274,13 @@ public class AuctionHouse  extends Thread{
         }
         else if(m instanceof MHouseClosedTimer){
 
+            //first check to see if there are any bids pending if there are ignore message.
+            if( itemWonTimer1.isRunning() || itemWonTimer2.isRunning() ||itemWonTimer3.isRunning()){
+                System.out.println("tried processing shut down but Bids are pending! try later person");
+                return;
+            }
 
+            shuttingDown = true;
             //here I will send out messages to everything I am closing and close all connections
             isRunning = false;
             bankConnection.sendMessage(new MShutDown(myID, houseName));
@@ -325,9 +338,19 @@ public class AuctionHouse  extends Thread{
      * it first checks to see if there are any items
      * @return
      */
-    public boolean shutDown() {
-        return true;
+    public void shutDown() {
+        System.out.println("exit typed");
+        try {
+            messageQueue.put(new MHouseClosedTimer());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
+
+    private boolean isShuttingDown() {
+        return shuttingDown;
+    }
+
 
     /**
      * this application will take  4 parameters to start
@@ -352,19 +375,20 @@ public class AuctionHouse  extends Thread{
 
         auctionHouse.start();
 
-        boolean running = true;
         //Enter data using BufferReader
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-        while(running){
+        String cmd;
+        while(!auctionHouse.isShuttingDown()){
+            System.out.println("are are blocking?");
             // Reading data using readLine
-            String cmd = reader.readLine();
+            cmd = reader.readLine();
             if(cmd == "exit"){
-                running = auctionHouse.shutDown();
+               auctionHouse.shutDown();
             }
         }
 
     }
+
 
 
 }

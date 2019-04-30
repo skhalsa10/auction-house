@@ -14,14 +14,17 @@ public class ItemWonTimer {
     private TimerTask itemWonTask;
     private LinkedBlockingQueue<Message> messageQueue;
     private BidTracker itemInfo;
+    private boolean running;
 
     public ItemWonTimer(LinkedBlockingQueue<Message> messageQueue, BidTracker itemInfo){
         this.messageQueue = messageQueue;
         timer = new Timer("Item Won Timer");
         this.itemInfo = itemInfo;
+        running = false;
     }
 
     public void start(){
+        running = true;
         timer = new Timer("Item Won Timer");
 
         timer.schedule(new TimerTask() {
@@ -45,6 +48,11 @@ public class ItemWonTimer {
     }
 
     public void shutdown() {
+        running = false;
         timer.cancel();
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 }
