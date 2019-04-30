@@ -124,7 +124,7 @@ public class Bank extends Thread{
                     int blockAmt = m.getAmount();
 
                     //See if funds are avail - MBlockAccepted or MBlockRejected
-                    if (currentAccount.getTotalBalance() < blockAmt) {
+                    if (currentAccount.getAvailableBalance() < blockAmt) {
                         System.out.println("INSUFFICIENT FUNDS. BLOCK FUNDS FAILED!");
                         MBlockRejected outgoingMsg = new MBlockRejected(m.getAgentID(), m.getAmount(), m.getItemID());
                         try {
@@ -150,7 +150,7 @@ public class Bank extends Thread{
                 else if (msg instanceof MUnblockFunds) {
                     MUnblockFunds m = ((MUnblockFunds) msg);
                     Account currentAccount = clientAccounts.get(m.getAgentID());
-                    int unblockAmt = m.getAgentID();
+                    int unblockAmt = m.getAmount();
 
                     //Add funds back into available balance -- no need to send message
                     currentAccount.unblockFunds(unblockAmt);
@@ -182,6 +182,7 @@ public class Bank extends Thread{
                     catch (IOException e) {
                         e.printStackTrace();
                     }
+                    //TODO we only shutdown output
 
                     //Agent or house requesting to shut down and stop being tracked by the bank
                 }
