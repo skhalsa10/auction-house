@@ -2,9 +2,7 @@ package Auction.AuctionHouse;
 
 import Auction.Messages.*;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -316,8 +314,12 @@ public class AuctionHouse  extends Thread{
         }
     }
 
-    public void shutDown() {
-        //TODO send shutdown message from here
+    /**
+     *
+     * @return
+     */
+    public boolean shutDown() {
+
     }
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
@@ -326,8 +328,19 @@ public class AuctionHouse  extends Thread{
         //AuctionHouse auctionHouse = new AuctionHouse("Ted's Store","0.0.0.0",7878,7777);
 
         auctionHouse.start();
-        auctionHouse.shutDown();
         //Socket s1 = serve1.accept();
+
+        boolean running = true;
+        //Enter data using BufferReader
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        while(running){
+            // Reading data using readLine
+            String cmd = reader.readLine();
+            if(cmd == "exit"){
+                running = auctionHouse.shutDown();
+            }
+        }
 
     }
 
