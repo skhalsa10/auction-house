@@ -30,7 +30,7 @@ public class Bank extends Thread{
         auctionHouses = new ArrayList<>();
 
         try {
-            bankServer = new BankServer(7878, blockQ, clientConnections);
+            bankServer = new BankServer(7778, blockQ, clientConnections);
             bankServer.start();
         }
         catch (IOException ex) {
@@ -160,6 +160,7 @@ public class Bank extends Thread{
                 else if (msg instanceof MHouseServerInfo) {
                     //Add to list of house server info
                     MHouseServerInfo m = ((MHouseServerInfo) msg);
+
                     auctionHouses.add(m);
 
                     //Send MAuctionHouses message to all clients so they know a new house exists
@@ -195,7 +196,7 @@ public class Bank extends Thread{
                         e.printStackTrace();
                     }
                 }
-                    else {
+                else{
                         System.out.println("Ran into message type not intended for bank use.");
                     }
             }
