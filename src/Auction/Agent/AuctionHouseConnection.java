@@ -52,6 +52,9 @@ public class AuctionHouseConnection implements Runnable {
 
     }
 
+    /**
+     * Close this connection
+     */
     public void closeConnection() {
         try {
             closeAll();
@@ -61,6 +64,10 @@ public class AuctionHouseConnection implements Runnable {
         }
     }
 
+    /**
+     * Close input, output and socket
+     * @throws Exception
+     */
     public void closeAll() throws Exception {
         connected = false;
         try {
