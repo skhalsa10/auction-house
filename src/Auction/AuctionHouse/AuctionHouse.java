@@ -209,14 +209,16 @@ public class AuctionHouse  extends Thread{
                 }
                 return;
             }
-            //store the old winner
+            //store the old winner and old amount just in case we need to unblock funds and notify of outbid
             int oldWinner = t.getBidOwnerID();
+            int oldAmount = t.getCurrentBid();
             System.out.println("bidowner before setting: " + t.getBidOwnerID());
             if(t.setBid(m2.getAmount(),m2.getAgentID())){
                 try {
                     clientOuts.get(m2.getAgentID()).writeObject(new MBidAccepted(myID,t));
                     if(oldWinner >= 0) {
                         bidTimer.restart();
+                        bankConnection.sendMessage(new MUnblockFunds(myID, oldWinner, oldAmount));
                         clientOuts.get(oldWinner).writeObject(new MBidOutbid(myID, t));
                     }
                     else{
