@@ -109,7 +109,7 @@ public class Bank extends Thread{
                 else if (msg instanceof MRequestBalance) {
                     MRequestBalance m = (MRequestBalance) msg;
                     Account currentAccount = clientAccounts.get(m.getAgentId());
-                     outgoingMsg = new MAvailableFunds(currentAccount);
+                    MBalance outgoingMsg = new MBalance(currentAccount.getTotalBalance());
 
                     try {
                         clientConnections.get(m.getAgentName()).writeObject(outgoingMsg);
