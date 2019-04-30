@@ -227,6 +227,8 @@ public class Agent implements Runnable {
     private void checkMessage(Message m){
         if(m instanceof MAccountCreated) {
             setBankAccount(((MAccountCreated) m).getAccountID());
+            MRequestBalance balanceM = new MRequestBalance(agentID, name);
+            bankConnection.sendMessage(balanceM);
             requestHouses();
         }
         else if(m instanceof MFundsTransferred) {
