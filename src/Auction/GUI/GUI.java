@@ -244,6 +244,7 @@ public class GUI extends AnimationTimer {
             isLoading = false;
             page = pageType.HOUSE_PAGE;
             houseIDs = ((GUIMessageLoaded) m).getHouseIDs();
+            selectedHouseID = -1;
             refreshNeeded = true;
         }
         else if(m instanceof GUIMessageAccount) {
@@ -259,9 +260,7 @@ public class GUI extends AnimationTimer {
 
         }
         else if(m instanceof GUIMessageItems) {
-            if(page == pageType.HOUSE_PAGE) {
-                return;
-            }
+
             if(selectedHouseID != -1){
                 page = pageType.ITEM_PAGE;
             }
