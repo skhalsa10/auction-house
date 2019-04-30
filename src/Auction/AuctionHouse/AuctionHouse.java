@@ -281,6 +281,7 @@ public class AuctionHouse  extends Thread{
             MHouseWonTimer m2 = (MHouseWonTimer)m;
             //send a message to the agent that won
             MBidWon wonM = new MBidWon(myID, m2.getItemWon());
+            System.out.println(m2.getItemWon().getCurrentBid());
             try {
                 clientOuts.get(m2.getAgentID()).writeObject(wonM);
             } catch (IOException e) {
