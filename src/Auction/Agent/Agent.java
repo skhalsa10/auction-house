@@ -191,7 +191,10 @@ public class Agent implements Runnable {
      * Shut down agent
      * Sends shutdown message to all servers
      */
-    private void shutDown() {
+    public void shutDown() {
+        if(ongoingBids != 0) {
+            return;
+        }
         sendShutDown();
     }
 
@@ -286,6 +289,10 @@ public class Agent implements Runnable {
             this.balance = ((MBalance) m).getBalance();
             sendBalance();
         }
+        else if(m instanceof MRequestHouses) {
+            MRequestHouses m2 = new MRequestHouses(agentID, name);
+            bankConnection.sendMessage(m2);
+        }
     }
 
 
@@ -339,6 +346,8 @@ public class Agent implements Runnable {
         MRequestHouses m = new MRequestHouses(agentID, name);
         bankConnection.sendMessage(m);
     }
+
+
 
 
     /**
