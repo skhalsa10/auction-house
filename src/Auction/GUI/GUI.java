@@ -5,6 +5,7 @@ import Auction.AuctionHouse.BidTracker;
 import Auction.AuctionHouse.Item;
 import Auction.GUI.GUIMessages.*;
 import Auction.Messages.MBid;
+import Auction.Messages.MRequestHouses;
 import Auction.Messages.MSelectHouse;
 import Auction.Messages.Message;
 import javafx.animation.AnimationTimer;
@@ -139,6 +140,12 @@ public class GUI extends AnimationTimer {
         space2 = new Pane();
         backBtn = new Button("<-");
         backBtn.getStyleClass().add("control-button");
+        backBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                backBtnHandler();
+            }
+        });
         placeBidBtn = new Button("Place Bid");
         placeBidBtn.getStyleClass().add("control-button");
         placeBidBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -175,6 +182,12 @@ public class GUI extends AnimationTimer {
         scene.getStylesheets().add("Auction/GUI/GUI.css");
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void backBtnHandler() {
+        page = pageType.LOADING_PAGE;
+        isLoading = true;
+        connection.sendMessage(new MRequestHouses(-1,""));
     }
 
     public void sendMessage(GUIMessage m){
