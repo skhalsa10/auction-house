@@ -1,18 +1,42 @@
-# Project: NAME OF PROJECT
-## Student(s):  Name(s)
+# Project: DISTRIBUTED AUCTION
+## Students:  Siri Khalsa, Michelle Louie, and Alexandra Valdez
 
 ## Introduction
-Generally describe the project/problem you are solving.
+This project simulates multiple Auction Houses that sell items to Agents. 
+The Agents place bids on items at the Auction Houses and a Bank processes 
+the transfer of funds between Houses and Agents. The Houses, Agents, and Bank 
+can communicate across multiple machines. 
 
 ## Contributions
-If this is a group project then detail which group member worked on what aspect(s) of the project.
+**Siri's Contributions:**<br>
+Write your contributions here!
+<br><br>
+**Michelle's Contributions:**<br>
+Write your contributions here!
+<br><br>
+**Alexandra's Contributions:**<br>
+Created bank entity, which manages client connections and accounts.   
+It starts a separate thread to open a socket and listen for client connections.
+The bank receives and processes requests from clients as Message objects in a blocking queue.
+It handles all activity related to accounts, including: 
+account creation, balance inquiry, hold/release of funds, and transfer of funds.
+Agents may request a list of all existing Auction Houses from the bank.
+The bank also keeps track of all clients and is responsible for notifying agents 
+when a new Auction House is created.
+<br><br>
+
 
 ## Usage
-Give details about how to use the program. (Imagine making it easy for someone that you don't know to run and use your project.)
+To use the program, you will need three .jar files: **Bank.jar**, **Agent.jar**, and **AuctionHouse.jar.***<br>
+Machines running an Agent or Auction House will need the following arguments: <br><br>
+**Auction House:** House Name, Bank Host Name, Bank Port, House Host Name, House Port<br>
+**Agent:** Bank Host Name, Bank Port, Agent Name, Initial Account Balance<br><br>
+Once connected to the Bank, simply use the provided GUI to place bids. 
+<br>
+*NOTE: The Bank.jar file MUST be launched first!
 
 ## Project Assumptions
-This section is where you put any clarifications about your project & how it works concerning any vagueness in the specification documents.
-
+The bank expects clients to use integer amounts when creating accounts and placing bids.
 ## Versions 
 Where are the .jar files?
 ### V1
