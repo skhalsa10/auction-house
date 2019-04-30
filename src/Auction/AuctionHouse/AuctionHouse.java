@@ -193,13 +193,22 @@ public class AuctionHouse  extends Thread{
                 t = tracker1;
                 bidTimer = itemWonTimer1;
             }
-            if(m2.getItemID() == tracker2.getItem().getID()){
+            else if(m2.getItemID() == tracker2.getItem().getID()){
                 t = tracker2;
                 bidTimer = itemWonTimer2;
             }
-            if(m2.getItemID() == tracker3.getItem().getID()){
+            else if(m2.getItemID() == tracker3.getItem().getID()){
                 t = tracker3;
                 bidTimer = itemWonTimer3;
+            } else {
+                //if we get here the item was won during the time this message processed unblock funds and send bid rejected message
+                bankConnection.sendMessage(new MUnblockFunds(myID,m2.getAgentID(),m2.getAmount()));
+                try {
+                    clientOuts.get(m2.getAgentID()).writeObject(new MBidRejected(myID, new BidTracker(new Item("SOLD",m2.getItemID()),myID,2)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return;
             }
             //store the old winner
             int oldWinner = t.getBidOwnerID();
