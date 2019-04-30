@@ -151,6 +151,7 @@ public class Bank extends Thread{
                     MUnblockFunds m = ((MUnblockFunds) msg);
                     Account currentAccount = clientAccounts.get(m.getAgentID());
                     int unblockAmt = m.getAmount();
+                    System.out.println("unblock amount: " + unblockAmt);
 
                     //Add funds back into available balance -- no need to send message
                     currentAccount.unblockFunds(unblockAmt);
