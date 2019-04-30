@@ -1,6 +1,7 @@
 package Auction.GUI.GUIMessages;
 
 import Auction.AuctionHouse.BidTracker;
+import Auction.AuctionHouse.Item;
 import Auction.Messages.*;
 
 /**
@@ -14,18 +15,39 @@ public class GUIMessageStatus extends GUIMessage {
      * @param statusMessage status message
      */
     public GUIMessageStatus(Message statusMessage) {
-        if(statusMessage instanceof MBidAccepted) {
+        Item item;
+        int itemId;
+        int houseId;
+        String itemDescription;
 
-            status = "Bid Accepted! ";
+        if(statusMessage instanceof MBidAccepted) {
+            item = ((MBidAccepted) statusMessage).getItemInfo().getItem();
+            itemId = item.getID();
+            houseId = ((MBidAccepted) statusMessage).getHouseID();
+            itemDescription = item.getDescription();
+
+            status = "Bid Accepted! " + "Item: #" + itemId + " " + itemDescription + " from House: #" + houseId;
         }
         else if(statusMessage instanceof MBidOutbid) {
-            status = "Outbid!";
+            item = ((MBidOutbid) statusMessage).getItemInfo().getItem();
+            itemId = item.getID();
+            houseId = ((MBidOutbid) statusMessage).getHouseID();
+            itemDescription = item.getDescription();
+            status = "Outbid! "  + "Item: #" + itemId + " " + itemDescription + " from House: #" + houseId;
         }
         else if(statusMessage instanceof MBidRejected) {
-            status = "Bid Rejected!";
+            item = ((MBidRejected) statusMessage).getItemInfo().getItem();
+            itemId = item.getID();
+            houseId = ((MBidRejected) statusMessage).getHouseID();
+            itemDescription = item.getDescription();
+            status = "Bid Rejected! "+ "Item: #" + itemId + " " + itemDescription + " from House: #" + houseId;
         }
         else if(statusMessage instanceof MBidWon) {
-            status = "Bid Won!";
+            item = ((MBidWon) statusMessage).getItemInfo().getItem();
+            itemId = item.getID();
+            houseId = ((MBidWon) statusMessage).getHouseID();
+            itemDescription = item.getDescription();
+            status = "Bid Won! " + "Item: #" + itemId + " " + itemDescription + " from House: #" + houseId;
         }
     }
 
