@@ -27,12 +27,16 @@ public class Account {
 
     // Given name and starting balance constructor - handles null name
     public Account(String name, int balance) {
+        //
         int newNum = Bank.getAccountCounter();
         newNum++;
         Bank.incrementAccountCounter();
 
         if (name != null) {
             this.name = name;
+        }
+        else{
+            System.out.println("name is NULL!... uh oh");
         }
 
         this.accountNum = newNum;

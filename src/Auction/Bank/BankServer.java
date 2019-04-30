@@ -18,8 +18,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class BankServer extends Thread {
     private final ServerSocket serverSocket;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
     private LinkedBlockingQueue<Message> bankQ;
     private HashMap<String, ObjectOutputStream> bankConnections;
 
@@ -43,6 +41,7 @@ public class BankServer extends Thread {
             }
             catch (IOException e) {
                 e.printStackTrace();
+                //TODO need someway to exit the infinite loop
             }
         }
     }

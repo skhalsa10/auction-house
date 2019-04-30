@@ -38,7 +38,10 @@ public class ClientConnection implements Runnable {
                 if (o instanceof Message) {
                     //Add message to bank's blockQ
                     Message m = (Message) o;
-                    bankQ.add(m);
+
+
+                    //TODO I think we can take out all of these. we only need to map the name->out once.
+                    //TODO with a boolean flag?
                     if (m instanceof MCreateAccount) {
                         bankConnections.put(((MCreateAccount) m).getAgentName(), out);
                     }
@@ -55,16 +58,19 @@ public class ClientConnection implements Runnable {
                         bankConnections.put(((MBlockFunds)m).getHouseName(), out);
                     }
                     else if (m instanceof MShutDown) {
-                        //bankConnections.put(((MShutDown)m).getName(), out); <---- check the method for getting name
+                        //TODO bankConnections.put(((MShutDown)m).getName(), out); <---- check the method for getting name
                     }
                     else if (m instanceof MRequestHouses) {
                         bankConnections.put(((MRequestHouses)m).getAgentName(), out);
                     }
+                    //place the put last to make sure the output stream is mapped first.
+                    bankQ.put(m);
                 }
                 try {
                     o = in.readObject();
                 }
                 catch (EOFException e) {
+                    //TODO we need to delete this client from  the map?a
                     System.out.println("A client disconnected.");
                 }
             }
@@ -74,6 +80,8 @@ public class ClientConnection implements Runnable {
         }
         catch (ClassNotFoundException ex) {
             ex.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
     }

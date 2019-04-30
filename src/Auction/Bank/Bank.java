@@ -15,7 +15,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Bank extends Thread{
     public static int accountCounter = 0;
-
     private static final int bankID = -1;
     private HashMap<Integer, Account> clientAccounts;
     private LinkedBlockingQueue<Message> blockQ;
@@ -70,17 +69,18 @@ public class Bank extends Thread{
                     // Get the "to" and "from" accounts and the amount to transfer
                     MTransferFunds m = ((MTransferFunds) msg);
                     int transferAmount = m.getAmount();
-                    Account fromAccount = clientAccounts.get(m.getAmount());
+                    Account fromAccount = clientAccounts.get(m.getFromAccount());
                     Account toAccount = clientAccounts.get(m.getToAccount());
 
                     //Double check that the funds are available in total balance
-                    if (transferAmount >= fromAccount.getTotalBalance()) {
+                    if (transferAmount <= fromAccount.getTotalBalance()) {
                         // Do the transfer
                         fromAccount.deductFunds(transferAmount);
                         toAccount.addFunds(transferAmount);
                     }
                     else {
                         System.out.println("INSUFFICIENT FUNDS. TRANSFER FAILED!");
+
                         return;
                     }
 
@@ -109,7 +109,7 @@ public class Bank extends Thread{
                 else if (msg instanceof MRequestBalance) {
                     MRequestBalance m = (MRequestBalance) msg;
                     Account currentAccount = clientAccounts.get(m.getAgentId());
-                    MAvailableFunds outgoingMsg = new MAvailableFunds(currentAccount.getTotalBalance());
+                     outgoingMsg = new MAvailableFunds(currentAccount);
 
                     try {
                         clientConnections.get(m.getAgentName()).writeObject(outgoingMsg);
