@@ -262,6 +262,7 @@ public class Agent implements Runnable {
         else if(m instanceof MBidWon) {
             int amount = ((MBidWon)m).getItemInfo().getCurrentBid();
             int houseAccountNum = ((MBidWon) m).getHouseID();
+            System.out.println("bid won amount: " + amount);
             sendStatusMessage(m);
             transferFunds(amount, houseAccountNum);
             ongoingBids--;
