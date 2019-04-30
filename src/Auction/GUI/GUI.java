@@ -19,8 +19,10 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class GUI extends AnimationTimer {
@@ -116,7 +118,7 @@ public class GUI extends AnimationTimer {
         //init info data
         availableFunds = new Text("Available: --");
         accountNum = new Text("Account: --");
-        balance = new Text("Balance: $670,000");
+        balance = new Text("Balance: --");
         statusMessage = new Text("this is where a status will go---Siri theory");
         infoBox = new HBox();
         infoBox.setId("info-box");
@@ -234,7 +236,9 @@ public class GUI extends AnimationTimer {
             accountNum.setText("Account: " + num);
         }
         else if(m instanceof GUIMessageBalance) {
-            String balanceValue = Integer.toString(((GUIMessageBalance) m).getBalance());
+            //String balanceValue = Integer.toString(((GUIMessageBalance) m).getBalance());
+            NumberFormat numFormat = NumberFormat.getNumberInstance(Locale.US);
+            String balanceValue = numFormat.format(((GUIMessageBalance) m).getBalance());
             balance.setText("Balance: $" + balanceValue);
 
         }
@@ -251,7 +255,10 @@ public class GUI extends AnimationTimer {
 
         }
         else if(m instanceof GUIMessageAvailableFunds) {
-
+            //String availValue = Integer.toString(((GUIMessageAvailableFunds) m).getAvailFunds());
+            NumberFormat numFormat = NumberFormat.getNumberInstance(Locale.US);
+            String availValue = numFormat.format(((GUIMessageAvailableFunds) m).getAvailFunds());
+            availableFunds.setText("Available: $" + availValue);
         }
         else if(m instanceof GUIMessageStatus) {
             statusMessage.setText(((GUIMessageStatus) m).getStatus());

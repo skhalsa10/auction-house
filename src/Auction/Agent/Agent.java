@@ -174,6 +174,7 @@ public class Agent implements Runnable {
         sendAvailableFunds();
     }
 
+
     private void setHouseList(Message m) {
         if(((MAuctionHouses) m).getHouses().isEmpty()) {
             return;
@@ -276,6 +277,10 @@ public class Agent implements Runnable {
             AuctionHouseConnection connection = auctionHouses.get(((MBid) m).getAgentID());
             connection.sendMessage(bidM);
             ongoingBids++;
+        }
+        else if(m instanceof MBalance) {
+            this.balance = ((MBalance) m).getBalance();
+            sendBalance();
         }
     }
 
