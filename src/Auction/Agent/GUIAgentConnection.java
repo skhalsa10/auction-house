@@ -31,6 +31,10 @@ public class GUIAgentConnection implements Runnable{
         }
     }
 
+    public void closeConnection() {
+        running = false;
+    }
+
     /**
      * Runs connection
      */
