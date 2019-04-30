@@ -9,7 +9,7 @@ public class MBidRejected extends Message {
 
     public  MBidRejected(int houseID, BidTracker itemInfo){
         this.houseID = houseID;
-        this.itemInfo = itemInfo;
+        this.itemInfo = itemInfo.clone();
     }
 
     public BidTracker getItemInfo() {

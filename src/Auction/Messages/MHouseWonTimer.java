@@ -14,7 +14,7 @@ public class MHouseWonTimer extends Message{
 
     public MHouseWonTimer(int agentID, BidTracker itemWon){
         this.agentID = agentID;
-        this.itemWon = itemWon;
+        this.itemWon = itemWon.clone();
     }
 
     public int getAgentID() {

@@ -16,7 +16,11 @@ public class GUIMessageItems extends GUIMessage {
      * @param bidTrackers list of items
      */
     public GUIMessageItems(ArrayList<BidTracker> bidTrackers) {
-        this.bidTrackers = bidTrackers;
+        ArrayList<BidTracker> list = new ArrayList<>();
+        for(BidTracker b: bidTrackers){
+            list.add(b.clone());
+        }
+        this.bidTrackers = list;
     }
 
     /**

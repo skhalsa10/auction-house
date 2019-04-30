@@ -9,9 +9,12 @@ public class MItemList extends Message{
     private final ArrayList<BidTracker> bidTrackers;
 
     public MItemList(int houseID, ArrayList<BidTracker> bidTrackers){
-
+        ArrayList<BidTracker> list = new ArrayList<>();
+        for(BidTracker b: bidTrackers){
+            list.add(b.clone());
+        }
         this.houseID = houseID;
-        this.bidTrackers = bidTrackers;
+        this.bidTrackers = list;
 
     }
 
