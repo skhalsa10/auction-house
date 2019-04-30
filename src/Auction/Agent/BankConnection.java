@@ -33,7 +33,8 @@ public class BankConnection implements Runnable {
             new Thread(this).start();
         }
         catch (Exception e) {
-            System.err.println(e);
+            //System.err.println(e);
+            System.out.println("bank server not running! cannot connect!");
         }
     }
 
@@ -59,7 +60,7 @@ public class BankConnection implements Runnable {
     public void run () {
         Message receivedMessage;
         System.out.println("connected to bank");
-        while(true) {
+        while(connected) {
             try {
                 receivedMessage = (Message) in.readObject();
                 if(receivedMessage != null) {
