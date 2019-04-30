@@ -20,6 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class AuctionHouse  extends Thread{
 
+    private final String houseHost;
     //three items for sale
     private BidTracker tracker1;
     private BidTracker tracker2;
@@ -44,20 +45,23 @@ public class AuctionHouse  extends Thread{
     //private ShutDownTimer shutDownTimer;
     private boolean isRunning;
 
+
     /**
      * this constructor instantiates a new AuctionHouse that connects to the bank host and bank port.
      * the third argumat is the port that this Auction House will start its server socket on
      * @param bankHost hostname of the bank server that we will connect to
      * @param bankPort port of the bank server we will connect to
+     * @param houseHost  this is the hostname of the house
      * @param housePort this is the port that the Auction house server will be listening on
      */
-    public AuctionHouse(String houseName, String bankHost, int bankPort, int housePort){
+    public AuctionHouse(String houseName, String bankHost, int bankPort, String houseHost, int housePort){
         //initialize some data
         messageQueue = new LinkedBlockingQueue<>();
         clientOuts = new HashMap<>();
         //shutDownTimer = new ShutDownTimer(messageQueue);
         isRunning = true;
         this.houseName = houseName;
+        this.houseHost = houseHost;
 
 
         //register with bank first before anything!
@@ -74,10 +78,7 @@ public class AuctionHouse  extends Thread{
         try {
             //this will set up the server
             serverSocket = new ServerSocket(housePort);
-            //System.out.println(serverSocket.getInetAddress().getHostName());
-            // send server info to the bank
-            //Message m = new MHouseServerInfo(myID, serverSocket.getInetAddress().getHostName(),housePort);
-            Message m = new MHouseServerInfo(myID, "76.113.84.188",housePort);
+            Message m = new MHouseServerInfo(myID,houseHost,housePort);
             bankConnection.sendMessage(m);
         } catch (IOException e) {
             e.printStackTrace();
@@ -86,7 +87,6 @@ public class AuctionHouse  extends Thread{
         //this literally just listens on the house socket and brokers new connections
         socketListener = new AuctionHouseListener(serverSocket,messageQueue, clientOuts);
         socketListener.start();
-        //shutDownTimer.start();
 
     }
 
@@ -263,6 +263,8 @@ public class AuctionHouse  extends Thread{
             }
         }
         else if(m instanceof MHouseClosedTimer){
+
+
             //here I will send out messages to everything I am closing and close all connections
             isRunning = false;
             bankConnection.sendMessage(new MShutDown(myID, houseName));
@@ -315,20 +317,36 @@ public class AuctionHouse  extends Thread{
     }
 
     /**
-     *
+     * this method just tries to shutdown the house.
+     * it first checks to see if there are any items
      * @return
      */
     public boolean shutDown() {
-
+        return true;
     }
 
+    /**
+     * this application will take  4 parameters to start
+     * 1. the name of the auction house
+     * 2. the host name of the bank
+     * 3. the Bank's port number
+     * 4. the House's Hostname
+     * 5. the House's port number
+     *
+     * @param args
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public static void main(String args[]) throws IOException, ClassNotFoundException {
-        //System.out.println(InetAddress.getLocalHost().getHostAddress());
-        AuctionHouse auctionHouse = new AuctionHouse("Ted's Store","76.113.84.188",7778,7777);
-        //AuctionHouse auctionHouse = new AuctionHouse("Ted's Store","0.0.0.0",7878,7777);
+
+        if(args.length != 4){
+            System.out.println("USAGE: auctionHouse.jar [House Name] [Bank Host Name] [Bank Port #] [House Host name] [House Port #]");
+            return;
+        }
+
+        AuctionHouse auctionHouse = new AuctionHouse(args[0],args[1],Integer.parseInt(args[2]),args[3],Integer.parseInt(args[4]));
 
         auctionHouse.start();
-        //Socket s1 = serve1.accept();
 
         boolean running = true;
         //Enter data using BufferReader
