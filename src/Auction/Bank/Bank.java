@@ -22,14 +22,14 @@ public class Bank extends Thread{
     private HashMap<String, ObjectOutputStream> clientConnections;
     private ArrayList<MHouseServerInfo> auctionHouses;
 
-    public Bank() {
+    public Bank(int portNum) {
         clientAccounts = new HashMap<>();
         blockQ = new LinkedBlockingQueue<>();
         clientConnections = new HashMap<>();
         auctionHouses = new ArrayList<>();
 
         try {
-            bankServer = new BankServer(7778, blockQ, clientConnections);
+            bankServer = new BankServer(portNum, blockQ, clientConnections);
             bankServer.start();
         }
         catch (IOException ex) {
@@ -220,7 +220,8 @@ public class Bank extends Thread{
     }
 
     public static void main(String args[]) throws IOException {
-        Bank daBank = new Bank();
+        int portNum = Integer.parseInt(args[0]);
+        Bank daBank = new Bank(portNum);
         daBank.start();
     }
 }
