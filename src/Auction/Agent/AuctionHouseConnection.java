@@ -57,11 +57,12 @@ public class AuctionHouseConnection implements Runnable {
             closeAll();
         }
         catch (Exception e) {
-            System.err.println(e);
+            System.out.println("Connection to Auction House closed");
         }
     }
 
     public void closeAll() throws Exception {
+        connected = false;
         try {
             out.close();
         }
