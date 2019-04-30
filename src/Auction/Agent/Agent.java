@@ -22,7 +22,6 @@ public class Agent implements Runnable {
     private String bankHost;
     private int bankPortNum;
     private BankConnection bankConnection;
-    private HashMap<Integer, Boolean> connectedHouses = new HashMap<>();
     private HashMap<Integer, AuctionHouseConnection> auctionHouses = new HashMap<>();
     private GUI gui;
     private int ongoingBids = 0;
@@ -73,8 +72,6 @@ public class Agent implements Runnable {
             Socket socket = new Socket(hostname, portNum);
             AuctionHouseConnection connection = new AuctionHouseConnection(socket, messages);
             auctionHouses.put(houseId, connection);
-            connectedHouses.put(houseId, false);
-            //new Thread(connection).start();
         }
         catch (Exception e) {
             System.err.println(e);
@@ -115,38 +112,12 @@ public class Agent implements Runnable {
     }
 
     /**
-     * Choose an auction house to connect to
-     * @param houseID id of auction house to be connected to
-     */
-    private void chooseAuctionHouse(int houseID) {
-        boolean alreadyConnected = connectedHouses.get(houseID);
-        AuctionHouseConnection connection = auctionHouses.get(houseID);
-        /*if(!alreadyConnected) {
-            connectToAuctionHouse(connection);
-            connectedHouses.put(houseID, true);
-        }*/
-        MRequestItems m = new MRequestItems(agentID);
-        connection.sendMessage(m);
-    }
-
-    /**
-     * Connect to auction house
-     * @param connection connection of auction house
-     */
-    private void connectToAuctionHouse(AuctionHouseConnection connection){
-        new Thread(connection).start();
-        MRequestItems m = new MRequestItems(agentID);
-        connection.sendMessage(m);
-    }
-
-    /**
      * Connect to bank
      * @param bankHost bank host name
      * @param bankPort bank port number
      */
     private void connectToBank(String bankHost, int bankPort) {
         bankConnection = new BankConnection(bankHost, bankPort, messages);
-        //new Thread(bankConnection).start();
     }
 
     /**
@@ -164,17 +135,32 @@ public class Agent implements Runnable {
         }
     }
 
+    /**
+     * Sets the bank account number
+     * sends a message to gui to update account number
+     * @param accountNum bank account number
+     */
     private void setBankAccount(int accountNum) {
         agentID = accountNum;
         sendBankAccount();
     }
 
+    /**
+     * Sets available funds
+     * Sends message to gui to update available funds
+     * @param availFunds
+     */
     private void setAvailFunds(int availFunds) {
         this.availFunds = availFunds;
         sendAvailableFunds();
     }
 
 
+    /**
+     * Sets house list
+     * Sends house list to gui
+     * @param m message for auction house list
+     */
     private void setHouseList(Message m) {
         if(((MAuctionHouses) m).getHouses().isEmpty()) {
             return;
@@ -201,15 +187,27 @@ public class Agent implements Runnable {
         }
     }
 
+    /**
+     * Shut down agent
+     * Sends shutdown message to all servers
+     */
     private void shutDown() {
         sendShutDown();
     }
 
+    /**
+     * Closes auction house connection
+     * @param houseId house id
+     */
     private void closeConnection(int houseId) {
         AuctionHouseConnection connection = auctionHouses.get(houseId);
         connection.closeConnection();
     }
 
+    /**
+     * Process shut down message
+     * @param m message for shutdown
+     */
     private void processShutDown(Message m) {
         int id = ((MShutDown) m).getID();
         if(id == agentID) {
@@ -222,6 +220,10 @@ public class Agent implements Runnable {
         }
     }
 
+    /**
+     * Checks messages in message queue
+     * @param m message taken from queue
+     */
     private void checkMessage(Message m){
         if(m instanceof MAccountCreated) {
             setBankAccount(((MAccountCreated) m).getAccountID());
@@ -269,7 +271,6 @@ public class Agent implements Runnable {
             bankConnection.sendMessage(fundsM);
         }
         else if(m instanceof MSelectHouse) {
-            //chooseAuctionHouse(((MSelectHouse) m).getHouseId());
             requestItems(((MSelectHouse) m).getHouseId());
         }
         else if(m instanceof MBid) {
@@ -284,18 +285,6 @@ public class Agent implements Runnable {
         }
     }
 
-
-    /**
-     * Sends message to house to bid on an item
-     * @param houseId house id
-     * @param bidAmount bid amount
-     * @param itemId item id
-     */
-    private void bidOnItem(int houseId, int bidAmount, int itemId) {
-        AuctionHouseConnection connection = auctionHouses.get(houseId);
-        MBid m = new MBid(agentID, itemId, bidAmount);
-        connection.sendMessage(m);
-    }
 
     /**
      * Send message to bank to transfer funds
@@ -316,13 +305,16 @@ public class Agent implements Runnable {
     }
 
 
+    /**
+     * Send items to gui
+     * @param m message with items
+     */
     private void sendItems(Message m) {
         ArrayList<Item> items = new ArrayList<>();
         ArrayList<BidTracker> trackers = ((MItemList)m).getBidTrackers();
         for(BidTracker t: trackers) {
             items.add(t.getItem());
         }
-        System.out.println("Trackers size: " + trackers.size());
         GUIMessageItems itemsM = new GUIMessageItems(trackers);
         gui.sendMessage(itemsM);
     }
@@ -359,21 +351,5 @@ public class Agent implements Runnable {
 
     }
 
-    public static void main(String[] args) {
-        String bankHost;
-        int bankPortNum;
-        String name;
-        int initialBalance;
 
-        if(args.length == 4) {
-            bankHost = args[0];
-            bankPortNum = Integer.parseInt(args[1]);
-            name = args[2];
-            initialBalance = Integer.parseInt(args[3]);
-
-            //Agent a = new Agent(bankHost, bankPortNum, name, initialBalance);
-
-        }
-
-    }
 }
