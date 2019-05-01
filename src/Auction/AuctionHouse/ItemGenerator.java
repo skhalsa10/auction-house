@@ -50,8 +50,8 @@ public class ItemGenerator {
      * @return this will return a newly generated ITEM for the Auction house's selling pleasure.
      */
     public Item getItem(){
-        adjective = adjectives.get(random.nextInt(aCount+1));
-        noun = nouns.get(random.nextInt(nCount+1));
+        adjective = adjectives.get(random.nextInt(aCount));
+        noun = nouns.get(random.nextInt(nCount));
         //System.out.println(adjective + " " + noun);
         return (new Item(adjective + " " + noun, counterID++));
 
