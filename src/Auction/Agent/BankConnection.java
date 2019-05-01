@@ -38,6 +38,11 @@ public class BankConnection implements Runnable {
         }
     }
 
+    public boolean isConnected() {
+        System.out.println(connected);
+        return connected;
+    }
+
     /**
      * Sends messages to bank
      * @param m message to be sent

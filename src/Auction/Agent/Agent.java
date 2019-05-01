@@ -25,7 +25,7 @@ public class Agent implements Runnable {
     private HashMap<Integer, AuctionHouseConnection> auctionHouses = new HashMap<>();
     private GUI gui;
     private int ongoingBids = 0;
-    private boolean running = true;
+    private boolean running = false;
 
     /**
      * Constructs an Agent
@@ -356,7 +356,13 @@ public class Agent implements Runnable {
         bankConnection.sendMessage(m);
     }
 
-
+    /**
+     * Gets the number of ongoing bids
+     * @return number of ongoing bids
+     */
+    public int getOngoingBids() {
+        return ongoingBids;
+    }
 
 
     /**
@@ -365,9 +371,12 @@ public class Agent implements Runnable {
     @Override
     public void run() {
         connectToBank(bankHost, bankPortNum);
-        openBankAccount();
-        while(running) {
-            processMessage();
+        if(bankConnection.isConnected()) {
+            running = true;
+            openBankAccount();
+            while(running) {
+                processMessage();
+            }
         }
 
     }
