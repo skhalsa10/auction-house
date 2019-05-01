@@ -35,6 +35,7 @@ public class GUIMain extends Application {
                     System.out.println("agent isn't null");
                     if(a.getOngoingBids() == 0) {
                         System.out.println("no ongoing bids");
+                        a.shutDown();
                         Platform.exit();
                         System.exit(0);
                     }
@@ -53,11 +54,6 @@ public class GUIMain extends Application {
         });
 
     }
-
-    /*@Override
-    public void stop() throws Exception {
-        a.shutDown();
-    }*/
 
     public static void main(String[] args) {
         launch(args);

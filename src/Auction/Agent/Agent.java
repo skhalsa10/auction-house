@@ -184,7 +184,11 @@ public class Agent implements Runnable {
         bankConnection.sendMessage(m);
         for(int h: auctionHouses.keySet()) {
             connection = auctionHouses.get(h);
-            connection.sendMessage(m);
+            if(connection != null) {
+                System.out.println("connection not null");
+                connection.sendMessage(m);
+
+            }
         }
     }
 
@@ -202,9 +206,15 @@ public class Agent implements Runnable {
     }
 
     private void closeAllConnections() {
+        System.out.println("auction house size: " + auctionHouses.size());
         for(int h: auctionHouses.keySet()) {
-            closeConnection(h);
+            if(auctionHouses.get(h) != null) {
+                closeConnection(h);
+            }
+
         }
+        bankConnection.closeConnection();
+
     }
 
     /**
@@ -214,6 +224,7 @@ public class Agent implements Runnable {
     private void closeConnection(int houseId) {
         AuctionHouseConnection connection = auctionHouses.get(houseId);
         connection.closeConnection();
+        auctionHouses.remove(houseId);
     }
 
     /**
@@ -222,14 +233,7 @@ public class Agent implements Runnable {
      */
     private void processShutDown(Message m) {
         int id = ((MShutDown) m).getID();
-        if(id == agentID) {
-            if(ongoingBids == 0) {
-                shutDown();
-            }
-        }
-        else {
-            closeConnection(id);
-        }
+        closeConnection(id);
     }
 
     /**

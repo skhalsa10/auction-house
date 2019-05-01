@@ -2,9 +2,12 @@ package Auction.Agent;
 
 import Auction.Messages.Message;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
+import java.sql.SQLOutput;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -57,6 +60,39 @@ public class BankConnection implements Runnable {
 
     }
 
+    /**
+     * Close this connection
+     */
+    public void closeConnection() {
+        connected = false;
+        try {
+            closeAll();
+        }
+        catch (IOException e) {
+            System.out.println("Connection to Bank closed");
+        }
+    }
+
+    /**
+     * Close input, output and socket
+     * @throws IOException
+     */
+    public void closeAll() throws IOException {
+        connected = false;
+        try {
+            out.close();
+        }
+        finally {
+            try {
+                in.close();
+            }
+            finally {
+                socket.close();
+            }
+        }
+
+    }
+
 
     /**
      * Runs connection
@@ -71,6 +107,10 @@ public class BankConnection implements Runnable {
                 if(receivedMessage != null) {
                     messages.put(receivedMessage);
                 }
+            }
+            catch (IOException e) {
+                System.out.println("Closed bank connection");
+                connected = false;
             }
             catch (Exception e) {
                 System.err.println(e);
