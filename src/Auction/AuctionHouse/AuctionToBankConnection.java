@@ -126,6 +126,9 @@ public class AuctionToBankConnection extends Thread{
         return -1;
     }
 
+    /**
+     * we  shutdown by closing out and in and the socket.
+     */
     public void shutDown() {
         isRunning = false;
         try {

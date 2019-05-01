@@ -144,13 +144,13 @@ public class AuctionHouse  extends Thread{
     private void processMessage(Message m) {
         System.out.println("processing message from main House thread. M request type is: " + m);
         if(m instanceof MRequestItems){
-            System.out.println("before the restart");
-            //shutDownTimer.restart();
-            System.out.println("passed the restart?");
             MRequestItems m2 = (MRequestItems) m;
+            //if we are in the process of shutting down ignore this message
+            if(shuttingDown){ return;}
             if(clientOuts.get(m2.getAgentID()) == null){
                 System.out.println("error there is no agentID " + m2.getAgentID() + " in clientouts");
             }
+
             ArrayList<BidTracker> list = new ArrayList<>();
             list.add(tracker1.clone());
             list.add(tracker2.clone());
@@ -170,10 +170,34 @@ public class AuctionHouse  extends Thread{
                 //the bank has shut down shut down everything else
                 isRunning = false;
                 socketListener.shutDown();
+                //TODO may need to handle this better
                 //shutDownTimer.shutdown();
             }
             else if(msd.getID() ==myID){
-                System.out.println("Mshutdown id is myID is this right?");
+                //first we should be in a state of shutting down if I receive this message
+                if(!shuttingDown){
+                    System.out.println("UM i should not be getting a shut down message from " +
+                            "myself if I am not in the process of shutting down!");
+                    return;
+                }
+                else{
+                    isRunning = false;
+                    //okay now that we are here we have already processed all messages
+                    //that came in during the time we initially started the shutdown we can
+                    //close all client outs and the sockets
+                    for(ObjectOutputStream out: clientOuts.values()){
+                        try {
+                            out.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    //now that all output streams are closed we can close all the client sockets
+                    socketListener.shutDown();
+                    //now lets close our communication with the bank
+                    bankConnection.shutDown();
+
+                }
             }
             else{
                 socketListener.shutDownClient(msd.getID());
@@ -182,16 +206,31 @@ public class AuctionHouse  extends Thread{
         else if(m instanceof MBid){
             //shutDownTimer.restart();
             MBid m2 = (MBid) m;
-            //first check to see if This is already shutting down
-
-
-
+            //first check to see if the house is in the process of shutting down if so reject bid immediately
+            if(shuttingDown){
+                try {
+                    clientOuts.get(m2.getAgentID()).writeObject(new MBidRejected(myID,new BidTracker(new Item("House Shutting Down",m2.getItemID()),myID,2)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
             MBlockFunds mbf = new MBlockFunds(myID,m2.getAgentID(),m2.getItemID(),m2.getBidAmount(),houseName);
             bankConnection.sendMessage(mbf);
         }
         else if(m instanceof MBlockAccepted){
             //shutDownTimer.restart();
             MBlockAccepted m2 = (MBlockAccepted) m;
+            //if shutting down we should unblock funds and send bid rejected
+            if(shuttingDown){
+                bankConnection.sendMessage(new MUnblockFunds(myID,m2.getAgentID(),m2.getAmount()));
+                try {
+                    clientOuts.get(m2.getAgentID()).writeObject(new MBidRejected(myID,new BidTracker(new Item("House Shutting Down",m2.getItemID()),myID,2)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
             BidTracker t = null;
             ItemWonTimer bidTimer = null;
             //find the correct tracker
@@ -279,14 +318,30 @@ public class AuctionHouse  extends Thread{
                 System.out.println("tried processing shut down but Bids are pending! try later person");
                 return;
             }
+            shuttingDown = true; //TODO all other messages accordingly to respond to this flag
 
-            shuttingDown = true;
-            //here I will send out messages to everything I am closing and close all connections
-            isRunning = false;
+            //Send a final message that I am shutting down to all clients
+            for(ObjectOutputStream out : clientOuts.values()){
+                try {
+                    out.writeObject(new MShutDown(myID, houseName));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            //tell the bank I am shutting down
             bankConnection.sendMessage(new MShutDown(myID, houseName));
-            bankConnection.shutDown();
-            socketListener.shutDown();
-            //shutDownTimer.shutdown();
+
+            //now I need to close all client incoming streams
+            socketListener.shutdownClientIns();
+
+            //I still need to process all remaining messages that may have came in after this so I will leave the outs
+            //open. but to signal the end of what should be processed i will send myself a a shutdown messsage
+            try {
+                messageQueue.put(new MShutDown(myID,houseName));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
 
         }
         else if(m instanceof MHouseWonTimer){
@@ -379,7 +434,7 @@ public class AuctionHouse  extends Thread{
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String cmd;
         while(!auctionHouse.isShuttingDown()){
-            System.out.println("are are blocking?");
+            System.out.println("are we blocking?");
             // Reading data using readLine
             cmd = reader.readLine();
             if(cmd == "exit"){

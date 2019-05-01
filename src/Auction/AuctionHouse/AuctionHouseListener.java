@@ -65,15 +65,20 @@ public class AuctionHouseListener extends Thread {
             }
         }
         System.out.println("Leaving listener run");
-        for(AuctionHouseThread t: clientThreads){
-            t.shutDown();
-        }
 
     }
 
+    /**
+     * shut down clients threads and sockets and close the server listenerthread and socket.
+     */
     public void shutDown(){
 
         listening = false;
+
+        //first shutdown all client threads and sockets
+        for(AuctionHouseThread t: clientThreads){
+            t.shutDown();
+        }
 
         try {
             serverSocket.close();
@@ -83,7 +88,37 @@ public class AuctionHouseListener extends Thread {
 
     }
 
+    /**
+     * shut down all client input streams
+     */
+    public void shutdownClientIns(){
+        for(AuctionHouseThread t : clientThreads){
+            t.shutDownIn();
+        }
+    }
+
+    /**
+     * this method will shutdown the input and output of a a client socket stream. it will then close the socket it and remove it
+     * from the client threads and the map of output streams
+     * @param id
+     */
     public void shutDownClient(int id) {
-        clientThreads.get(id).shutDown();
+        AuctionHouseThread temp = null;
+        for(AuctionHouseThread t : clientThreads){
+            if(t.getClientID() == id){
+                t.shutDownIn();
+                try {
+                    clientOuts.get(id).close();
+                    clientOuts.remove(id);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                t.shutDown();
+                temp = t;
+            }
+        }
+
+        clientThreads.remove(temp);
+
     }
 }

@@ -29,7 +29,7 @@ public class AuctionHouseThread extends Thread {
     private HashMap<Integer, ObjectOutputStream> clientOuts;
     private boolean isRegistered;
     private boolean isRunning;
-    private int agentID;
+    private int clientID = -1;
     ObjectInputStream objectIn = null;
     ObjectOutputStream out = null;
 
@@ -43,7 +43,16 @@ public class AuctionHouseThread extends Thread {
     }
 
     /**
-     * this thread will listen for data on the socket it will read in a message object and store it in the auction house queue
+     *
+     * @return the client ID associatied with this thread
+     */
+    public int getClientID() {
+        return clientID;
+    }
+
+    /**
+     * this thread will listen for data on the socket it will read in a
+     *  message object and store it in the auction house queue
      */
     @Override
     public void run() {
@@ -73,9 +82,6 @@ public class AuctionHouseThread extends Thread {
                 }
                 messageQueue.put(m);
             }
-            objectIn.close();
-            out.close();
-            socket.close();
         } catch (IOException e) {
             if(!isRunning) {
                 System.out.println("gracefully cought IOException");
@@ -91,9 +97,15 @@ public class AuctionHouseThread extends Thread {
 
     }
 
+    /**
+     * this will take a message the clients ID from the message and map that id to the output stream in the clientOuts map.
+     * @param m
+     * @param out
+     */
     private void addToOuts(Message m, ObjectOutputStream out) {
         if(m instanceof MBid){
             MBid m2 = (MBid) m;
+            clientID = m2.getAgentID();
             clientOuts.put(m2.getAgentID(),out);
         }
         else if(m instanceof MRequestItems){
@@ -107,15 +119,30 @@ public class AuctionHouseThread extends Thread {
         isRegistered = true;
     }
 
+    /**
+     * this method assumes that all input and output streams have been closed gracefully.
+     * this will tell the thread to stop running and then close the clients socket
+     */
     public void shutDown() {
         isRunning = false;
         try {
-            objectIn.close();
-            out.close();
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * this method will close the input stream
+     */
+    public void shutDownIn() {
+        try {
+            objectIn.close();
+            //TODO will this cause an error to clos twice?
+            objectIn.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
