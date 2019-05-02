@@ -9,7 +9,10 @@ can communicate across multiple machines.
 
 ## Contributions
 **Siri's Contributions:**<br>
-Write your contributions here!
+I primarily worked on the AuctionHouse part. this acts as a server to agents and a client  to the bank
+When an Auction House starts it connects to the bank server and gets an account. It then starts its own server
+and soawns a new thread to broker connections with agents. it randomly generates items and communicates with agents over sockets
+to sell them. it uses the bank to confirm funds exist. after 30 seconds of no more bidding the item will get sold to the highest bid.
 <br><br>
 **Michelle's Contributions:**<br>
 Write your contributions here!
@@ -27,22 +30,19 @@ when a new Auction House is created.
 
 
 ## Usage
+
+**MUST USE JRE 10.0.2**<br>
 To use the program, you will need three .jar files: **Bank.jar**, **Agent.jar**, and **AuctionHouse.jar.***<br>
 Machines running an Agent or Auction House will need the following arguments: <br><br>
 **Auction House:** House Name, Bank Host Name, Bank Port, House Host Name, House Port<br>
-**Agent:** Bank Host Name, Bank Port, Agent Name, Initial Account Balance<br><br>
+**Agent:** Bank Host Name, Bank Port, Agent Name, Initial Account Balance<br>
+**Bank:** Bank port<br><br>
 Once connected to the Bank, simply use the provided GUI to place bids. 
 <br>
-*NOTE: The Bank.jar file MUST be launched first!
+*NOTE: The Bank.jar file MUST be launched first! the house and clients can be started in any order
 
 ## Project Assumptions
 The bank expects clients to use integer amounts when creating accounts and placing bids.
-## Versions 
-Where are the .jar files?
-### V1
-explain about how version 1 works
-### V2
-explain about how version 2 works etc...
 
 ## Docs
 What folder is your documentation (diagram and class diagram) in?
@@ -52,7 +52,4 @@ What folder is your documentation (diagram and class diagram) in?
 State things that work.
 
 ### Known Issues
-If there are things that don't work put them here. It will save the graders time and keep them in a good mood.
-
-## Testing and Debugging
-If you have tests, then explain how they work and how to use them.
+1. **TODO** When GUI terminates handle closing connection
