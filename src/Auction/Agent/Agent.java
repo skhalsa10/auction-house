@@ -171,7 +171,6 @@ public class Agent implements Runnable {
         ArrayList<Integer> removeIds = new ArrayList<>();
         for(MHouseServerInfo h: houses) {
             tempHouseIds.add(h.getHouseID());
-            System.out.println("house id: " + h.getHouseID());
             if(!auctionHouses.containsKey(h.getHouseID())) {
                 setAuctionHouse(h.getHouseID(),h.getHouseHostName(),h.getHousePort());
             }
@@ -204,9 +203,7 @@ public class Agent implements Runnable {
             for(int h: auctionHouses.keySet()) {
                 connection = auctionHouses.get(h);
                 if(connection != null) {
-                    System.out.println("connection not null");
                     connection.sendMessage(m);
-
                 }
             }
         }
@@ -227,7 +224,6 @@ public class Agent implements Runnable {
     }
 
     private void closeAllConnections() {
-        System.out.println("auction house size: " + auctionHouses.size());
         if(!auctionHouses.isEmpty()) {
             for(int h: auctionHouses.keySet()) {
                 if(auctionHouses.get(h) != null) {
@@ -249,7 +245,6 @@ public class Agent implements Runnable {
     private void closeConnection(int houseId) {
         AuctionHouseConnection connection = auctionHouses.get(houseId);
         connection.closeConnection();
-        //auctionHouses.remove(houseId);
     }
 
     /**
@@ -258,10 +253,9 @@ public class Agent implements Runnable {
      */
     private void processShutDown(Message m) {
         int id = ((MShutDown) m).getID();
-        System.out.println("Auction House that wants to close: " + id);
+        System.out.println("Auction House #" + id + " wants to close");
         closeConnection(id);
         auctionHouses.remove(((MShutDown) m).getID());
-        //request a new list of houses if one closes
         bankConnection.sendMessage(new MRequestHouses(agentID,name));
     }
 
