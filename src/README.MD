@@ -42,14 +42,16 @@ Once connected to the Bank, simply use the provided GUI to place bids.
 *NOTE: The Bank.jar file MUST be launched first! the house and clients can be started in any order
 
 ## Project Assumptions
-The bank expects clients to use integer amounts when creating accounts and placing bids.
-
+The bank expects clients to use integer amounts when creating accounts and placing bids. <br>
+Bank must be run first.<br>
+Must use Java 10.0.2<br>
 ## Docs
 What folder is your documentation (diagram and class diagram) in?
 
 ## Status
 ### Implemented Features
-State things that work.
+
+We implemented a GUI for our client.
 
 ### Known Issues
 1. **BUG** When GUI terminates handle closing connection - **FIXED**
