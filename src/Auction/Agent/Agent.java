@@ -234,6 +234,8 @@ public class Agent implements Runnable {
     private void processShutDown(Message m) {
         int id = ((MShutDown) m).getID();
         closeConnection(id);
+        //request a new list of houses if one closes
+        bankConnection.sendMessage(new MRequestHouses(agentID,name));
     }
 
     /**
