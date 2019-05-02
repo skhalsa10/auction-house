@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Bank extends Thread{
@@ -179,15 +180,31 @@ public class Bank extends Thread{
                     MShutDown m = ((MShutDown) msg);
                     try {
                         clientConnections.get(m.getName()).close();
-                        //clientConnections.remove(m.getName());
-
                     }
                     catch (IOException e) {
                         e.printStackTrace();
                     }
-                    //TODO we only shutdown output
-
-                    //Agent or house requesting to shut down and stop being tracked by the bank
+                    //remove the mapping
+                    clientConnections.remove(m.getName());
+                    //remove the house server associated with the house shutting down if it is a house
+                    Iterator<MHouseServerInfo> i = auctionHouses.iterator();
+                    while (i.hasNext()){
+                        MHouseServerInfo m2 = i.next();
+                        if(m2.getHouseID() == m.getID()){
+                            i.remove();
+                            //since we remove we blast out the change to the clients
+                            //Send MAuctionHouses message to all clients so they know a new house exists
+                            for (ObjectOutputStream value : clientConnections.values()) {
+                                MAuctionHouses outgoingMsg = new MAuctionHouses(auctionHouses);
+                                try {
+                                    value.writeObject(outgoingMsg);
+                                }
+                                catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
                 }
                 else if (msg instanceof MRequestHouses) {
                     //Send info to all clients

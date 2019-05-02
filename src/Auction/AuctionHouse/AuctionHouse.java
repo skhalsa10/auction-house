@@ -185,6 +185,9 @@ public class AuctionHouse  extends Thread{
                     System.out.println("TIMER 1 is running?: " + itemWonTimer1.isRunning());
                     System.out.println("TIMER 2 is running?: " + itemWonTimer2.isRunning());
                     System.out.println("TIMER 3 is running?: " + itemWonTimer3.isRunning());
+                    itemWonTimer1.shutdown();
+                    itemWonTimer2.shutdown();
+                    itemWonTimer3.shutdown();
                     //okay now that we are here we have already processed all messages
                     //that came in during the time we initially started the shutdown we can
                     //close all client outs and the sockets
