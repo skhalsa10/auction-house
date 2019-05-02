@@ -280,8 +280,9 @@ public class AuctionHouse  extends Thread{
                     list.add(tracker1.clone());
                     list.add(tracker2.clone());
                     list.add(tracker3.clone());
-                    for(ObjectOutputStream out:clientOuts.values()){
-                        out.writeObject(new MItemList(myID,list));
+                    for(Integer key:clientOuts.keySet()){
+                        System.out.println(key);
+                        clientOuts.get(key).writeObject(new MItemList(myID,list));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
