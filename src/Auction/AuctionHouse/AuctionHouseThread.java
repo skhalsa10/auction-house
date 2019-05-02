@@ -116,6 +116,7 @@ public class AuctionHouseThread extends Thread {
         }
         else if(m instanceof MRequestItems){
             MRequestItems m2 = (MRequestItems) m;
+            this.clientID = m2.getAgentID();
             clientOuts.put(m2.getAgentID(), out);
         }
         else{
