@@ -3,9 +3,11 @@ package Auction.Agent;
 import Auction.Messages.MShutDown;
 import Auction.Messages.Message;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -56,20 +58,21 @@ public class AuctionHouseConnection implements Runnable {
      * Close this connection
      */
     public void closeConnection() {
+        connected = false;
         try {
             closeAll();
         }
-        catch (Exception e) {
+        catch (IOException e) {
             System.out.println("Connection to Auction House closed");
         }
     }
 
     /**
      * Close input, output and socket
-     * @throws Exception
+     * @throws IOException
      */
-    public void closeAll() throws Exception {
-        connected = false;
+    public void closeAll() throws IOException {
+        //connected = false;
         try {
             out.close();
         }
@@ -99,6 +102,10 @@ public class AuctionHouseConnection implements Runnable {
                     messages.put(receivedMessage);
                     System.out.println(receivedMessage.toString());
                 }
+            }
+            catch (IOException e) {
+                System.out.println("Closed auction house connection");
+                connected = false;
             }
             catch (Exception e) {
                 System.err.println(e);
