@@ -1,7 +1,12 @@
 package Auction.AuctionHouse;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Random;
@@ -35,14 +40,34 @@ public class ItemGenerator {
      * this will just initialize the arrays that are used to build random items
      */
     private void initLists() {
+
+        ClassLoader cl = this.getClass().getClassLoader();
+        BufferedReader aReader = new BufferedReader(new InputStreamReader(cl.getResourceAsStream("adjectives.txt")));
+        BufferedReader nReader = new BufferedReader(new InputStreamReader(cl.getResourceAsStream("nouns.txt")));
+
+        adjectives = getListofWords(aReader);
+        nouns = getListofWords(nReader);
+        //adjectives = (ArrayList<String>)Files.readAllLines(Paths.get("adjectives.txt"));
+        aCount = adjectives.size();
+        //nouns = (ArrayList<String>)Files.readAllLines(Paths.get(this.getClass().getResource("nouns.txt").toURI()));
+        nCount = nouns.size();
+    }
+
+    private ArrayList<String> getListofWords(BufferedReader aReader) {
+        ArrayList<String> list = new ArrayList<>();
+        String line = null;
         try {
-            adjectives = (ArrayList<String>)Files.readAllLines(Paths.get("./resources/adjectives.txt"));
-            aCount = adjectives.size();
-            nouns = (ArrayList<String>)Files.readAllLines(Paths.get("./resources/nouns.txt"));
-            nCount = nouns.size();
+            line = aReader.readLine();
+
+            while(line != null){
+                list.add(line);
+                line = aReader.readLine();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return list;
     }
 
     /**
