@@ -24,7 +24,7 @@ public class GUIMain extends Application {
             a = new Agent(bankHost, bankPortNum, name, initialBalance, gui);
             gui.setGUIAgentConnection(a.getMessages());
         }
-        catch (NumberFormatException e ) {
+        catch (Exception e ) {
             System.out.println("Arguments: Bank Hostname, Bank Port, Agent Name, Initial Balance");
             System.out.println("Please close and try again");
         }
