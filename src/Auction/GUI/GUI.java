@@ -336,7 +336,7 @@ public class GUI extends AnimationTimer {
             });
         }
 
-        setSize();
+        //setSize();
 
     }
 
@@ -410,7 +410,7 @@ public class GUI extends AnimationTimer {
         controlPane.getChildren().clear();
         controlPane.getChildren().add(controlBox);
 
-        setSize();
+        //setSize();
 
     }
 
