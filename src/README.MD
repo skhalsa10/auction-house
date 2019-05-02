@@ -13,9 +13,18 @@ I primarily worked on the AuctionHouse part. this acts as a server to agents and
 When an Auction House starts it connects to the bank server and gets an account. It then starts its own server
 and soawns a new thread to broker connections with agents. it randomly generates items and communicates with agents over sockets
 to sell them. it uses the bank to confirm funds exist. after 30 seconds of no more bidding the item will get sold to the highest bid.
+Made the GUI
 <br><br>
 **Michelle's Contributions:**<br>
-Write your contributions here!
+Worked mainly on the Agent which is a client to both Auction Houses and the Bank.
+The Agent first registers with the Bank to create an account. 
+When Auction Houses are available, the Agent receives a list of houses from the Bank.
+The Agent then chooses a house to connect to and receives a list of items 
+from which it may place a bid. 
+The Agent will receive messages regarding the bidding status of its bids and if a bid is won,
+the agent will tell the Bank to transfer funds.
+Worked on the underlying logic of the GUI with Siri
+
 <br><br>
 **Alexandra's Contributions:**<br>
 Created bank entity, which manages client connections and accounts.   
@@ -38,6 +47,13 @@ Machines running an Agent or Auction House will need the following arguments: <b
 **Agent:** Bank Host Name, Bank Port, Agent Name, Initial Account Balance<br>
 **Bank:** Bank port<br><br>
 Once connected to the Bank, simply use the provided GUI to place bids. 
+* A Loading screen indicates that no Auction Houses are yet available.
+* A list of Auction Houses will appear once they are available. User can click on an Auction House to view its items.
+* On the item page, user can click on the item they will like to place a bid on and enter the bid amount in the text field.
+* Click the "Place Bid" button to place the bid.
+* Bids will be rejected if item is already sold or no item is selected. 
+* Multiple bids on different items in different Auction Houses may be placed by clicking on the back button on the bottom left.
+* Agent info (Account #, Balance, Available Funds, Bid Status Messages) appear on the very bottom.
 <br>
 *NOTE: The Bank.jar file MUST be launched first! the house and clients can be started in any order
 
