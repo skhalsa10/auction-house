@@ -52,4 +52,11 @@ What folder is your documentation (diagram and class diagram) in?
 State things that work.
 
 ### Known Issues
-1. **TODO** When GUI terminates handle closing connection
+1. **BUG** When GUI terminates handle closing connection - **FIXED**
+2. **BUG** Can place Bid on house after it closes down - **FIXED**
+3. **BUG** Connect Exception: Connection refused: connect in GUI **Probably FIXED**
+4. **BUG** House does not register a clients output stream until it sends its first message
+possible to leave an output stream open without getting closed gracefully.
+5. **BUG** Sometimes the house doesnt exit gracefully
+6. **BUG** Resources cant be accessed from in jar **Fixed**
+7. **BUG** Sometimes the GUI Window will shrink when it refreshes the data. even in full screen the window shrinks even when it thinks it is full screen.
