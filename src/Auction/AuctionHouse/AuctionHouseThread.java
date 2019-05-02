@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -29,7 +30,7 @@ public class AuctionHouseThread extends Thread {
     private HashMap<Integer, ObjectOutputStream> clientOuts;
     private boolean isRegistered;
     private boolean isRunning;
-    private int clientID = -1;
+    private int clientID;
     ObjectInputStream objectIn = null;
     ObjectOutputStream out = null;
 
@@ -40,6 +41,7 @@ public class AuctionHouseThread extends Thread {
         this.clientOuts = clientOuts;
         isRegistered = false;
         isRunning = true;
+        clientID = -1;
     }
 
     /**
@@ -82,9 +84,13 @@ public class AuctionHouseThread extends Thread {
                 }
                 messageQueue.put(m);
             }
-        } catch (IOException e) {
+        }
+        catch (SocketException e){
+            System.out.println("Client " + clientID + " socket closed!");
+        }
+        catch (IOException e) {
             if(!isRunning) {
-                System.out.println("gracefully cought IOException");
+                System.out.println("gracefully cought Client " + clientID + " IOException");
             }else {
                 e.printStackTrace();
             }
@@ -105,7 +111,7 @@ public class AuctionHouseThread extends Thread {
     private void addToOuts(Message m, ObjectOutputStream out) {
         if(m instanceof MBid){
             MBid m2 = (MBid) m;
-            clientID = m2.getAgentID();
+            this.clientID = m2.getAgentID();
             clientOuts.put(m2.getAgentID(),out);
         }
         else if(m instanceof MRequestItems){

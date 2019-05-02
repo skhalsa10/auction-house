@@ -51,6 +51,13 @@ public class ItemGenerator {
         aCount = adjectives.size();
         //nouns = (ArrayList<String>)Files.readAllLines(Paths.get(this.getClass().getResource("nouns.txt").toURI()));
         nCount = nouns.size();
+        try {
+            aReader.close();
+            nReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private ArrayList<String> getListofWords(BufferedReader aReader) {

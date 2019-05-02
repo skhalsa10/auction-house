@@ -182,6 +182,9 @@ public class AuctionHouse  extends Thread{
                 }
                 else{
                     isRunning = false;
+                    System.out.println("TIMER 1 is running?: " + itemWonTimer1.isRunning());
+                    System.out.println("TIMER 2 is running?: " + itemWonTimer2.isRunning());
+                    System.out.println("TIMER 3 is running?: " + itemWonTimer3.isRunning());
                     //okay now that we are here we have already processed all messages
                     //that came in during the time we initially started the shutdown we can
                     //close all client outs and the sockets
@@ -441,6 +444,8 @@ public class AuctionHouse  extends Thread{
                auctionHouse.shutDown();
             }
         }
+        reader.close();
+        System.out.println("house main exited");
 
     }
 

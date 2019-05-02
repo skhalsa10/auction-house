@@ -66,17 +66,19 @@ public class ClientConnection implements Runnable {
                     //place the put last to make sure the output stream is mapped first.
                     bankQ.put(m);
                 }
-                try {
+
                     o = in.readObject();
-                }
-                catch (EOFException e) {
-                    //TODO we need to delete this client from  the map?a
-                    System.out.println("A client disconnected.");
-                }
+
+
             }
         }
+        catch (EOFException e) {
+            //TODO we need to delete this client from  the map?a
+            System.out.println("A client disconnected.");
+
+        }
         catch (IOException ex) {
-            ex.printStackTrace();
+            System.out.println("a client disconencted and the socket closed... close handled accordingly!");
         }
         catch (ClassNotFoundException ex) {
             ex.printStackTrace();
