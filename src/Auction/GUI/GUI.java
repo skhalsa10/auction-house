@@ -233,12 +233,19 @@ public class GUI extends AnimationTimer {
         }
     }
 
+    private boolean openedAuctionHouse(GUIMessage m) {
+        if(((GUIMessageLoaded) m).getHouseIDs().contains(selectedHouseID)) {
+            return true;
+        }
+        return false;
+    }
+
     private void processMessage() {
         GUIMessage m = messages.poll();
         if(m == null) {return;}
         if(m instanceof GUIMessageLoaded){
             System.out.println("loaded");
-            if(page == pageType.ITEM_PAGE) {
+            if(page == pageType.ITEM_PAGE && openedAuctionHouse(m)) {
                 return;
             }
             isLoading = false;

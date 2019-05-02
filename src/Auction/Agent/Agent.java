@@ -312,6 +312,10 @@ public class Agent implements Runnable {
         }
         else if(m instanceof MBid) {
             MBid bidM = new MBid(agentID,((MBid) m).getItemID(), ((MBid) m).getBidAmount());
+            if(!auctionHouses.containsKey(((MBid) m).getAgentID())) {
+                bankConnection.sendMessage(new MRequestHouses(agentID,name));
+                return;
+            }
             AuctionHouseConnection connection = auctionHouses.get(((MBid) m).getAgentID());
             connection.sendMessage(bidM);
             ongoingBids++;
