@@ -437,7 +437,7 @@ public class AuctionHouse  extends Thread{
             System.out.println("are we blocking?");
             // Reading data using readLine
             cmd = reader.readLine();
-            if(cmd == "exit"){
+            if(cmd.equals("exit")){
                auctionHouse.shutDown();
             }
         }
