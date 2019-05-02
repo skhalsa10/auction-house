@@ -45,6 +45,7 @@ Once connected to the Bank, simply use the provided GUI to place bids.
 The bank expects clients to use integer amounts when creating accounts and placing bids. <br>
 Bank must be run first.<br>
 Must use Java 10.0.2<br>
+**MAKE SURE YOU USE BRANCH production AS THIS HAS THE FINAL WORKING PROJECT**
 ## Docs
 What folder is your documentation (diagram and class diagram) in?
 
