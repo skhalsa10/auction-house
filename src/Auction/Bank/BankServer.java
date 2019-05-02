@@ -41,6 +41,7 @@ public class BankServer extends Thread {
             }
             catch (IOException e) {
                 e.printStackTrace();
+
                 //TODO need someway to exit the infinite loop
             }
         }
