@@ -167,10 +167,26 @@ public class Agent implements Runnable {
             return;
         }
         ArrayList<MHouseServerInfo> houses = ((MAuctionHouses) m).getHouses();
+        ArrayList<Integer> tempHouseIds = new ArrayList<>();
+        ArrayList<Integer> removeIds = new ArrayList<>();
         for(MHouseServerInfo h: houses) {
+            tempHouseIds.add(h.getHouseID());
+            System.out.println("house id: " + h.getHouseID());
             if(!auctionHouses.containsKey(h.getHouseID())) {
                 setAuctionHouse(h.getHouseID(),h.getHouseHostName(),h.getHousePort());
             }
+        }
+        for(int houseId: auctionHouses.keySet()) {
+            if(!tempHouseIds.contains(houseId)) {
+                removeIds.add(houseId);
+            }
+        }
+        if(!removeIds.isEmpty()) {
+            for (int removeHouseId : removeIds) {
+                closeConnection(removeHouseId);
+                auctionHouses.remove(removeHouseId);
+            }
+
         }
         sendHouseList();
     }
