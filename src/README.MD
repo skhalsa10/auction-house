@@ -59,4 +59,4 @@ State things that work.
 possible to leave an output stream open without getting closed gracefully.
 5. **BUG** Sometimes the house doesnt exit gracefully
 6. **BUG** Resources cant be accessed from in jar **Fixed**
-7. **BUG** Sometimes the GUI Window will shrink when it refreshes the data. even in full screen the window shrinks even when it thinks it is full screen.
+7. **BUG** Sometimes the GUI Window will shrink when it refreshes the data. even in full screen the window shrinks even when it thinks it is full screen. **FIXED**
