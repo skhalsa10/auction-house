@@ -45,14 +45,25 @@ public class ItemWonTimer {
         timer.cancel();
         //timer.purge();
         this.start();
+        //timer = null;
     }
 
     public void shutdown() {
         running = false;
         timer.cancel();
+        //timer = null;
     }
 
     public boolean isRunning() {
         return running;
     }
+
+    public static void main(String args[]){
+        ItemWonTimer test = new ItemWonTimer(new LinkedBlockingQueue<Message>(), new BidTracker(new Item("test", 1),9,2));
+
+        test.start();
+        test.restart();
+
+    }
 }
+
