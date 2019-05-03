@@ -245,9 +245,17 @@ public class GUI extends AnimationTimer {
         if(m == null) {return;}
         if(m instanceof GUIMessageLoaded){
             System.out.println("loaded");
+            System.out.println("house size: " + ((GUIMessageLoaded) m).getHouseIDs().size());
+            if( ((GUIMessageLoaded) m).getHouseIDs().isEmpty()) {
+                System.out.println("entered here");
+                isLoading = true;
+                page = pageType.LOADING_PAGE;
+                return;
+            }
             if(page == pageType.ITEM_PAGE && openedAuctionHouse(m)) {
                 return;
             }
+
             isLoading = false;
             page = pageType.HOUSE_PAGE;
             houseIDs = ((GUIMessageLoaded) m).getHouseIDs();

@@ -164,11 +164,14 @@ public class Agent implements Runnable {
      */
     private void setHouseList(Message m) {
         if(((MAuctionHouses) m).getHouses().isEmpty()) {
+            auctionHouses.clear();
+            sendHouseList();
             return;
         }
         ArrayList<MHouseServerInfo> houses = ((MAuctionHouses) m).getHouses();
         ArrayList<Integer> tempHouseIds = new ArrayList<>();
         ArrayList<Integer> removeIds = new ArrayList<>();
+        System.out.println("size of house list from bank: " + ((MAuctionHouses) m).getHouses().size());
         for(MHouseServerInfo h: houses) {
             tempHouseIds.add(h.getHouseID());
             System.out.println("house id: " + h.getHouseID());
@@ -249,6 +252,7 @@ public class Agent implements Runnable {
      */
     private void processShutDown(Message m) {
         int id = ((MShutDown) m).getID();
+        System.out.println("house is shutting down: "+ id);
         closeConnection(id);
         auctionHouses.remove(((MShutDown) m).getID());
         //request a new list of houses if one closes
