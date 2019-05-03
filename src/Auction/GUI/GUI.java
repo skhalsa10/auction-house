@@ -190,6 +190,10 @@ public class GUI extends AnimationTimer {
         connection.sendMessage(new MRequestHouses(-1,""));
     }
 
+    /**
+     * Sends messages to gui from agent
+     * @param m message to gui
+     */
     public void sendMessage(GUIMessage m){
         try {
             messages.put(m);
@@ -198,10 +202,18 @@ public class GUI extends AnimationTimer {
         }
     }
 
+    /**
+     * Sets the gui and agent connection
+     * @param toAgentMessages to agent message queue
+     */
     public void setGUIAgentConnection(LinkedBlockingQueue<Message> toAgentMessages) {
         this.connection = new GUIAgentConnection(toAgentMessages);
     }
 
+    /**
+     * Handles the gui
+     * @param now
+     */
     @Override
     public void handle(long now) {
         if (now - lastUpdate >= 33_334_000) {
@@ -211,8 +223,6 @@ public class GUI extends AnimationTimer {
             if (isLoading || refreshNeeded) {
                 switch (page) {
                     case LOADING_PAGE: {
-                        //System.out.println("hi");
-                        //System.out.println(loadState);
                         renderLoadingPage();
                         break;
                     }
@@ -255,7 +265,7 @@ public class GUI extends AnimationTimer {
             refreshNeeded = true;
         }
         else if(m instanceof GUIMessageAccount) {
-            System.out.println("gui message account");
+            System.out.println("Made an account");
             String num = Integer.toString(((GUIMessageAccount) m).getAccountID());
             accountNum.setText("Account: " + num);
         }
@@ -278,7 +288,6 @@ public class GUI extends AnimationTimer {
 
         }
         else if(m instanceof GUIMessageAvailableFunds) {
-            //String availValue = Integer.toString(((GUIMessageAvailableFunds) m).getAvailFunds());
             NumberFormat numFormat = NumberFormat.getNumberInstance(Locale.US);
             String availValue = numFormat.format(((GUIMessageAvailableFunds) m).getAvailFunds());
             availableFunds.setText("Available: $" + availValue);
@@ -294,11 +303,6 @@ public class GUI extends AnimationTimer {
         listPane.getChildren().clear();
         controlPane.getChildren().clear();
         infoPane.getChildren().clear();
-
-        //TODO get list of houses here the following are dummy ones
-        /*houseIDs.add(1);
-        houseIDs.add(2);
-        houseIDs.add(3);*/
 
         titlePane.getChildren().add(housePageTitle);
         titlePane.setId("house-title-pane");
@@ -326,9 +330,8 @@ public class GUI extends AnimationTimer {
                 @Override
                 public void handle(MouseEvent event) {
                     HBox temp = (HBox) event.getSource();
-                    //System.out.println(temp.getChildren().size());
                     Text t = (Text) temp.getChildren().get(2);
-                    System.out.println("ID is " + t.getText());
+                    System.out.println("House ID is " + t.getText());
                     selectedHouseID = Integer.parseInt(t.getText());
                     MSelectHouse m = new MSelectHouse(selectedHouseID);
                     connection.sendMessage(m);

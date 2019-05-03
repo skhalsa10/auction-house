@@ -7,10 +7,17 @@ import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+/**
+ * Main Entry Point for Agent
+ */
 public class GUIMain extends Application {
     private GUI gui;
     private Agent a;
 
+    /**
+     * Starts the agent and the gui
+     * @param primaryStage
+     */
     @Override
     public void start(Stage primaryStage) {
 
@@ -32,18 +39,16 @@ public class GUIMain extends Application {
             @Override
             public void handle(WindowEvent event) {
                 if(a != null) {
-                    System.out.println("agent isn't null");
                     if(a.getOngoingBids() == 0) {
-                        System.out.println("no ongoing bids");
+                        System.out.println("No ongoing bids");
                         a.shutDown();
                         Platform.exit();
                         System.exit(0);
                     }
                     else {
-                        System.out.println("shouldn't exit");
+                        System.out.println("There are still ongoing bids!");
                         event.consume();
                     }
-
                 }
                 else {
                     Platform.exit();

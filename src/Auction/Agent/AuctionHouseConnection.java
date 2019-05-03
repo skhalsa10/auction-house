@@ -1,13 +1,10 @@
 package Auction.Agent;
 
-import Auction.Messages.MShutDown;
 import Auction.Messages.Message;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -72,7 +69,6 @@ public class AuctionHouseConnection implements Runnable {
      * @throws IOException
      */
     public void closeAll() throws IOException {
-        //connected = false;
         try {
             out.close();
         }
