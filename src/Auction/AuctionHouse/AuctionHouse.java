@@ -83,7 +83,10 @@ public class AuctionHouse  extends Thread{
             serverSocket = new ServerSocket(housePort);
             Message m = new MHouseServerInfo(myID,houseHost,housePort);
             bankConnection.sendMessage(m);
-        } catch (IOException e) {
+        }catch(BindException e){
+            System.out.println("This port is already being used by a different house server socket. Check the port parameter!");
+            return;
+        }  catch (IOException e) {
             e.printStackTrace();
         }
 
