@@ -73,17 +73,20 @@ public class AuctionHouseThread extends Thread {
                     throw new IOException();
                 }
                 Message m = (Message) o;
-                if(m instanceof MShutDown){
+                /*if(m instanceof MShutDown){
                     //socket.close();
                     //TODO should I be placing this message also in the queue for the house to delete?
                     break;
-                }
+                }*/
                 System.out.println("Message received from agent: " + m);
                 if(!isRegistered) {
                     addToOuts(m, out);
                 }
                 messageQueue.put(m);
             }
+        }
+        catch(EOFException e){
+            System.out.println("client closed their stream before I could.");
         }
         catch (SocketException e){
             System.out.println("Client " + clientID + " socket closed!");

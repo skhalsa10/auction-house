@@ -169,6 +169,7 @@ public class AuctionHouse  extends Thread{
         }
         else if (m instanceof MShutDown) {
             MShutDown msd = (MShutDown)m;
+            System.out.println("PROCCING AN M SHUTDOWN FROM " + ((MShutDown) m).getID());
             if(msd.getID()<0){
                 //the bank has shut down shut down everything else
                 isRunning = false;
@@ -283,8 +284,12 @@ public class AuctionHouse  extends Thread{
                     list.add(tracker1.clone());
                     list.add(tracker2.clone());
                     list.add(tracker3.clone());
-                    for(ObjectOutputStream out:clientOuts.values()){
+                    /*for(ObjectOutputStream out:clientOuts.values()){
                         out.writeObject(new MItemList(myID,list));
+                    }*/
+                    for(Integer i: clientOuts.keySet()){
+                        System.out.println("the ID getting my MItemList is " + i);
+                        clientOuts.get(i).writeObject(new MItemList(myID,list));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -383,9 +388,17 @@ public class AuctionHouse  extends Thread{
             items.add(tracker2.clone());
             items.add(tracker3.clone());
             MItemList Mil = new MItemList(myID,items);
-            for(ObjectOutputStream out: clientOuts.values()){
+            /*for(ObjectOutputStream out: clientOuts.values()){
                 try {
                     out.writeObject(Mil);
+
+            }*/
+            for(Integer i: clientOuts.keySet()){
+                System.out.println("the ID getting my MItemList is " + i);
+                try {
+                    clientOuts.get(i).writeObject(Mil);
+                }catch(SocketException e){
+                    System.out.println("cant send to this out. the agent probably closed extremely quickly after winning an Item");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
