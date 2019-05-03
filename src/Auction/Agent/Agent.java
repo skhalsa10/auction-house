@@ -240,7 +240,7 @@ public class Agent implements Runnable {
     private void closeConnection(int houseId) {
         AuctionHouseConnection connection = auctionHouses.get(houseId);
         connection.closeConnection();
-        auctionHouses.remove(houseId);
+        //auctionHouses.remove(houseId);
     }
 
     /**
@@ -250,6 +250,7 @@ public class Agent implements Runnable {
     private void processShutDown(Message m) {
         int id = ((MShutDown) m).getID();
         closeConnection(id);
+        auctionHouses.remove(((MShutDown) m).getID());
         //request a new list of houses if one closes
         bankConnection.sendMessage(new MRequestHouses(agentID,name));
     }
