@@ -182,9 +182,9 @@ public class AuctionHouse  extends Thread{
                 }
                 else{
                     isRunning = false;
-                    System.out.println("TIMER 1 is running?: " + itemWonTimer1.isRunning());
-                    System.out.println("TIMER 2 is running?: " + itemWonTimer2.isRunning());
-                    System.out.println("TIMER 3 is running?: " + itemWonTimer3.isRunning());
+                    //System.out.println("TIMER 1 is running?: " + itemWonTimer1.isRunning());
+                    //System.out.println("TIMER 2 is running?: " + itemWonTimer2.isRunning());
+                    //System.out.println("TIMER 3 is running?: " + itemWonTimer3.isRunning());
                     itemWonTimer1.shutdown();
                     itemWonTimer2.shutdown();
                     itemWonTimer3.shutdown();

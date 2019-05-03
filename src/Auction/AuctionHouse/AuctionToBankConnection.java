@@ -4,6 +4,7 @@ import Auction.Messages.MAccountCreated;
 import Auction.Messages.MCreateAccount;
 import Auction.Messages.Message;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -79,9 +80,14 @@ public class AuctionToBankConnection extends Thread{
                 houseMessageQueue.put((Message) o);
                 System.out.println(((Message) o));
 
-            } catch (IOException e) {
+            }
+            catch(EOFException e){
+                System.out.println("Bank Input stream  has been closed breaking out of the thread reading this data");
+                return;
+            }
+            catch (IOException e) {
                 if(!isRunning) {
-                    System.out.println("gracefully cought IOException");
+                    System.out.println("gracefully cought IOException by closing the socket.");
                 }else {
                     e.printStackTrace();
                 }
