@@ -4,6 +4,7 @@ import Auction.Messages.Message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -57,7 +58,7 @@ public class AuctionHouseListener extends Thread {
                 clientThreads.add(t);
                 t.start();
             }
-        } catch (IOException e) {
+        }catch (IOException e) {
             if(!listening) {
                 System.out.println("gracefully cought IOException");
             }else {
