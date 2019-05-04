@@ -73,12 +73,6 @@ public class AuctionHouseThread extends Thread {
                     throw new IOException();
                 }
                 Message m = (Message) o;
-                /*if(m instanceof MShutDown){
-                    //socket.close();
-                    //TODO should I be placing this message also in the queue for the house to delete?
-                    break;
-                }*/
-                System.out.println("Message received from agent: " + m);
                 if(!isRegistered) {
                     addToOuts(m, out);
                 }
@@ -107,7 +101,8 @@ public class AuctionHouseThread extends Thread {
     }
 
     /**
-     * this will take a message the clients ID from the message and map that id to the output stream in the clientOuts map.
+     * this will take a message the clients ID from the message and map that
+     * id to the output stream in the clientOuts map.
      * @param m
      * @param out
      */
@@ -148,8 +143,6 @@ public class AuctionHouseThread extends Thread {
      */
     public void shutDownIn() {
         try {
-            objectIn.close();
-            //TODO will this cause an error to clos twice?
             objectIn.close();
         } catch (IOException e) {
             e.printStackTrace();

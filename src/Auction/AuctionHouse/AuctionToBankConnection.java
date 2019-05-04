@@ -25,6 +25,11 @@ public class AuctionToBankConnection extends Thread{
     private boolean isRegistered;
     private boolean isRunning;
 
+    /**
+     * COnstruct a new AuctionToBankConnection this just communicates with the bank
+     * @param bankSocket
+     * @param houseMessageQueue
+     */
     public AuctionToBankConnection(Socket bankSocket, LinkedBlockingQueue<Message> houseMessageQueue){
         isRunning = true;
         isRegistered = false;
@@ -78,7 +83,7 @@ public class AuctionToBankConnection extends Thread{
                     throw new IOException();
                 }
                 houseMessageQueue.put((Message) o);
-                System.out.println(((Message) o));
+                //System.out.println(((Message) o));
 
             }
             catch(EOFException e){
@@ -98,14 +103,20 @@ public class AuctionToBankConnection extends Thread{
             }
 
         }
-        System.out.println("EXITING FROM BANKCONNECTION");
-        //TODO close everything here
+        System.out.println("The bank connection is exiting the thread will now stop running");
     }
 
+    /**
+     *This method bassically registers with the bank and opens a bank account
+     *
+     * @param name this is the name that will be used to open an account with the bank
+     * @return this will return the bank account/id that was assigned to me by the bank
+     */
     public int register(String name) {
 
         try {
             int id = -1;
+            //request an account
             Message m = new MCreateAccount(name,0);
             sendMessage(m);
             Object o =  in.readObject();
@@ -117,7 +128,6 @@ public class AuctionToBankConnection extends Thread{
 
                 MAccountCreated message = (MAccountCreated) o;
                 id = message.getAccountID();
-                System.out.println("ID returned is: " + id);
                 isRegistered = true;
                 return id;
             }
@@ -136,10 +146,13 @@ public class AuctionToBankConnection extends Thread{
      * we  shutdown by closing out and in and the socket.
      */
     public void shutDown() {
+        //this will break out of the run.
         isRunning = false;
         try {
+            //close the input and output streams
             out.close();
             in.close();
+            //close the bank socket.
             bankSocket.close();
         } catch (IOException e) {
             e.printStackTrace();

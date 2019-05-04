@@ -26,6 +26,9 @@ public class ItemGenerator {
     private Random random;
     private int counterID;
 
+    /**
+     * this  constructs a  new generic ItemGenerator
+     */
     public ItemGenerator() {
         aCount = 0;
         nCount = 0;
@@ -60,6 +63,11 @@ public class ItemGenerator {
 
     }
 
+    /**
+     *
+     * @param aReader reads lines from the reader until it is null
+     * @return returns the lines in an array of strings
+     */
     private ArrayList<String> getListofWords(BufferedReader aReader) {
         ArrayList<String> list = new ArrayList<>();
         String line = null;

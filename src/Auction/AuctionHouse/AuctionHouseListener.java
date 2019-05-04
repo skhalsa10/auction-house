@@ -60,12 +60,12 @@ public class AuctionHouseListener extends Thread {
             }
         }catch (IOException e) {
             if(!listening) {
-                System.out.println("gracefully cought IOException");
+                System.out.println(" ");
             }else {
                 e.printStackTrace();
             }
         }
-        System.out.println("Leaving listener run");
+        System.out.println("Leaving House Server socket Listener thread");
 
     }
 
