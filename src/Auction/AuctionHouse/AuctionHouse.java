@@ -401,7 +401,6 @@ public class AuctionHouse  extends Thread{
             items.add(tracker3.clone());
             MItemList Mil = new MItemList(myID,items);
             for(Integer i: clientOuts.keySet()){
-                System.out.println("the ID getting my MItemList is " + i);
                 try {
                     clientOuts.get(i).writeObject(Mil);
                 }catch(SocketException e){

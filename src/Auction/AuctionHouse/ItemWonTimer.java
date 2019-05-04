@@ -43,7 +43,6 @@ public class ItemWonTimer {
             @Override
             public void run() {
                 try {
-                    System.out.println("task has run");
                     messageQueue.put(new MHouseWonTimer(itemInfo.getBidOwnerID(),itemInfo));
                     running = false;
                 } catch (InterruptedException e) {
@@ -61,7 +60,7 @@ public class ItemWonTimer {
     public boolean restart(){
         boolean canceled = task.cancel(false);
         //timer.purge();
-        System.out.println(canceled);
+
         this.start();
         return canceled;
     }

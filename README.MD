@@ -1,7 +1,7 @@
 # Project: DISTRIBUTED AUCTION
 ## Students:  Siri Khalsa, Michelle Louie, and Alexandra Valdez
 
-####MAKE SURE YOU USE BRANCH final on csgit AS THIS HAS THE FINAL WORKING PROJECT
+###MAKE SURE YOU USE BRANCH final on csgit AS THIS HAS THE FINAL WORKING PROJECT
 
 
 ## Introduction
@@ -63,7 +63,8 @@ Once connected to the Bank, simply use the provided GUI to place bids.
 Examples of how to start all three applications successfully:
 1. java -jar Bank_skhalsa10_mllouie_alvaldez.jar 7779 - this will start the bank server on port 7779 using the hostname of the computer it is running on
 2. java -jar AuctionHouse_skhalsa10_mllouie_alvaldez.jar store1 b156-20 7779 b156-17 7778 - this will start a house to the bank above and start its own server on port 7778
-3. java -jar AuctionAgent_skhalsa10_mllouie_alvaldez.jar b156-20 7779 bob 500000n - starts a new agent with the name bob and 500000 opening balance
+3. java -jar AuctionAgent_skhalsa10_mllouie_alvaldez.jar b156-20 7779 bob 500000n - starts a new agent with the name bob and 500000 opening balance<br>
+
 ## Project Assumptions
 - The bank expects clients to use integer amounts when creating accounts and placing bids. <br>
 - Bank must be run first.<br>
