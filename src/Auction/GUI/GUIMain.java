@@ -24,11 +24,7 @@ public class GUIMain extends Application {
 
         gui = new GUI(primaryStage);
         gui.start();
-        if(getParameters().getUnnamed().isEmpty()) {
-            System.out.println("Arguments: Bank Hostname, Bank Port, Agent Name, Initial Balance");
-            System.out.println("Please close and try again");
-            return;
-        }
+
         try {
             String bankHost = getParameters().getUnnamed().get(0);
             int bankPortNum = Integer.parseInt(getParameters().getUnnamed().get(1));
@@ -73,6 +69,13 @@ public class GUIMain extends Application {
      * @param args
      */
     public static void main(String[] args) {
-        launch(args);
+        if(args.length == 4) {
+            launch(args);
+        }
+        else {
+            System.out.println("Arguments: Bank Hostname, Bank Port, Agent Name, Initial Balance");
+            System.exit(0);
+        }
+
     }
 }
