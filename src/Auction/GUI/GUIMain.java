@@ -7,6 +7,7 @@ import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+
 /**
  * Main Entry Point to run Agent with GUI
  */
@@ -23,6 +24,11 @@ public class GUIMain extends Application {
 
         gui = new GUI(primaryStage);
         gui.start();
+        if(getParameters().getUnnamed().isEmpty()) {
+            System.out.println("Arguments: Bank Hostname, Bank Port, Agent Name, Initial Balance");
+            System.out.println("Please close and try again");
+            return;
+        }
         try {
             String bankHost = getParameters().getUnnamed().get(0);
             int bankPortNum = Integer.parseInt(getParameters().getUnnamed().get(1));
@@ -31,10 +37,11 @@ public class GUIMain extends Application {
             a = new Agent(bankHost, bankPortNum, name, initialBalance, gui);
             gui.setGUIAgentConnection(a.getMessages());
         }
-        catch (Exception e ) {
+        catch (NumberFormatException e ) {
             System.out.println("Arguments: Bank Hostname, Bank Port, Agent Name, Initial Balance");
             System.out.println("Please close and try again");
         }
+
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
