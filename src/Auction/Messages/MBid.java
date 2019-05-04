@@ -1,5 +1,8 @@
 package Auction.Messages;
 
+/**
+ * this message is sent from the agents to the house to request a bid on an item
+ */
 public class MBid extends Message {
 
     private final int agentID;

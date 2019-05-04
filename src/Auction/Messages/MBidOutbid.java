@@ -2,6 +2,9 @@ package Auction.Messages;
 
 import Auction.AuctionHouse.BidTracker;
 
+/**
+ * this message is sent from a house to a house when they are outbid on an item they bid on.
+ */
 public class MBidOutbid extends Message {
 
     private final BidTracker itemInfo;

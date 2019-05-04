@@ -1,5 +1,8 @@
 package Auction.Messages;
 
+/**
+ * this will tell the client that requested it what its available funds are
+ */
 public class MAvailableFunds extends Message {
     private final int availableFunds;
 
