@@ -1,5 +1,8 @@
 package Auction.Messages;
 
+/**
+ * this message is used by house, agent, and bank to tell others they are shutting down.
+ */
 public class MShutDown extends Message {
 
     private final int ID;

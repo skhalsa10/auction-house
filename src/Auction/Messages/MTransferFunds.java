@@ -1,5 +1,8 @@
 package Auction.Messages;
 
+/**
+ * message sent from agent to bank to approve transfer of funds to house for a won item
+ */
 public class MTransferFunds extends Message {
     private String name;
     private final int amount;

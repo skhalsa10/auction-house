@@ -1,6 +1,9 @@
 # Project: DISTRIBUTED AUCTION
 ## Students:  Siri Khalsa, Michelle Louie, and Alexandra Valdez
 
+####MAKE SURE YOU USE BRANCH final on csgit AS THIS HAS THE FINAL WORKING PROJECT
+
+
 ## Introduction
 This project simulates multiple Auction Houses that sell items to Agents. 
 The Agents place bids on items at the Auction Houses and a Bank processes 
@@ -41,7 +44,7 @@ when a new Auction House is created.
 ## Usage
 
 **MUST USE JRE 10.0.2**<br>
-To use the program, you will need three .jar files: **Bank.jar**, **Agent.jar**, and **AuctionHouse.jar.***<br>
+To use the program, you will need three .jar files: **Bank_skhalsa10_mllouie_alvaldez.jar**, **AuctionAgent_skhalsa10_mllouie_alvaldez.jar**, and **AuctionHouse_skhalsa10_mllouie_alvaldez.jar**<br>
 Machines running an Agent or Auction House will need the following arguments: <br><br>
 **Auction House:** House Name, Bank Host Name, Bank Port, House Host Name, House Port<br>
 **Agent:** Bank Host Name, Bank Port, Agent Name, Initial Account Balance<br>
@@ -55,13 +58,26 @@ Once connected to the Bank, simply use the provided GUI to place bids.
 * Multiple bids on different items in different Auction Houses may be placed by clicking on the back button on the bottom left.
 * Agent info (Account #, Balance, Available Funds, Bid Status Messages) appear on the very bottom.
 <br>
-*NOTE: The Bank.jar file MUST be launched first! the house and clients can be started in any order
+*NOTE: The Bank_skhalsa10_mllouie_alvaldez.jar file MUST be launched first! the house and clients can be started in any order
 
+Examples of how to start all three applications successfully:
+1. java -jar Bank_skhalsa10_mllouie_alvaldez.jar 7779 - this will start the bank server on port 7779 using the hostname of the computer it is running on
+2. java -jar AuctionHouse_skhalsa10_mllouie_alvaldez.jar store1 b156-20 7779 b156-17 7778 - this will start a house to the bank above and start its own server on port 7778
+3. java -jar AuctionAgent_skhalsa10_mllouie_alvaldez.jar b156-20 7779 bob 500000n - starts a new agent with the name bob and 500000 opening balance
 ## Project Assumptions
-The bank expects clients to use integer amounts when creating accounts and placing bids. <br>
-Bank must be run first.<br>
-Must use Java 10.0.2<br>
-**MAKE SURE YOU USE BRANCH production AS THIS HAS THE FINAL WORKING PROJECT**
+- The bank expects clients to use integer amounts when creating accounts and placing bids. <br>
+- Bank must be run first.<br>
+- **Must use Java 10.0.2**<br>
+- We assume that bank account is not requested to be open with a negative balance.
+- The house and agent each have a parameter to start the programs that are their 
+names. these names NEED to be unique.
+- There is an assumption that people using this application understand networking.
+for example if all running pieces are on the same LAN and DNS has hostnames registered you should be able to
+use hostnames like "Bobs_Computer". but if DNS do not have these names registered you will need
+to use IP addresses. Also you must pick a port that is open. the higher the port the better possibility it is not alread used
+- this application will work accross the internet. using home routers. the ports need to be forwarded from
+the  router tot he devices ip address running the bank and houses. public ip addresses are needed for connecting.
+
 ## Docs
 What folder is your documentation (diagram and class diagram) in?
 
@@ -74,8 +90,6 @@ We implemented a GUI for our client.
 1. **BUG** When GUI terminates handle closing connection - **FIXED**
 2. **BUG** Can place Bid on house after it closes down - **FIXED**
 3. **BUG** Connect Exception: Connection refused: connect in GUI **Probably FIXED**
-4. **BUG** House does not register a clients output stream until it sends its first message
-possible to leave an output stream open without getting closed gracefully.
-5. **BUG** Sometimes the house doesnt exit gracefully
-6. **BUG** Resources cant be accessed from in jar **Fixed**
-7. **BUG** Sometimes the GUI Window will shrink when it refreshes the data. even in full screen the window shrinks even when it thinks it is full screen. **FIXED**
+4. **BUG** Sometimes the house doesnt exit gracefully **FIXED**
+5. **BUG** Resources cant be accessed from in jar **Fixed**
+6. **BUG** Sometimes the GUI Window will shrink when it refreshes the data. even in full screen the window shrinks even when it thinks it is full screen. **FIXED**

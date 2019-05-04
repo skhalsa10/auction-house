@@ -1,5 +1,8 @@
 package Auction.Messages;
 
+/**
+ * this message is sent from agent to house to request a current list of their items.
+ */
 public class MRequestItems extends Message {
 
     private final int agentID;

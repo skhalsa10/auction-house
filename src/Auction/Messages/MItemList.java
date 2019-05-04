@@ -3,6 +3,9 @@ package Auction.Messages;
 import Auction.AuctionHouse.BidTracker;
 import java.util.ArrayList;
 
+/**
+ * this message is sent from the house to the agent to give them an updated list of items.
+ */
 public class MItemList extends Message{
 
     private final int houseID;
@@ -26,8 +29,6 @@ public class MItemList extends Message{
         ArrayList<BidTracker> temp = new ArrayList<>();
 
         for (BidTracker b : bidTrackers){
-
-            //TODO may need to add a clone function to bittracker to maek this safe.
             temp.add(b);
         }
         return temp;

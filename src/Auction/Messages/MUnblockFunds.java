@@ -1,5 +1,8 @@
 package Auction.Messages;
 
+/**
+ * message sent from the house to the bank to unblock funds for an agent
+ */
 public class MUnblockFunds extends Message {
 
     private final int amount;
