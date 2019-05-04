@@ -1,6 +1,5 @@
 package Auction.GUI.GUIMessages;
 
-import Auction.AuctionHouse.BidTracker;
 import Auction.AuctionHouse.Item;
 import Auction.Messages.*;
 
