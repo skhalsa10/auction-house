@@ -160,6 +160,10 @@ public class GUI extends AnimationTimer {
                     return;
                 }
                 String s = bidAmount.getText();
+                if(s.length() == 0) {
+                    System.out.println("No bid amount entered. TRY AGAIN!");
+                    return;
+                }
                 for(int i = 0; i< s.length(); i++){
                     if(s.charAt(i)<'0'||s.charAt(i)>'9'){
                         System.out.println("must use Numerical values in bidAmmount Text field. TRY AGAIN!");
