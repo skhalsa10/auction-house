@@ -94,3 +94,4 @@ We implemented a GUI for our client.
 4. **BUG** Sometimes the house doesnt exit gracefully **FIXED**
 5. **BUG** Resources cant be accessed from in jar **Fixed**
 6. **BUG** Sometimes the GUI Window will shrink when it refreshes the data. even in full screen the window shrinks even when it thinks it is full screen. **FIXED**
+7. **BUG** Bad bug sometimes when other clients flood the system with messages the other agents GUI crash and needs to be closed.
