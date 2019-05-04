@@ -372,14 +372,17 @@ public class AuctionHouse  extends Thread{
             //get a new tracker for the won that won
             if(tracker1.getItem().getID() == m2.getItemWon().getItem().getID()){
                 tracker1 = new BidTracker(itemGenerator.getItem(),myID,2);
+                itemWonTimer1.shutdown();
                 itemWonTimer1 = new ItemWonTimer(messageQueue,tracker1);
             }
             if(tracker2.getItem().getID() == m2.getItemWon().getItem().getID()){
                 tracker2 = new BidTracker(itemGenerator.getItem(),myID,2);
+                itemWonTimer2.shutdown();
                 itemWonTimer2 = new ItemWonTimer(messageQueue,tracker2);
             }
             if(tracker3.getItem().getID() == m2.getItemWon().getItem().getID()){
                 tracker3 =new BidTracker(itemGenerator.getItem(),myID,2);
+                itemWonTimer3.shutdown();
                 itemWonTimer3 = new ItemWonTimer(messageQueue,tracker3);
             }
             //last thing I need to do is blast out a new message to all the agents about the new item list
