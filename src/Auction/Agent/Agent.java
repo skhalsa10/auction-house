@@ -171,7 +171,6 @@ public class Agent implements Runnable {
         ArrayList<MHouseServerInfo> houses = ((MAuctionHouses) m).getHouses();
         ArrayList<Integer> tempHouseIds = new ArrayList<>();
         ArrayList<Integer> removeIds = new ArrayList<>();
-        System.out.println("size of house list from bank: " + ((MAuctionHouses) m).getHouses().size());
         for(MHouseServerInfo h: houses) {
             tempHouseIds.add(h.getHouseID());
             System.out.println("house id: " + h.getHouseID());
@@ -204,7 +203,6 @@ public class Agent implements Runnable {
         for(int h: auctionHouses.keySet()) {
             connection = auctionHouses.get(h);
             if(connection != null) {
-                System.out.println("connection not null");
                 connection.sendMessage(m);
 
             }
@@ -243,7 +241,6 @@ public class Agent implements Runnable {
     private void closeConnection(int houseId) {
         AuctionHouseConnection connection = auctionHouses.get(houseId);
         connection.closeConnection();
-        //auctionHouses.remove(houseId);
     }
 
     /**

@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.SocketException;
-import java.sql.SQLOutput;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -36,13 +34,15 @@ public class BankConnection implements Runnable {
             new Thread(this).start();
         }
         catch (Exception e) {
-            //System.err.println(e);
             System.out.println("bank server not running! cannot connect!");
         }
     }
 
+    /**
+     * Checks if bank connection is connected
+     * @return
+     */
     public boolean isConnected() {
-        System.out.println(connected);
         return connected;
     }
 

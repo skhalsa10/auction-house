@@ -31,6 +31,9 @@ public class GUIAgentConnection implements Runnable{
         }
     }
 
+    /**
+     * close connection
+     */
     public void closeConnection() {
         running = false;
     }
@@ -40,8 +43,6 @@ public class GUIAgentConnection implements Runnable{
      */
     @Override
     public void run() {
-        while(running) {
-
-        }
+        while(running) {}
     }
 }

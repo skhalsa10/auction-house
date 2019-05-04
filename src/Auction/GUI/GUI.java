@@ -86,8 +86,12 @@ public class GUI extends AnimationTimer {
     private int selectedItemID;
 
     private GUIAgentConnection connection;
-    
 
+
+    /**
+     * Constructs the GUI
+     * @param primaryStage
+     */
     public GUI(Stage primaryStage) {
         this.stage = primaryStage;
         stage.setTitle("Auction");
@@ -190,6 +194,10 @@ public class GUI extends AnimationTimer {
         connection.sendMessage(new MRequestHouses(-1,""));
     }
 
+    /**
+     * Sends message
+     * @param m message to be sent
+     */
     public void sendMessage(GUIMessage m){
         try {
             messages.put(m);
@@ -211,8 +219,6 @@ public class GUI extends AnimationTimer {
             if (isLoading || refreshNeeded) {
                 switch (page) {
                     case LOADING_PAGE: {
-                        //System.out.println("hi");
-                        //System.out.println(loadState);
                         renderLoadingPage();
                         break;
                     }
@@ -244,10 +250,7 @@ public class GUI extends AnimationTimer {
         GUIMessage m = messages.poll();
         if(m == null) {return;}
         if(m instanceof GUIMessageLoaded){
-            System.out.println("loaded");
-            System.out.println("house size: " + ((GUIMessageLoaded) m).getHouseIDs().size());
             if( ((GUIMessageLoaded) m).getHouseIDs().isEmpty()) {
-                System.out.println("entered here");
                 isLoading = true;
                 page = pageType.LOADING_PAGE;
                 return;
@@ -263,12 +266,10 @@ public class GUI extends AnimationTimer {
             refreshNeeded = true;
         }
         else if(m instanceof GUIMessageAccount) {
-            System.out.println("gui message account");
             String num = Integer.toString(((GUIMessageAccount) m).getAccountID());
             accountNum.setText("Account: " + num);
         }
         else if(m instanceof GUIMessageBalance) {
-            //String balanceValue = Integer.toString(((GUIMessageBalance) m).getBalance());
             NumberFormat numFormat = NumberFormat.getNumberInstance(Locale.US);
             String balanceValue = numFormat.format(((GUIMessageBalance) m).getBalance());
             balance.setText("Balance: $" + balanceValue);
@@ -286,7 +287,6 @@ public class GUI extends AnimationTimer {
 
         }
         else if(m instanceof GUIMessageAvailableFunds) {
-            //String availValue = Integer.toString(((GUIMessageAvailableFunds) m).getAvailFunds());
             NumberFormat numFormat = NumberFormat.getNumberInstance(Locale.US);
             String availValue = numFormat.format(((GUIMessageAvailableFunds) m).getAvailFunds());
             availableFunds.setText("Available: $" + availValue);
@@ -303,11 +303,6 @@ public class GUI extends AnimationTimer {
         controlPane.getChildren().clear();
         infoPane.getChildren().clear();
 
-        //TODO get list of houses here the following are dummy ones
-        /*houseIDs.add(1);
-        houseIDs.add(2);
-        houseIDs.add(3);*/
-
         titlePane.getChildren().add(housePageTitle);
         titlePane.setId("house-title-pane");
         listPane.getChildren().add(houseList);
@@ -317,7 +312,6 @@ public class GUI extends AnimationTimer {
         houseList.getChildren().clear();
         houseList.setAlignment(Pos.CENTER);
         houseList.setSpacing(25);
-        //houseList.setPadding(new Insets(50,10,50,0));
         for (Integer houseID:houseIDs) {
             HBox h = new HBox();
             Pane spacer1 = new Pane();
@@ -334,7 +328,6 @@ public class GUI extends AnimationTimer {
                 @Override
                 public void handle(MouseEvent event) {
                     HBox temp = (HBox) event.getSource();
-                    //System.out.println(temp.getChildren().size());
                     Text t = (Text) temp.getChildren().get(2);
                     System.out.println("ID is " + t.getText());
                     selectedHouseID = Integer.parseInt(t.getText());
@@ -350,13 +343,11 @@ public class GUI extends AnimationTimer {
 
     private void setSize() {
 
-        System.out.println(root.getWidth());
         stage.setWidth(getMaxWidth());
         stage.setHeight(root.getHeight());
     }
 
     private double getMaxWidth() {
-        System.out.println(titlePane.getChildren().get(0));
         double max = titlePane.getWidth();
         if(listPane.getWidth()>max){
             max = listPane.getWidth();
