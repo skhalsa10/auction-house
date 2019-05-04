@@ -34,7 +34,8 @@ public class BankConnection implements Runnable {
             new Thread(this).start();
         }
         catch (Exception e) {
-            System.out.println("bank server not running! cannot connect!");
+            System.out.println("Bank server not running! Cannot connect!\n" +
+                    "Please close and try again");
         }
     }
 

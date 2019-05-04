@@ -1,4 +1,6 @@
 package Auction.GUI.GUIMessages;
 
-public abstract class GUIMessage  {
-}
+/**
+ * Abstract class for GUI Messages
+ */
+public abstract class GUIMessage  {}

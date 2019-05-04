@@ -336,9 +336,6 @@ public class GUI extends AnimationTimer {
                 }
             });
         }
-
-        setSize();
-
     }
 
     private void setSize() {
@@ -408,9 +405,6 @@ public class GUI extends AnimationTimer {
 
         controlPane.getChildren().clear();
         controlPane.getChildren().add(controlBox);
-
-        setSize();
-
     }
 
     private void renderLoadingPage() {
@@ -454,8 +448,6 @@ public class GUI extends AnimationTimer {
         listPane.getChildren().add(loadText);
         controlPane.getChildren().clear();
         infoPane.getChildren().clear();
-        stage.setWidth(500);
-        stage.setHeight(500);
     }
 
     private enum pageType {

@@ -69,7 +69,6 @@ public class AuctionHouseConnection implements Runnable {
      * @throws IOException
      */
     public void closeAll() throws IOException {
-        //connected = false;
         try {
             out.close();
         }
