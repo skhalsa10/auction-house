@@ -1,72 +1,28 @@
 package Auction.AuctionHouse;
 
-import Auction.Messages.MHouseClosedTimer;
+
 import Auction.Messages.MHouseWonTimer;
 import Auction.Messages.Message;
-
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.*;
 
+/**
+ * the purpose of this class is to trigger the winning of an item.
+ * It literally times 30 seconds and sends a message to the house to process to win the item
+ */
 public class ItemWonTimer {
 
-    /*private final int DELAY = 30000;
-    private Timer timer;
-    private TimerTask itemWonTask;
-    private LinkedBlockingQueue<Message> messageQueue;
-    private BidTracker itemInfo;
-    private boolean running;
-
-    public ItemWonTimer(LinkedBlockingQueue<Message> messageQueue, BidTracker itemInfo){
-        this.messageQueue = messageQueue;
-        timer = new Timer("Item Won Timer");
-        this.itemInfo = itemInfo;
-        running = false;
-    }
-
-    public void start(){
-        running = true;
-        timer = new Timer("Item Won Timer");
-
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    messageQueue.put(new MHouseWonTimer(itemInfo.getBidOwnerID(),itemInfo));
-                    timer.cancel();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, DELAY);
-    }
-
-
-    public void restart(){
-        timer.cancel();
-        //timer.purge();
-        this.start();
-        //timer = null;
-    }
-
-    public void shutdown() {
-        running = false;
-        timer.cancel();
-        //timer = null;
-    }
-
-    public boolean isRunning() {
-        return running;
-    }
-
-    */
-    private final int DELAY = 5;
+    private final int DELAY = 30;
     private ScheduledThreadPoolExecutor ex;
     private ScheduledFuture<?> task;
     private LinkedBlockingQueue<Message> messageQueue;
     private BidTracker itemInfo;
     private boolean running;
 
+    /**
+     *
+     * @param messageQueue this is the blocking queue to deposit the message to.
+     * @param itemInfo needed for the message
+     */
     public  ItemWonTimer(LinkedBlockingQueue<Message> messageQueue, BidTracker itemInfo){
         this.messageQueue = messageQueue;
         this.itemInfo = itemInfo;
@@ -76,6 +32,10 @@ public class ItemWonTimer {
         this.task = null;
     }
 
+    /**
+     * this starts the timer. it schedules a future task by using the
+     * ScheduledThreadPoolExecutor ex
+     */
     public void start(){
         running = true;
 
@@ -94,6 +54,10 @@ public class ItemWonTimer {
 
     }
 
+    /**
+     * this will cancel the old task and create a new future task
+     * @return false if it can't cancel an old task or true otherwise
+     */
     public boolean restart(){
         boolean canceled = task.cancel(false);
         //timer.purge();
@@ -102,31 +66,23 @@ public class ItemWonTimer {
         return canceled;
     }
 
+    /**
+     * forces a shut down whether there is a task running or not.
+     * There should not be a task running when this gets used though so if there is that is an error
+     */
     public void shutdown() {
         running = false;
 
-        /*if(task != null) {
-            task.cancel(false);
-        }*/
         ex.shutdownNow();
         //timer = null;
     }
 
+    /**
+     *
+     * @return if the timer is currently counting down
+     */
     public boolean isRunning() {
         return running;
-    }
-
-    public static void main(String args[]){
-        ItemWonTimer test = new ItemWonTimer(new LinkedBlockingQueue<Message>(), new BidTracker(new Item("test", 1),9,2));
-
-        test.start();
-        test.restart();
-        while(test.isRunning()){
-            System.out.println(test.isRunning());
-        }
-        test.shutdown();
-        test.shutdown();
-
     }
 
 }

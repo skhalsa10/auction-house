@@ -60,7 +60,6 @@ public class AuctionHouse  extends Thread{
         //initialize some data
         messageQueue = new LinkedBlockingQueue<>();
         clientOuts = new HashMap<>();
-        //shutDownTimer = new ShutDownTimer(messageQueue);
         isRunning = true;
         this.houseName = houseName;
         this.houseHost = houseHost;
@@ -68,8 +67,10 @@ public class AuctionHouse  extends Thread{
 
 
         //register with bank first before anything!
+        //this will get a bank account and initialize a AuctionToBankCommunication object
         registerWithBank(bankHost,bankPort);
 
+        //Binitialize item related stuff
         itemGenerator = new ItemGenerator();
         tracker1 = new BidTracker(itemGenerator.getItem(),myID,2);
         tracker2 = new BidTracker(itemGenerator.getItem(),myID,2);
@@ -79,8 +80,9 @@ public class AuctionHouse  extends Thread{
         itemWonTimer3 = new ItemWonTimer(messageQueue,tracker3);
 
         try {
-            //this will set up the server
+            //this will set up the server portion of the house
             serverSocket = new ServerSocket(housePort);
+            //;et the bank know about my server info
             Message m = new MHouseServerInfo(myID,houseHost,housePort);
             bankConnection.sendMessage(m);
         }catch(BindException e){
@@ -98,17 +100,18 @@ public class AuctionHouse  extends Thread{
 
     /**
      * this registers a connection to the bank server
-     * @param bankHost
-     * @param bankPort
+     * @param bankHost bank hostname to connect to
+     * @param bankPort bank port number to connect to
      */
     private void registerWithBank(String bankHost, int bankPort) {
 
         try {
             //first lets connect a socket to the bank
-            System.out.println(bankHost + " " + bankPort);
+            System.out.println("Connecting to Bank Hose: " + bankHost + " on port #" + bankPort);
             bankSocket= new Socket(bankHost, bankPort);
             //we will now beild the bank connection which handles all the communication outbound to the bank
             bankConnection = new AuctionToBankConnection(bankSocket, messageQueue);
+            //need to register before we start the thread
             myID = bankConnection.register(houseName);
             bankConnection.start();
 
@@ -136,13 +139,13 @@ public class AuctionHouse  extends Thread{
 
             }
         }
-        System.out.println("Leaving the main auction house thread");
-        //TODO Shutdown code here
+        System.out.println("Leaving the auction house " + myID + " thread");
     }
 
     /**
      * This method process the Message m type and performs the appropriate tasks
-     * @param m
+     * This is the meat of the logic for this application
+     * @param m message to process
      */
     private void processMessage(Message m) {
         System.out.println("processing message from main House thread. M request type is: " + m);
@@ -150,10 +153,12 @@ public class AuctionHouse  extends Thread{
             MRequestItems m2 = (MRequestItems) m;
             //if we are in the process of shutting down ignore this message
             if(shuttingDown){ return;}
+            //this should ner really run unless output streams are notgetting removed
             if(clientOuts.get(m2.getAgentID()) == null){
                 System.out.println("error there is no agentID " + m2.getAgentID() + " in clientouts");
             }
 
+            //build a temporary list of clones to send out
             ArrayList<BidTracker> list = new ArrayList<>();
             list.add(tracker1.clone());
             list.add(tracker2.clone());
@@ -165,17 +170,17 @@ public class AuctionHouse  extends Thread{
             }
         }
         else if(m instanceof MAuctionHouses){
+            //we dont care about this message
             return;
         }
         else if (m instanceof MShutDown) {
+            //time to shut something down!
             MShutDown msd = (MShutDown)m;
-            System.out.println("PROCCING AN M SHUTDOWN FROM " + ((MShutDown) m).getID());
+            //System.out.println("SHU " + ((MShutDown) m).getID());
             if(msd.getID()<0){
                 //the bank has shut down shut down everything else
                 isRunning = false;
                 socketListener.shutDown();
-                //TODO may need to handle this better
-                //shutDownTimer.shutdown();
             }
             else if(msd.getID() ==myID){
                 //first we should be in a state of shutting down if I receive this message
@@ -185,16 +190,16 @@ public class AuctionHouse  extends Thread{
                     return;
                 }
                 else{
+                    //this is a shut down of the house
                     isRunning = false;
-                    //System.out.println("TIMER 1 is running?: " + itemWonTimer1.isRunning());
-                    //System.out.println("TIMER 2 is running?: " + itemWonTimer2.isRunning());
-                    //System.out.println("TIMER 3 is running?: " + itemWonTimer3.isRunning());
                     itemWonTimer1.shutdown();
                     itemWonTimer2.shutdown();
                     itemWonTimer3.shutdown();
+
                     //okay now that we are here we have already processed all messages
                     //that came in during the time we initially started the shutdown we can
-                    //close all client outs and the sockets
+                    //close all client outs and the sockets. client ins are assumed to be
+                    // shut down in the initial phase of the shutdown
                     for(ObjectOutputStream out: clientOuts.values()){
                         try {
                             out.close();
@@ -210,11 +215,12 @@ public class AuctionHouse  extends Thread{
                 }
             }
             else{
+                //if we get here we are only processing the shutdown
+                // of a client but we still need to stay alive for others
                 socketListener.shutDownClient(msd.getID());
             }
         }
         else if(m instanceof MBid){
-            //shutDownTimer.restart();
             MBid m2 = (MBid) m;
             //first check to see if the house is in the process of shutting down if so reject bid immediately
             if(shuttingDown){
@@ -225,11 +231,12 @@ public class AuctionHouse  extends Thread{
                 }
                 return;
             }
+            //if we are not shutting down lets request some funds to be blocked for this agent
             MBlockFunds mbf = new MBlockFunds(myID,m2.getAgentID(),m2.getItemID(),m2.getBidAmount(),houseName);
             bankConnection.sendMessage(mbf);
         }
         else if(m instanceof MBlockAccepted){
-            //shutDownTimer.restart();
+
             MBlockAccepted m2 = (MBlockAccepted) m;
             //if shutting down we should unblock funds and send bid rejected
             if(shuttingDown){
@@ -241,6 +248,7 @@ public class AuctionHouse  extends Thread{
                 }
                 return;
             }
+
             BidTracker t = null;
             ItemWonTimer bidTimer = null;
             //find the correct tracker
@@ -268,27 +276,27 @@ public class AuctionHouse  extends Thread{
             //store the old winner and old amount just in case we need to unblock funds and notify of outbid
             int oldWinner = t.getBidOwnerID();
             int oldAmount = t.getCurrentBid();
-            System.out.println("bidowner before setting: " + t.getBidOwnerID());
             if(t.setBid(m2.getAmount(),m2.getAgentID())){
+                //if we were able to set new bid owner
                 try {
+                    //inform new owner
                     clientOuts.get(m2.getAgentID()).writeObject(new MBidAccepted(myID,t));
+                    //and let the old bid owner know they got outbid
                     if(oldWinner >= 0) {
                         bidTimer.restart();
                         bankConnection.sendMessage(new MUnblockFunds(myID, oldWinner, oldAmount));
                         clientOuts.get(oldWinner).writeObject(new MBidOutbid(myID, t));
                     }
                     else{
+                        //this is the case if it is the first bid on an item
                         bidTimer.start();
                     }
+                    //now that there is a new owner lets sendout a message blast to all clients so they have updated information
                     ArrayList<BidTracker> list = new ArrayList<>();
                     list.add(tracker1.clone());
                     list.add(tracker2.clone());
                     list.add(tracker3.clone());
-                    /*for(ObjectOutputStream out:clientOuts.values()){
-                        out.writeObject(new MItemList(myID,list));
-                    }*/
                     for(Integer i: clientOuts.keySet()){
-                        System.out.println("the ID getting my MItemList is " + i);
                         clientOuts.get(i).writeObject(new MItemList(myID,list));
                     }
                 } catch (IOException e) {
@@ -296,6 +304,8 @@ public class AuctionHouse  extends Thread{
                 }
             }
             else{
+                //if we get here the bid amount was not more than the minimum bid needed to place the bet
+                //unblock the funds and send rejected message
                 try {
                     clientOuts.get(m2.getAgentID()).writeObject(new MBidRejected(myID,t));
                     bankConnection.sendMessage(new MUnblockFunds(myID,m2.getAgentID(),m2.getAmount()));
@@ -303,10 +313,10 @@ public class AuctionHouse  extends Thread{
                     e.printStackTrace();
                 }
             }
-            System.out.println("bidowner after setting: " + t.getBidOwnerID());
         }
         else if(m instanceof MBlockRejected){
-            //shutDownTimer.restart();
+
+            //inform the agent of the rejected bid
             MBlockRejected m2 = (MBlockRejected) m;
             BidTracker t = null;
             //find the correct tracker
@@ -332,7 +342,7 @@ public class AuctionHouse  extends Thread{
                 System.out.println("tried processing shut down but Bids are pending! try later person");
                 return;
             }
-            shuttingDown = true; //TODO all other messages accordingly to respond to this flag
+            shuttingDown = true;
 
             //Send a final message that I am shutting down to all clients
             for(ObjectOutputStream out : clientOuts.values()){
@@ -363,7 +373,6 @@ public class AuctionHouse  extends Thread{
             MHouseWonTimer m2 = (MHouseWonTimer)m;
             //send a message to the agent that won
             MBidWon wonM = new MBidWon(myID, m2.getItemWon());
-            System.out.println(m2.getItemWon().getCurrentBid());
             try {
                 clientOuts.get(m2.getAgentID()).writeObject(wonM);
             } catch (IOException e) {
@@ -391,11 +400,6 @@ public class AuctionHouse  extends Thread{
             items.add(tracker2.clone());
             items.add(tracker3.clone());
             MItemList Mil = new MItemList(myID,items);
-            /*for(ObjectOutputStream out: clientOuts.values()){
-                try {
-                    out.writeObject(Mil);
-
-            }*/
             for(Integer i: clientOuts.keySet()){
                 System.out.println("the ID getting my MItemList is " + i);
                 try {

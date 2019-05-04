@@ -12,6 +12,12 @@ public class BidTracker implements Serializable, Cloneable {
     private int houseID;
     private int minimumBid;
 
+    /**
+     * constructs  a new BidTracker
+     * @param item Item to track
+     * @param houseID the houseID owning the bidTracker
+     * @param minimumBid this is the smallest difference
+     */
     public BidTracker(Item item, int houseID, int minimumBid){
         this.item = item;
         this.houseID = houseID;
@@ -75,6 +81,10 @@ public class BidTracker implements Serializable, Cloneable {
         return true;
     }
 
+    /**
+     * this method   will make a deep copy of the object. this si needed to send messages correctly.
+     * @return a deep copy of the bidTracker
+     */
     public BidTracker clone(){
         BidTracker temp = null;
         try {
