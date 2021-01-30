@@ -1,12 +1,15 @@
 package Auction.Fake;
 
-import Auction.Messages.Message;
+import Auction.AuctionHouse.BidTracker;
+import Auction.AuctionHouse.Item;
+import Auction.Messages.*;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 /**
  * this fake server builds a  server socket and accepts 1 connection ONLY.
@@ -18,8 +21,10 @@ import java.net.UnknownHostException;
  *
  * it will then wait for input. it accepts an input of one fo the following request types:
  *
- *         CREATE_ACCOUNT, CHECK_BALANCE, TRANSFER_FUNDS, ACCEPT_BID, REJECT_BID,
- *         SHUT_DOWN, FUNDS_AVAIL, FUNDS_NOT_AVAIL, FUNDS_TRANSFERRED, ITEM_WON;
+ *  *      MAccountCreated, MAuctionHouses, MAvailableFunds, MBid, MBidAccepted, MBidOutbid,
+ *  *      MBidRejected, MBidWon, MBlockAccepted, MBlockFunds, MBlockRejected, MCreateAccount
+ *  *      MFundsTransferred, MHouseServerInfo, MItemList, MRequestItems, MShutDown, MTransferFunds,
+ *  *      MUnblockFunds
  *
  * It will then convert this to a message and send it out to the connected client.
  */
@@ -48,47 +53,100 @@ public class FakeServer {
                     throw new IOException();
                 }
                 Message m = (Message) o;
-                System.out.println(m.getRequestType());
+                System.out.println(m);
                 String userLine = stdIn.readLine();
                 switch(userLine){
-                    case "CREATE_ACCOUNT":{
-                        out.writeObject(new Message(Message.RequestType.CREATE_ACCOUNT));
+                    case "MAccountCreated":{
+                        out.writeObject(new MAccountCreated(88));
                         break;
                     }
-                    case "CHECK_BALANCE": {
-                        out.writeObject(new Message(Message.RequestType.CHECK_BALANCE));
+                    case "MAuctionHouses":{
+
+                        MHouseServerInfo m1 = new MHouseServerInfo(88, "192.168.43.135", 7777);
+                        //MHouseServerInfo m2 = new MHouseServerInfo(2, "localhost", 8081);
+                        //MHouseServerInfo m3 = new MHouseServerInfo(3, "localhost", 8082);
+                        ArrayList<MHouseServerInfo> houses = new ArrayList<>();
+                        houses.add(m1);
+                        //houses.add(m2);
+                        //houses.add(m3);
+                        System.out.println("auction house");
+                        out.writeObject(new MAuctionHouses(houses));
+
                         break;
                     }
-                    case "TRANSFER_FUNDS":{
-                        out.writeObject(new Message(Message.RequestType.TRANSFER_FUNDS));
+                    case "MAvailableFunds":{
+                        out.writeObject(new MAvailableFunds(30000));
                         break;
                     }
-                    case "ACCEPT_BID":{
-                        out.writeObject(new Message(Message.RequestType.ACCEPT_BID));
+                    case "MBid":{
+                        out.writeObject(new MBid(73,2,149));
                         break;
                     }
-                    case "REJECT_BID":{
-                        out.writeObject(new Message(Message.RequestType.REJECT_BID));
+                    case "MBidAccepted":{
+                        out.writeObject(new MBidAccepted(7, new BidTracker(new Item("fakeItem",1),7,2)));
                         break;
                     }
-                    case "SHUT_DOWN":{
-                        out.writeObject(new Message(Message.RequestType.SHUT_DOWN));
+                    case "MBidOutbid":{
+                        out.writeObject(new MBidOutbid(7, new BidTracker(new Item("fakeItem",1),7,2)));
                         break;
                     }
-                    case "FUNDS_AVAIL":{
-                        out.writeObject(new Message(Message.RequestType.FUNDS_AVAIL));
+                    case "MBidRejected":{
+                        out.writeObject(new MBidRejected(7, new BidTracker(new Item("fakeItem",1),7,2)));
                         break;
                     }
-                    case "FUNDS_NOT_AVAIL":{
-                        out.writeObject(new Message(Message.RequestType.FUNDS_NOT_AVAIL));
+                    case "MBidWon":{
+                        out.writeObject(new MBidWon(7, new BidTracker(new Item("fakeItem",1),7,2)));
                         break;
                     }
-                    case "FUNDS_TRANSFERRED":{
-                        out.writeObject(new Message(Message.RequestType.FUNDS_TRANSFERRED));
+                    case "MBlockAccepted":{
+                        out.writeObject(new MBlockAccepted(73,2,1));
                         break;
                     }
-                    case "ITEM_WON":{
-                        out.writeObject(new Message(Message.RequestType.ITEM_WON));
+                    case "MBlockFunds":{
+                        out.writeObject(new MBlockFunds(7,73,1,40, "housename"));
+                        break;
+                    }
+                    case "MBlockRejected":{
+                        out.writeObject(new MBlockRejected(73,2,2));
+                        break;
+                    }
+                    case "MCreateAccount":{
+                        out.writeObject(new MCreateAccount("client", 8000));
+                        break;
+                    }
+                    case "MFundsTransferred":{
+                        out.writeObject(new MFundsTransferred(73,88,200));
+                        break;
+                    }
+                    case "MHouseServerInfo":{
+                        out.writeObject(new MHouseServerInfo(9,"0.0.0.0",7777));
+                        break;
+                    }
+                    case "MItemList":{
+                        ArrayList<BidTracker> list = new ArrayList<>();
+                        list.add(new BidTracker(new Item("fakeItem1",1),7,2));
+                        list.add(new BidTracker(new Item("fakeItem2",2),7,2));
+                        list.add(new BidTracker(new Item("fakeItem3",3),7,2));
+                        out.writeObject(new MItemList(7,list));
+                        break;
+                    }
+                    case "MRequestItems":{
+                        out.writeObject(new MRequestItems(73));
+                        break;
+                    }
+                    case "MShutDown":{
+                        out.writeObject(new MShutDown(73, "fake shutdown"));
+                        break;
+                    }
+                    case "MTransferFunds":{
+                        out.writeObject(new MTransferFunds(73,88,200));
+                        break;
+                    }
+                    case "MUnblockFunds":{
+                        out.writeObject(new MUnblockFunds(1,73,200));
+                        break;
+                    }
+                    case "skip":{
                         break;
                     }
                     default:{

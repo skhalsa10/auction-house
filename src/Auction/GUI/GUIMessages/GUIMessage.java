@@ -1,6 +1,6 @@
 package Auction.GUI.GUIMessages;
 
-import java.io.Serializable;
-
-public abstract class GUIMessage implements Serializable {
-}
+/**
+ * Abstract class for GUI Messages
+ */
+public abstract class GUIMessage  {}

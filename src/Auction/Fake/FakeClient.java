@@ -1,10 +1,13 @@
 package Auction.Fake;
 
-import Auction.Messages.Message;
+import Auction.AuctionHouse.BidTracker;
+import Auction.AuctionHouse.Item;
+import Auction.Messages.*;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 /**
  * the fake client works pretty much exactly the same as  the server.
@@ -17,8 +20,11 @@ import java.net.UnknownHostException;
  * It will then wait for an object to come in the stream print out the request type and read a line that accepts
  * the following.
  *
- *         CREATE_ACCOUNT, CHECK_BALANCE, TRANSFER_FUNDS, ACCEPT_BID, REJECT_BID,
- *         SHUT_DOWN, FUNDS_AVAIL, FUNDS_NOT_AVAIL, FUNDS_TRANSFERRED, ITEM_WON;
+ *         MAccountCreated, MAuctionHouses, MAvailableFunds, MBid, MBidAccepted, MBidOutbid,
+ *         MBidRejected, MBidWon, MBlockAccepted, MBlockFunds, MBlockRejected, MCreateAccount
+ *         MFundsTransferred, MHouseServerInfo, MItemList, MRequestItems, MShutDown, MTransferFunds,
+ *         MUnblockFunds
+ *
  *
  * It will convert the string into a message and send it out it will just loop and do this
  *
@@ -39,63 +45,113 @@ public class FakeClient {
                 BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));) {
 
             System.out.println("connected!!");
-            out.writeObject(new Message(Message.RequestType.CREATE_ACCOUNT));
-            Object o = in.readObject();
-            while(o != null){
-                if(!(o instanceof Message)){
-                    System.out.println("wrong object type not Message");
-                    throw new IOException();
-                }
-                Message m = (Message) o;
-                System.out.println(m.getRequestType());
+            Object o = null;
+            while(true){
                 String userLine = stdIn.readLine();
                 switch(userLine){
-                    case "CREATE_ACCOUNT":{
-                        out.writeObject(new Message(Message.RequestType.CREATE_ACCOUNT));
+                    case "MAccountCreated":{
+                        out.writeObject(new MAccountCreated(88));
                         break;
                     }
-                    case "CHECK_BALANCE": {
-                        out.writeObject(new Message(Message.RequestType.CHECK_BALANCE));
+                    case "MAuctionHouses":{
+                        MHouseServerInfo m1 = new MHouseServerInfo(1, "localhost", 8080);
+                        MHouseServerInfo m2 = new MHouseServerInfo(2, "localhost", 8081);
+                        MHouseServerInfo m3 = new MHouseServerInfo(3, "localhost", 8082);
+                        ArrayList<MHouseServerInfo> houses = new ArrayList<>();
+                        houses.add(m1);
+                        houses.add(m2);
+                        houses.add(m3);
+                        out.writeObject(new MAuctionHouses(houses));
+
                         break;
                     }
-                    case "TRANSFER_FUNDS":{
-                        out.writeObject(new Message(Message.RequestType.TRANSFER_FUNDS));
+                    case "MAvailableFunds":{
+                        out.writeObject(new MAvailableFunds(30000));
                         break;
                     }
-                    case "ACCEPT_BID":{
-                        out.writeObject(new Message(Message.RequestType.ACCEPT_BID));
+                    case "MBid":{
+                        out.writeObject(new MBid(73,2,149));
                         break;
                     }
-                    case "REJECT_BID":{
-                        out.writeObject(new Message(Message.RequestType.REJECT_BID));
+                    case "MBidAccepted":{
+                        out.writeObject(new MBidAccepted(7, new BidTracker(new Item("fakeItem",1),7,2)));
                         break;
                     }
-                    case "SHUT_DOWN":{
-                        out.writeObject(new Message(Message.RequestType.SHUT_DOWN));
+                    case "MBidOutbid":{
+                        out.writeObject(new MBidOutbid(7, new BidTracker(new Item("fakeItem",1),7,2)));
                         break;
                     }
-                    case "FUNDS_AVAIL":{
-                        out.writeObject(new Message(Message.RequestType.FUNDS_AVAIL));
+                    case "MBidRejected":{
+                        out.writeObject(new MBidRejected(7, new BidTracker(new Item("fakeItem",1),7,2)));
                         break;
                     }
-                    case "FUNDS_NOT_AVAIL":{
-                        out.writeObject(new Message(Message.RequestType.FUNDS_NOT_AVAIL));
+                    case "MBidWon":{
+                        out.writeObject(new MBidWon(7, new BidTracker(new Item("fakeItem",1),7,2)));
                         break;
                     }
-                    case "FUNDS_TRANSFERRED":{
-                        out.writeObject(new Message(Message.RequestType.FUNDS_TRANSFERRED));
+                    case "MBlockAccepted":{
+                        out.writeObject(new MBlockAccepted(73,2,1));
                         break;
                     }
-                    case "ITEM_WON":{
-                        out.writeObject(new Message(Message.RequestType.ITEM_WON));
+                    case "MBlockFunds":{
+                        out.writeObject(new MBlockFunds(7,73,1,40,"fakeHouse"));
+                        break;
+                    }
+                    case "MBlockRejected":{
+                        out.writeObject(new MBlockRejected(73,2,2));
+                        break;
+                    }
+                    case "MCreateAccount":{
+                        out.writeObject(new MCreateAccount("client", 8000));
+                        break;
+                    }
+                    case "MFundsTransferred":{
+                        out.writeObject(new MFundsTransferred(73,88,200));
+                        break;
+                    }
+                    case "MHouseServerInfo":{
+                        out.writeObject(new MHouseServerInfo(9,"0.0.0.0",7777));
+                        break;
+                    }
+                    case "MItemList":{
+                        ArrayList<BidTracker> list = new ArrayList<>();
+                        list.add(new BidTracker(new Item("fakeItem1",1),7,2));
+                        list.add(new BidTracker(new Item("fakeItem2",2),7,2));
+                        list.add(new BidTracker(new Item("fakeItem3",3),7,2));
+                        out.writeObject(new MItemList(7,list));
+                        break;
+                    }
+                    case "MRequestItems":{
+                        out.writeObject(new MRequestItems(73));
+                        break;
+                    }
+                    case "MShutDown":{
+                        out.writeObject(new MShutDown(73, ""));
+
+                        break;
+                    }
+                    case "MTransferFunds":{
+                        out.writeObject(new MTransferFunds(73,88,200));
+                        break;
+                    }
+                    case "MUnblockFunds":{
+                        out.writeObject(new MUnblockFunds(1,73,200));
+                        break;
+                    }
+                    case "skip":{
                         break;
                     }
                     default:{
                         System.out.println("error reading input");
                     }
                 }
-
                 o = in.readObject();
+                if(!(o instanceof Message)){
+                    System.out.println("wrong object type not Message");
+                    throw new IOException();
+                }
+                Message m = (Message) o;
+                System.out.println("message received on client: " + m);
             }
 
         } catch (UnknownHostException e1) {

@@ -1,7 +1,12 @@
 package Auction.AuctionHouse;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Random;
@@ -19,10 +24,15 @@ public class ItemGenerator {
     private int aCount;
     private int nCount;
     private Random random;
+    private int counterID;
 
+    /**
+     * this  constructs a  new generic ItemGenerator
+     */
     public ItemGenerator() {
         aCount = 0;
         nCount = 0;
+        counterID = 1;
         adjectives = new ArrayList<>();
         nouns = new ArrayList<>();
         random = new Random();
@@ -30,30 +40,61 @@ public class ItemGenerator {
     }
 
     /**
-     *
+     * this will just initialize the arrays that are used to build random items
      */
     private void initLists() {
+
+        ClassLoader cl = this.getClass().getClassLoader();
+        BufferedReader aReader = new BufferedReader(new InputStreamReader(cl.getResourceAsStream("adjectives.txt")));
+        BufferedReader nReader = new BufferedReader(new InputStreamReader(cl.getResourceAsStream("nouns.txt")));
+
+        adjectives = getListofWords(aReader);
+        nouns = getListofWords(nReader);
+        //adjectives = (ArrayList<String>)Files.readAllLines(Paths.get("adjectives.txt"));
+        aCount = adjectives.size();
+        //nouns = (ArrayList<String>)Files.readAllLines(Paths.get(this.getClass().getResource("nouns.txt").toURI()));
+        nCount = nouns.size();
         try {
-            adjectives = (ArrayList<String>)Files.readAllLines(Paths.get("./resources/adjectives.txt"));
-            aCount = adjectives.size();
-            nouns = (ArrayList<String>)Files.readAllLines(Paths.get("./resources/nouns.txt"));
-            nCount = nouns.size();
+            aReader.close();
+            nReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
+    /**
+     *
+     * @param aReader reads lines from the reader until it is null
+     * @return returns the lines in an array of strings
+     */
+    private ArrayList<String> getListofWords(BufferedReader aReader) {
+        ArrayList<String> list = new ArrayList<>();
+        String line = null;
+        try {
+            line = aReader.readLine();
+
+            while(line != null){
+                list.add(line);
+                line = aReader.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    /**
+     *
+     * @return this will return a newly generated ITEM for the Auction house's selling pleasure.
+     */
     public Item getItem(){
-        adjective = adjectives.get(random.nextInt(aCount+1));
-        noun = nouns.get(random.nextInt(nCount+1));
+        adjective = adjectives.get(random.nextInt(aCount));
+        noun = nouns.get(random.nextInt(nCount));
         //System.out.println(adjective + " " + noun);
-        return (new Item(adjective + " " + noun));
-    }
+        return (new Item(adjective + " " + noun, counterID++));
 
-    public static void main(String args[]){
-        ItemGenerator test = new ItemGenerator();
-        System.out.println(test.getItem());
     }
-
 
 }

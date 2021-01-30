@@ -16,6 +16,18 @@
     -fx-border-width: 2px;
 }
 
+.text-field{
+    -fx-font-family: "Quicksand";
+    -fx-font-size: 18;
+    -fx-padding: 1,1,1,1;
+    -fx-border-color: purple;
+    -fx-border-width: 2;
+    -fx-border-radius: 1;
+    -fx-border: gone;
+    -fx-background-color: grey;
+    -fx-text-fill: purple;
+}
+
 
 #load-text{
     -fx-fill: white;
@@ -42,6 +54,7 @@
     -fx-font-size: 20;
     -fx-font-family:   "cursive";
 }
+
 #selected-id-text{
     -fx-fill: purple;
     -fx-font-size: 30;
@@ -58,8 +71,6 @@
     -fx-background-color: lightgrey;
     -fx-spacing: 10;
 }
-
-
 
 .control-button{
     -fx-text-fill: purple;
